@@ -22,6 +22,7 @@ dependencies:
   sqflite: ^1.1.7+2
   #path: ^1.6.4 #for desktop and web
   path_provider: ^1.4.0 #for Android and IOS
+  flutter_material_color_picker: ^1.0.5
 
 
   # The following adds the Cupertino Icons font to your application.

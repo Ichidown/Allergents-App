@@ -118,13 +118,6 @@ class DatabaseHelper {
 
   // Helper methods
 
-  // Inserts a row in the database where each key in the Map is a column name
-  // and the value is the column value. The return value is the id of the
-  // inserted row.
-  Future<int> insert(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    return await db.insert('Allergene', row);
-  }
 
   // All of the rows are returned as a list of maps, where each map is
   // a key-value list of columns.
@@ -140,21 +133,6 @@ class DatabaseHelper {
     return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $table'));
   }
 
-  // We are assuming here that the id column in the map is set. The other
-  // column values will be used to update the row.
-  Future<int> update(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    int id = row[columnId];
-    return await db.update(table, row, where: '$columnId = ?', whereArgs: [id]);
-  }
-
-  // Deletes the row specified by the id. The number of affected rows is
-  // returned. This should be 1 as long as the row exists.
-  Future<int> delete(int id) async {
-    Database db = await instance.database;
-    return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
-  }
-
 
 
 
@@ -168,30 +146,28 @@ class DatabaseHelper {
 
 
   Future<List<Allergene>> getAllergenes() async {
-    List<Allergene> allergeneList = List<Allergene>();
-
-    /*allergeneList.add(Allergene(0,"arachides", 1,''));
-    allergeneList.add(Allergene(1,"Fruits exotiques", 0,''));
-    allergeneList.add(Allergene(2,"Farines", 1,''));
-    allergeneList.add(Allergene(3,"Céréales", 0,''));
-    allergeneList.add(Allergene(4,"Rosacées", 0,''));
-    allergeneList.add(Allergene(5,"Juglandacées", 0,''));
-    allergeneList.add(Allergene(6,"Corylacées", 1,''));
-    allergeneList.add(Allergene(7,"Solanacées", 1,''));
-    allergeneList.add(Allergene(8,"Ombellifères", 0,''));
-    allergeneList.add(Allergene(9,"Cucurbutacées",1,''));
-    allergeneList.add(Allergene(10,"Légumineuses", 0,''));
-    allergeneList.add(Allergene(11,"Soja", 0,''));
-    allergeneList.add(Allergene(12,"latex",1,''));
-    allergeneList.add(Allergene(13,"Banane", 1,''));*/
-
     Database db = await instance.database;
     var res = await db.query('Allergene');
-
-    if(res.isNotEmpty) {print( 'XXXXXXXXXXX ${res.length} XXXXXXXXXXXX');}
-    else print('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
-
     return res.isNotEmpty ? res.map((c) => Allergene.fromJson(c)).toList() : [];
+  }
+
+
+  Future<int> insertAllergene(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    return await db.insert('Allergene', row);
+  }
+
+
+  Future<int> updateAllergene(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row['id'];
+    return await db.update('Allergene', row, where: 'id = ?', whereArgs: [id]);
+  }
+
+
+  Future<int> deleteAllergene(int id) async {
+    Database db = await instance.database;
+    return await db.delete('Allergene', where: 'id = ?', whereArgs: [id]);
   }
 
 }

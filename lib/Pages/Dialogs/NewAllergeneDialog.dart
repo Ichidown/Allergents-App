@@ -4,39 +4,61 @@ import 'package:flutter/material.dart';
 
 
 class NewAllergeneDialog extends StatefulWidget {
+  Allergene allergene;
+  NewAllergeneDialog(this.allergene);
 
   @override
-  _NewAllergeneDialogState createState() => _NewAllergeneDialogState();
+  _NewAllergeneDialogState createState() => _NewAllergeneDialogState(allergene);
+
 }
 
 class _NewAllergeneDialogState extends State<NewAllergeneDialog> {
+  Allergene allergene;
+  _NewAllergeneDialogState(this.allergene);
+
   final dbHelper = DatabaseHelper.instance;
   final _formKey = GlobalKey<FormState>();
   TextEditingController allergeneNameController = TextEditingController();
   static List<String> _typeList = ['Pollens', 'Aliments']; // Option 2
-  String _selectedType = _typeList.first;
+  String dialogTitle,_selectedType;
 
-  String typeText = 'Pollen';
-  bool isPollens = true;
-  bool isSort = true;
 
+
+  /*void initialiseDialog()async{
+    setState(() {
+
+    });
+  }*/
+
+  @override
+  Widget initState(){
+    if(allergene != null){
+      dialogTitle = 'Edit Allergene';
+      allergeneNameController.text = allergene.name;
+      _selectedType = _typeList[allergene.allergeneType];
+    } else{
+      dialogTitle = 'New Allergene';
+      allergeneNameController.text = '';
+      _selectedType = _typeList.first;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
 
+    // initialiseDialog();
 
     return Container(margin: EdgeInsets.all(0),padding : EdgeInsets.all(0),alignment: Alignment.center, child:
 
     //Flex(direction: Axis.vertical,children: <Widget>[
     //GestureDetector(onTap: (){Navigator.of(context).pop('0');},child:
     SingleChildScrollView(child:
-    AlertDialog(title: Text('New Allergene'),
+    AlertDialog(title: Text(dialogTitle),
       content:Form( key: _formKey,
         child: Column(children: <Widget>[
 
-          TextFormField(controller:allergeneNameController, decoration: InputDecoration(labelText: 'Allergene Name'),
-            validator: (value) { if (value.isEmpty) { return 'Please enter some text';} return null;
-            },),
+          TextFormField(controller:allergeneNameController, decoration: InputDecoration(labelText: 'Allergene Name',),
+              validator: (value) { if (value.isEmpty) { return 'Please enter some text';} return null;},),
 
           DropdownButton(value: _selectedType,
             onChanged: (newValue) { setState(() {_selectedType = newValue;});},
@@ -48,8 +70,13 @@ class _NewAllergeneDialogState extends State<NewAllergeneDialog> {
       actions: <Widget>[
         MaterialButton(elevation: 5.0,child: Text('Confirm'), onPressed: () async {
           if (_formKey.currentState.validate()) {
-            int id = await dbHelper.insert(Allergene(0,allergeneNameController.text,_typeList.indexOf(_selectedType),'Color Code').toJsonNoId());
-            if (id>=0) Navigator.of(context).pop('1');// 1 = success
+            Allergene tempAllergene = Allergene(allergene==null?0:allergene.id,allergeneNameController.text,_typeList.indexOf(_selectedType),'0xff8e24aa');
+            int id;
+            if(allergene == null)
+              id = await dbHelper.insertAllergene(tempAllergene.toJsonNoId());
+            else
+              id = await dbHelper.updateAllergene(tempAllergene.toJson());
+            if (id>0) Navigator.of(context).pop('1');// 1 = success
             else Navigator.of(context).pop('2');
           }
         },),
@@ -63,6 +90,8 @@ class _NewAllergeneDialogState extends State<NewAllergeneDialog> {
     )
     );
   }
+
+
 
 
 
