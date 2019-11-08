@@ -3,18 +3,18 @@ import 'package:allergensapp/Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 
 
-class NewAllergeneDialog extends StatefulWidget {
+class AllergeneDialog extends StatefulWidget {
   Allergene allergene;
-  NewAllergeneDialog(this.allergene);
+  AllergeneDialog(this.allergene);
 
   @override
-  _NewAllergeneDialogState createState() => _NewAllergeneDialogState(allergene);
+  _AllergeneDialogState createState() => _AllergeneDialogState(allergene);
 
 }
 
-class _NewAllergeneDialogState extends State<NewAllergeneDialog> {
+class _AllergeneDialogState extends State<AllergeneDialog> {
   Allergene allergene;
-  _NewAllergeneDialogState(this.allergene);
+  _AllergeneDialogState(this.allergene);
 
   final dbHelper = DatabaseHelper.instance;
   final _formKey = GlobalKey<FormState>();
@@ -22,13 +22,6 @@ class _NewAllergeneDialogState extends State<NewAllergeneDialog> {
   static List<String> _typeList = ['Pollens', 'Aliments']; // Option 2
   String dialogTitle,_selectedType;
 
-
-
-  /*void initialiseDialog()async{
-    setState(() {
-
-    });
-  }*/
 
   @override
   Widget initState(){
@@ -45,13 +38,8 @@ class _NewAllergeneDialogState extends State<NewAllergeneDialog> {
 
   @override
   Widget build(BuildContext context) {
-
-    // initialiseDialog();
-
     return Container(margin: EdgeInsets.all(0),padding : EdgeInsets.all(0),alignment: Alignment.center, child:
 
-    //Flex(direction: Axis.vertical,children: <Widget>[
-    //GestureDetector(onTap: (){Navigator.of(context).pop('0');},child:
     SingleChildScrollView(child:
     AlertDialog(title: Text(dialogTitle),
       content:Form( key: _formKey,
@@ -70,43 +58,20 @@ class _NewAllergeneDialogState extends State<NewAllergeneDialog> {
       actions: <Widget>[
         MaterialButton(elevation: 5.0,child: Text('Confirm'), onPressed: () async {
           if (_formKey.currentState.validate()) {
-            Allergene tempAllergene = Allergene(allergene==null?0:allergene.id,allergeneNameController.text,_typeList.indexOf(_selectedType),'0xff8e24aa');
-            int id;
-            if(allergene == null)
-              id = await dbHelper.insertAllergene(tempAllergene.toJsonNoId());
-            else
-              id = await dbHelper.updateAllergene(tempAllergene.toJson());
-            if (id>0) Navigator.of(context).pop('1');// 1 = success
-            else Navigator.of(context).pop('2');
+            Allergene tempAllergene = Allergene(allergene==null?0:allergene.id,
+                allergeneNameController.text,_typeList.indexOf(_selectedType),
+                allergene==null?'0xff8e24aa':allergene.color);
+            Navigator.of(context).pop(tempAllergene);
           }
         },),
 
         MaterialButton(elevation: 5.0,child: Text('Cancel'), onPressed: (){
-          Navigator.of(context).pop('0');// 0 = canceled && null/2 = error
+          Navigator.of(context).pop(null);//'0');// 0 = canceled && null/2 = error
         },),
-
       ],
     ),
     )
     );
   }
-
-
-
-
-
-/*
-  void onAllergeneTypeChanged(bool newValue){setState(() {
-    print('huh');
-    isPollens = newValue;
-    typeText = isPollens ? 'Pollen' : 'Aliment';
-  });}*/
-
-
-
-  /*Future<int> _insert(String name, int type) async {
-    return await dbHelper.insert(Allergene(0,name,type,'').toMapNoId()); // Return created ID
-    //print('inserted row id: $id');
-  }*/
 
 }

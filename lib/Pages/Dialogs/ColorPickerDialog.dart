@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
-class AllergeneColorPickerDialog extends StatefulWidget {
+class ColorPickerDialog extends StatefulWidget {
 
 
   @override
-  _AllergeneColorPickerDialogState createState() =>
-      _AllergeneColorPickerDialogState();
+  _ColorPickerDialogState createState() =>
+      _ColorPickerDialogState();
 }
 
-class _AllergeneColorPickerDialogState extends State<AllergeneColorPickerDialog> {
+class _ColorPickerDialogState extends State<ColorPickerDialog> {
 
 
   @override

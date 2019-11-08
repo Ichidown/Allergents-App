@@ -1,7 +1,8 @@
 import 'package:allergensapp/Beings/Allergene.dart';
-import 'package:allergensapp/Pages/Dialogs/AllergeneColorPickerDialog.dart';
-import 'package:allergensapp/Pages/Dialogs/DeleteAllergeneDialog.dart';
-import 'package:allergensapp/Pages/Dialogs/NewAllergeneDialog.dart';
+import 'package:allergensapp/Pages/Dialogs/ColorPickerDialog.dart';
+import 'package:allergensapp/Pages/Dialogs/DeleteDialog.dart';
+import 'package:allergensapp/Pages/Dialogs/AllergeneDialog.dart';
+import 'package:allergensapp/Tools/UiTools.dart';
 import 'package:allergensapp/Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,30 +10,50 @@ import 'package:flutter/rendering.dart';
 class AllergenesTab extends StatefulWidget {
   @override
   _AllergenesTabState createState() => _AllergenesTabState();
+
 }
 
+
 class _AllergenesTabState extends State<AllergenesTab> {
-  static List<String> _typeList = ['Pollens', 'Aliments'];
-  static const String routeName = '/cms';
-  final dbHelper = DatabaseHelper.instance;
+
+
+  List<String> allergeneTypeList = ['Pollens', 'Aliments'];
   Future<List<Allergene>> allergeneList;
-  final _allergeneListKey = GlobalKey<FormState>();
+
+
+
+
+  //CmsPage _cmsPage;
+  //_AllergenesTabState(this._cmsPage);
+
+  //static List<String> _typeList = ['Pollens', 'Aliments'];
+  //Future<List<Allergene>> allergeneList;
+
+  final dbHelper = DatabaseHelper.instance;
+  final String deleateMsg = 'Are you sure you want to deleate this allergene ?';
+
+
+
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
-    // allergeneList = dbHelper.getAllergenes();
 
     return Stack(
       children: <Widget>[
         SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(0, 20, 0, 80),
             child: FutureBuilder<List<Allergene>>(
-                future: dbHelper.getAllergenes(),
+                future: refreshAllergeneList(),
                 // initialData: allergeneList,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
-                        key: _allergeneListKey,
+                        //key: _allergeneListKey,
                         itemCount: snapshot.data.length,
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
@@ -44,19 +65,19 @@ class _AllergenesTabState extends State<AllergenesTab> {
                               showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return NewAllergeneDialog(snapshot.data[i]);
+                                    return AllergeneDialog(snapshot.data[i]);
                                   }).then((onValue) {newAllergenes(onValue);});
                             },
                             onLongPress: () {
                               showDialog(context: context, builder: (context) {
-                                    return DeleteAllergeneDialog();
+                                    return DeleteDialog(deleateMsg);
                                   }).then((onValue) {
                                     if (onValue) deleteAllergenes(snapshot.data[i].id);
                                   });
                             },
                             leading: GestureDetector(onTap: (){
                               showDialog(context: context, builder: (context) {
-                                return AllergeneColorPickerDialog();
+                                return ColorPickerDialog();
                               }).then((onValue) {
                                 if (onValue != null){
                                   print(onValue);
@@ -78,14 +99,13 @@ class _AllergenesTabState extends State<AllergenesTab> {
                                 ])
                                 ),
                             title: Text(snapshot.data[i].name),
-                            subtitle:
-                                Text(_typeList[snapshot.data[i].allergeneType]),
+                            subtitle: Text(allergeneTypeList[snapshot.data[i].allergeneType]),
                             trailing: // FlatButton(onPressed: (){print("Deleate");},child: Text('X'))
 
                                 GestureDetector(
                               onTap: () {
                                 showDialog(context: context, builder: (context) {
-                                  return DeleteAllergeneDialog();
+                                  return DeleteDialog(deleateMsg);
                                 }).then((onValue) {
                                   if (onValue) deleteAllergenes(snapshot.data[i].id);
                                 });
@@ -101,7 +121,6 @@ class _AllergenesTabState extends State<AllergenesTab> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                     );
-                    //return null;
                   }
                 })),
         Align(
@@ -114,10 +133,9 @@ class _AllergenesTabState extends State<AllergenesTab> {
                   showDialog(
                       context: context,
                       builder: (context) {
-                        return NewAllergeneDialog(null);//false);
+                        return AllergeneDialog(null);//false);
                       }).then((onValue) {newAllergenes(onValue);});
-                }
-                ,
+                },
                 child: Icon(Icons.add),
               ),
             )),
@@ -125,56 +143,51 @@ class _AllergenesTabState extends State<AllergenesTab> {
     );
   }
 
+
+
+
+
+
+
+
+
+
+
   Future<List<Allergene>> refreshAllergeneList() async {
-    setState(() {
-      allergeneList = dbHelper.getAllergenes();
-    });
+    setState(() {allergeneList = dbHelper.getAllergenes();});
     return allergeneList;
   }
 
   void deleteAllergenes(int index) async {
     bool success = await dbHelper.deleteAllergene(index) > 0; // if deleted something
-    if (success) {
-      refreshAllergeneList();
+    if (success) refreshAllergeneList();
 
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Allergene deleted successfully'),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 1),
-      ));
-    } // failed
-    else
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Error while deleting allergene'),
-        backgroundColor: Colors.redAccent,
-        duration: Duration(seconds: 1),
-      ));
+    UiTools.newSnackBar(
+        success?'Allergene deleted successfully':'Error while deleting the allergene',
+        success?Colors.green:Colors.redAccent, 1, context);
   }
 
 
-  void newAllergenes(String onValue) async {
-    if (onValue != null) {
-      if (onValue == '1') // success
-          {
-        refreshAllergeneList();
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Allergene created successfully'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 1),
-        ));
-      } else if (onValue == '2') // failed
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Error while creating allergene'),
-          backgroundColor: Colors.redAccent,
-          duration: Duration(seconds: 1),
-        ));
+  void newAllergenes(Allergene returnedValue) async {
+    if (returnedValue != null){
+      bool isEdit = returnedValue.id != 0;
+
+      int id = isEdit ? await dbHelper.updateAllergene(returnedValue.toJson()):
+                        await dbHelper.insertAllergene(returnedValue.toJsonNoId());
+
+      bool success = id>0;
+      if(success) refreshAllergeneList();
+
+      UiTools.newSnackBar(
+          success?(isEdit?'Allergene edited successfully':'Allergene created successfully'):
+                  (isEdit?'Error while editing the allergene':'Error while creating the allergene'),
+          success?Colors.green:Colors.redAccent, 1, context);
     }
   }
 
-  void updateAllergeneColor(Allergene tempAllergene, String color){ /** This should be optimised **/
-    tempAllergene.color = color;
-    print(color);
-    dbHelper.updateAllergene(tempAllergene.toJson());
+  void updateAllergeneColor(Allergene tempValue, String color){ /** This should be optimised **/
+    tempValue.color = color;
+    dbHelper.updateAllergene(tempValue.toJson());
     refreshAllergeneList();
   }
 
