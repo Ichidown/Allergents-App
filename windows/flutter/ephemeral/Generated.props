@@ -3,10 +3,10 @@
   <ImportGroup Label="PropertySheets"/>
   <PropertyGroup Label="UserMacros">
     <FLUTTER_ROOT>C:\flutter</FLUTTER_ROOT>
-    <FLUTTER_EPHEMERAL_DIR>C:\Users\PREDATOR\Documents\Workspace\Flutter\allergensapp\windows\flutter\ephemeral</FLUTTER_EPHEMERAL_DIR>
-    <PROJECT_DIR>C:\Users\PREDATOR\Documents\Workspace\Flutter\allergensapp</PROJECT_DIR>
+    <FLUTTER_EPHEMERAL_DIR>C:\Users\PREDATOR\Documents\Workspace\Flutter\allergensapprepository\Allergents-App\windows\flutter\ephemeral</FLUTTER_EPHEMERAL_DIR>
+    <PROJECT_DIR>C:\Users\PREDATOR\Documents\Workspace\Flutter\allergensapprepository\Allergents-App</PROJECT_DIR>
     <TRACK_WIDGET_CREATION>true</TRACK_WIDGET_CREATION>
-    <FLUTTER_TARGET>C:\Users\PREDATOR\Documents\Workspace\Flutter\allergensapp\lib\main.dart</FLUTTER_TARGET>
+    <FLUTTER_TARGET>C:\Users\PREDATOR\Documents\Workspace\Flutter\allergensapprepository\Allergents-App\lib\main.dart</FLUTTER_TARGET>
   </PropertyGroup>
   <PropertyGroup/>
   <ItemDefinitionGroup/>

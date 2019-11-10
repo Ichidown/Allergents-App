@@ -11,9 +11,9 @@ class DeleteDialog extends StatelessWidget {
     return Container(margin: EdgeInsets.all(0),padding : EdgeInsets.all(0),alignment: Alignment.center, child:
     SingleChildScrollView(child:
     AlertDialog(title: Text('Confirm Delete'),
-      content:Form(
-        child: Text(messageText),
-      ),
+      content:Column(children: <Widget>[
+        Text(messageText),
+      ],),
       actions: <Widget>[
         MaterialButton(elevation: 5.0,child: Text('Confirm',style: TextStyle(color: Colors.redAccent)), onPressed: () async {
           Navigator.of(context).pop(true);// confirm

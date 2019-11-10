@@ -64,6 +64,11 @@ class SqliteManager {
     arcItems.add(ArcItem("Soja", Color(0xFFfe0944),));
     arcItems.add(ArcItem("latex",Color(0xFF21e1fa),));
     arcItems.add(ArcItem("Banane", Color(0xFF3ee98a),));
+    arcItems.add(ArcItem("Cucurbutacées",Colors.redAccent[100],));
+    arcItems.add(ArcItem("Légumineuses", Color(0xFF21e1fa),));
+    arcItems.add(ArcItem("Soja", Color(0xFFfe0944),));
+    arcItems.add(ArcItem("latex",Color(0xFF21e1fa),));
+    arcItems.add(ArcItem("Banane", Color(0xFF3ee98a),));
 
     return arcItems;
   }

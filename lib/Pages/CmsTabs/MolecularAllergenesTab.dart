@@ -81,7 +81,7 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
                                         ])
                                 ),
                                 title: Text(snapshot.data[i].name),
-
+                                subtitle: Text(snapshot.data[i].molecular_family_id.toString()),
                                 trailing:
 
                                 GestureDetector(
