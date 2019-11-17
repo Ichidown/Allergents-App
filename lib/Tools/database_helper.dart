@@ -183,8 +183,15 @@ class DatabaseHelper {
   Future<List<Allergene>> getAllergenes() async {
     Database db = await instance.database;
     var res = await db.query(allergeneTable);
-    return res.isNotEmpty ? res.map((c) => Allergene.fromJson(c)).toList() : [];
+
+
+    return res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];
+
+    //return res.isNotEmpty ? res.map((c) => Allergene.fromJson(c)).toList() : [];
   }
+
+
+
 
 
   Future<int> insertAllergene(Map<String, dynamic> row) async {

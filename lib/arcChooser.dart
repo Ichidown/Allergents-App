@@ -11,14 +11,19 @@ typedef void ArcSelectedCallback(int position, ArcItem arcItem);
 class ArcChooser extends StatefulWidget {
   ArcSelectedCallback arcSelectedCallback;
 
+  ArcChooser({this.onTextSelect});
+
+  var onTextSelect;
+
   @override
   State<StatefulWidget> createState() {
-    return ChooserState(arcSelectedCallback);
+    return ChooserState(arcSelectedCallback, onTextSelect);
   }
 }
 
-class ChooserState extends State<ArcChooser>
-    with SingleTickerProviderStateMixin {
+class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin {
+
+  ChooserState(this.arcSelectedCallback, this.onTextSelect);
   // var slideValue = 200;
   Offset centerPoint;
 
@@ -28,7 +33,8 @@ class ChooserState extends State<ArcChooser>
   //static double center = 270.0;
   //static double centerInRadians = GeneralTools.degreeToRadians(center);
 
-  double angleInRadians, angleInRadiansByTwo, centerItemAngle, itemAngle;
+  double angleInRadians, centerItemAngle, itemAngle;
+  double angleInRadiansByTwo;
 
   List<ArcItem> arcItems;
 
@@ -43,9 +49,9 @@ class ChooserState extends State<ArcChooser>
 
   ArcSelectedCallback arcSelectedCallback;
 
-  ChooserState(ArcSelectedCallback arcSelectedCallback) {
-    this.arcSelectedCallback = arcSelectedCallback;
-  }
+  var onTextSelect;
+
+
 
   @override
   void initState() {
@@ -87,7 +93,9 @@ class ChooserState extends State<ArcChooser>
 
     return new GestureDetector(
       onTap: (){
-        print('CHOSE ITEM');
+        //print('CHOSE ITEM');
+        print(arcItems[currentPosition].text);
+
       },
 
 
@@ -137,8 +145,8 @@ class ChooserState extends State<ArcChooser>
                   ? 0
                   : currentPosition + 1]);
         }
-
         animation.forward(from: 0.0);
+        onTextSelect(arcItems[currentPosition].text); // update DemonstrationPage main choice text
       },
 
 
@@ -155,10 +163,12 @@ class ChooserState extends State<ArcChooser>
 
   void refreshRouletteWheelRotation(){
     for (int i = 0; i < arcItems.length; i++) {
-      arcItems[i].startAngle =
-          angleInRadiansByTwo + userAngle + (i * angleInRadians);
+      arcItems[i].startAngle = angleInRadiansByTwo + userAngle + (i * angleInRadians);
     }
   }
+
+
+
 }
 
 

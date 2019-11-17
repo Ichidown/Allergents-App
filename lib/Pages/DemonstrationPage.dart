@@ -145,7 +145,11 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
             //IgnorePointer( child :
             Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-              ArcChooser(),
+              ArcChooser(onTextSelect: (String mainText) {
+                setState(() {
+                  choiceTitle = mainText;
+                });
+              }),
             ],),
             //),
 
@@ -322,6 +326,22 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
         ],
       ));
 
+
+
+
+
+
+
+
+
+
+  }
+
+
+  void updateTitle(String newText){
+    setState(() {
+      choiceTitle = newText;
+    });
   }
 
   /*AnimatedBuilder imageSlider(int index){
