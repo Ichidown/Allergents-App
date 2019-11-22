@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:allergensapp/Beings/Allergene.dart';
+import 'package:allergensapp/Beings/MAllergeneReaction.dart';
+import 'package:allergensapp/Beings/MFamilyAllergene.dart';
 import 'package:allergensapp/Beings/MolecularAllergene.dart';
 import 'package:allergensapp/Beings/MolecularFamily.dart';
 import 'package:allergensapp/Beings/Reaction.dart';
@@ -24,6 +26,8 @@ class DatabaseHelper {
   static final molecularFamilyTable = 'molecular_family';
   static final molecularAllergeneTable = 'molecular_Allergene';
   static final reactionTable = 'reaction';
+  static final reactionToMolecularAllergeneTable = 'molecular_Allergene_reaction_relational_link';
+  static final molecularFamilyToAllergeneTable = 'molecular_family_Allergene_relational_link';
 
 
   static final int databaseVersion = 1;
@@ -175,6 +179,33 @@ class DatabaseHelper {
 
 
 
+  Future<int> insertQuery(Map<String, dynamic> row, String table) async {
+    Database db = await instance.database;
+    return await db.insert(table, row);
+  }
+
+
+  Future<int> updateQuery(Map<String, dynamic> row, String table) async {
+    Database db = await instance.database;
+    int id = row['id'];
+    return await db.update(table, row, where: 'id = ?', whereArgs: [id]);
+  }
+
+
+  Future<int> deleteQuery(int id, String table) async {
+    Database db = await instance.database;
+    return await db.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -183,38 +214,16 @@ class DatabaseHelper {
   Future<List<Allergene>> getAllergenes() async {
     Database db = await instance.database;
     var res = await db.query(allergeneTable);
-
-
     return res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];
-
-    //return res.isNotEmpty ? res.map((c) => Allergene.fromJson(c)).toList() : [];
   }
 
-
-
-
-
-  Future<int> insertAllergene(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    return await db.insert(allergeneTable, row);
-  }
-
-
-  Future<int> updateAllergene(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    int id = row['id'];
-    return await db.update(allergeneTable, row, where: 'id = ?', whereArgs: [id]);
-  }
-
-
+  Future<int> insertAllergene(Map<String, dynamic> row) async { return insertQuery(row, allergeneTable);}
+  Future<int> updateAllergene(Map<String, dynamic> row) async { return updateQuery(row, allergeneTable);}
   Future<int> deleteAllergene(int id) async {
     Database db = await instance.database;
-    return await db.delete(allergeneTable, where: 'id = ?', whereArgs: [id]);
+    await db.rawDelete('DELETE FROM $molecularFamilyToAllergeneTable WHERE Allergene_1_id = $id OR Allergene_2_id = $id;');
+    return deleteQuery(id, allergeneTable);
   }
-
-
-
-
 
 
 
@@ -227,24 +236,14 @@ class DatabaseHelper {
     return res.isNotEmpty ? res.map((c) => MolecularFamily.fromJson(c)).toList() : [];
   }
 
-  Future<int> insertMolecularFamily(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    return await db.insert(molecularFamilyTable, row);
-  }
-
-  Future<int> updateMolecularFamily(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    int id = row['id'];
-    return await db.update(molecularFamilyTable, row, where: 'id = ?', whereArgs: [id]);
-  }
-
+  Future<int> insertMolecularFamily(Map<String, dynamic> row) async { return insertQuery(row, molecularFamilyTable);}
+  Future<int> updateMolecularFamily(Map<String, dynamic> row) async { return updateQuery(row, molecularFamilyTable);}
   Future<int> deleteMolecularFamily(int id) async {
     Database db = await instance.database;
-    return await db.delete(molecularFamilyTable, where: 'id = ?', whereArgs: [id]);
+    await db.rawDelete('DELETE FROM $molecularFamilyToAllergeneTable WHERE molecular_family_id = $id;');
+    await db.rawDelete('DELETE FROM $molecularAllergeneTable WHERE molecular_family_id = $id;');
+    return deleteQuery(id, molecularFamilyTable);
   }
-
-
-
 
 
 
@@ -257,24 +256,13 @@ class DatabaseHelper {
     return res.isNotEmpty ? res.map((c) => MolecularAllergene.fromJson(c)).toList() : [];
   }
 
-  Future<int> insertMolecularAllergene(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    return await db.insert(molecularAllergeneTable, row);
-  }
-
-  Future<int> updateMolecularAllergene(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    int id = row['id'];
-    return await db.update(molecularAllergeneTable, row, where: 'id = ?', whereArgs: [id]);
-  }
-
+  Future<int> insertMolecularAllergene(Map<String, dynamic> row) async { return insertQuery(row, molecularAllergeneTable);}
+  Future<int> updateMolecularAllergene(Map<String, dynamic> row) async { return updateQuery(row, molecularAllergeneTable);}
   Future<int> deleteMolecularAllergene(int id) async {
     Database db = await instance.database;
-    return await db.delete(molecularAllergeneTable, where: 'id = ?', whereArgs: [id]);
+    await db.rawDelete('DELETE FROM $reactionToMolecularAllergeneTable WHERE molecular_Allergene_id = $id;');
+    return deleteQuery(id, molecularAllergeneTable);
   }
-
-
-
 
 
 
@@ -287,22 +275,54 @@ class DatabaseHelper {
     return res.isNotEmpty ? res.map((c) => Reaction.fromJson(c)).toList() : [];
   }
 
-  Future<int> insertReaction(Map<String, dynamic> row) async {
-    print(row);
-    Database db = await instance.database;
-    return await db.insert(reactionTable, row);
-  }
-
-  Future<int> updateReaction(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    int id = row['id'];
-    return await db.update(reactionTable, row, where: 'id = ?', whereArgs: [id]);
-  }
-
+  Future<int> insertReaction(Map<String, dynamic> row) async { return insertQuery(row, reactionTable);}
+  Future<int> updateReaction(Map<String, dynamic> row) async { return updateQuery(row, reactionTable);}
   Future<int> deleteReaction(int id) async {
     Database db = await instance.database;
-    return await db.delete(reactionTable, where: 'id = ?', whereArgs: [id]);
+    await db.rawDelete('DELETE FROM $reactionToMolecularAllergeneTable WHERE reaction_id = $id;');
+    return deleteQuery(id, reactionTable);
   }
+
+
+
+
+
+  /// ****************************** molecular_family_Allergene_relational_link **********************************/
+
+  Future<List<MFamilyAllergene>> getMolecularFamilyToAllergeneList() async {
+    Database db = await instance.database;
+    var res = await db.query(molecularFamilyToAllergeneTable);
+    return res.isNotEmpty ? res.map((c) => MFamilyAllergene.fromJson(c)).toList() : [];
+  }
+
+  Future<int> insertMolecularFamilyToAllergene(Map<String, dynamic> row) async { return insertQuery(row, molecularFamilyToAllergeneTable);}
+  Future<int> updateMolecularFamilyToAllergene(Map<String, dynamic> row) async {return updateQuery(row, molecularFamilyToAllergeneTable);}
+  Future<int> deleteMolecularFamilyToAllergene(int id) async { return deleteQuery(id, molecularFamilyToAllergeneTable);}
+
+
+
+
+
+
+
+  /// ****************************** molecular_Allergene_reaction_relational_link **********************************/
+
+  Future<List<MAllergeneReaction>> getReactionToMolecularAllergeneList() async {
+    Database db = await instance.database;
+    var res = await db.query(reactionToMolecularAllergeneTable);
+    return res.isNotEmpty ? res.map((c) => MAllergeneReaction.fromJson(c)).toList() : [];
+  }
+
+  Future<int> insertReactionToMolecularAllergene(Map<String, dynamic> row) async { return insertQuery(row, reactionToMolecularAllergeneTable);}
+  Future<int> updateReactionToMolecularAllergene(Map<String, dynamic> row) async {return updateQuery(row, reactionToMolecularAllergeneTable);}
+  Future<int> deleteReactionToMolecularAllergene(int id) async { return deleteQuery(id, reactionToMolecularAllergeneTable);}
+
+
+
+
+
+
+
 
 
 

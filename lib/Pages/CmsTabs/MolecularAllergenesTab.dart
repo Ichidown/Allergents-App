@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:allergensapp/Beings/MolecularAllergene.dart';
 import 'package:allergensapp/Beings/MolecularFamily.dart';
 import 'package:allergensapp/Pages/Dialogs/ColorPickerDialog.dart';
@@ -17,18 +19,34 @@ class MolecularAllergenesTab extends StatefulWidget {
 class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
   Future<List<MolecularAllergene>> molecularAllergeneList;
   Future<List<MolecularFamily>> molecularFamilyList;
+  HashMap mAllergeneListHash = new HashMap();
 
   final dbHelper = DatabaseHelper.instance;
   final String deleateMsg = 'Are you sure you want to deleate this molecular allergene ?';
 
+  @override
+  void initState() {
+    setState(() {molecularFamilyList = dbHelper.getMolecularFamilies();});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    refreshMolecularFamilyList();
+    //refreshMolecularFamilyList();
 
     return Stack(
       children: <Widget>[
+
+        /** Initialise molecular Family List HashMap */
+        FutureBuilder<List<MolecularFamily>>(
+            future: molecularFamilyList,
+            builder: (context, snapshot) {
+              if(snapshot.hasData)
+                snapshot.data.forEach((element) => mAllergeneListHash[element.id]=element.name);
+              return Container();
+            }),
+
         SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(0, 20, 0, 80),
             child: FutureBuilder<List<MolecularAllergene>>(
@@ -81,7 +99,7 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
                                         ])
                                 ),
                                 title: Text(snapshot.data[i].name),
-                                subtitle: Text(snapshot.data[i].molecular_family_id.toString()),
+                                subtitle: Text(mAllergeneListHash[snapshot.data[i].molecular_family_id]),
                                 trailing:
 
                                 GestureDetector(
@@ -125,16 +143,14 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
       ],
     );
   }
+  
 
 
 
-
-
-
-  Future<List<MolecularFamily>> refreshMolecularFamilyList() async {
+  /**void refreshMolecularFamilyList() async {
     setState(() {molecularFamilyList = dbHelper.getMolecularFamilies();});
-    return molecularFamilyList;
-  }
+    //return molecularFamilyList;
+  }*/
 
 
   Future<List<MolecularAllergene>> refreshMolecularAllergeneList() async {

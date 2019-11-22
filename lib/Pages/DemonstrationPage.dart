@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import '../arcChooser.dart';
 import 'CmsPage.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 
 class DemonstrationPage extends StatefulWidget {
@@ -22,11 +21,22 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
   bool mFamilyBtnOpen = false;
   bool mAllergeneBtnOpen = false;
 
-  final double animatedBtnOpenSize = 150;
+  final double animatedBtnOpenSize = 180;
   final double animatedBtnClosedSize = 10;
   final double buttonHeight = 30;
 
+  final String appTitle = 'Allergens App';
+  final String drawerTabTitle = 'Database Management';
+  final String tab1Text = 'Allergenes';
+  final String tab2Text = 'CMS';
+
   String choiceTitle = 'Allergene Super Long Name';
+
+  String pollenBtnText = '';
+  String alimentsBtnText = '';
+  String mFamilyBtnText = '';
+  String mAllergeneBtnText = '';
+
 
 
   List<Image> imageList = [
@@ -55,12 +65,12 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
       Scaffold(
           drawer: Drawer(child: ListView(padding: EdgeInsets.zero ,children: <Widget>[
             DrawerHeader(decoration: BoxDecoration(color: Colors.blue,),
-              child: Text('Database Management'), ),
+              child: Text(drawerTabTitle), ),
 
-            new ListTile(title: Text('Allergenes'),onTap: () {
+            new ListTile(title: Text(tab1Text),onTap: () {
               Navigator.of(context).pop();}),
 
-            new ListTile(title: Text('CMS'),onTap: () {
+            new ListTile(title: Text(tab2Text),onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => CmsPage()));}),
 
@@ -68,7 +78,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
           appBar: PreferredSize( preferredSize: Size.fromHeight(40.0),
               child : AppBar(
-                title: Text('Allergens App'),
+                title: Text(appTitle),
                 centerTitle: true,
               )),
 
@@ -83,7 +93,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
             Container(
               decoration: BoxDecoration(
-                image: DecorationImage( image: AssetImage("assets/images/i89767-.jpeg"), fit: BoxFit.cover,),
+                image: DecorationImage( image: AssetImage("assets/images/i89767-.jpg"), fit: BoxFit.cover,),
               ),
             //child: imageList[0],
             ),
@@ -161,14 +171,14 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
               width: allergeneBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
               child: ButtonTheme(height: buttonHeight,
                 child: RaisedButton(onPressed: () {
-                  print("Pollens");
+                  print(pollenBtnText);
                   setState(() {
                     allergeneBtnOpen=!allergeneBtnOpen;
                   });
                   //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                 },
                     color: Colors.greenAccent[100],
-                    child: Text('Pollens', textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,),
+                    child: Text(pollenBtnText, textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0))),)
               ),
@@ -183,14 +193,14 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
                   width: pollenBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      print("Aliments");
+                      print(alimentsBtnText);
                       setState(() {
                         pollenBtnOpen=!pollenBtnOpen;
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
                         color: Colors.amberAccent[100],
-                        child: Text('Aliments', textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,),
+                        child: Text(alimentsBtnText, textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0))),)
               ),
@@ -213,14 +223,14 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
                   width: mFamilyBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      print("Familles Moleculaires");
+                      print(mFamilyBtnText);
                       setState(() {
                         mFamilyBtnOpen=!mFamilyBtnOpen;
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
                         color: Colors.cyan[100],
-                        child: Text('Familles Moleculaires', textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,),
+                        child: Text(mFamilyBtnText, textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0))),)
               ),
@@ -233,14 +243,14 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
                   width: mAllergeneBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      print("Allergenes Moleculaires");
+                      print(mAllergeneBtnText);
                       setState(() {
                         mAllergeneBtnOpen=!mAllergeneBtnOpen;
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
                         color: Colors.deepOrangeAccent[100],
-                        child: Text('Allergenes Moleculaires', textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,),
+                        child: Text(mAllergeneBtnText, textAlign: TextAlign.center,overflow: TextOverflow.ellipsis,),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0))),)
               ),

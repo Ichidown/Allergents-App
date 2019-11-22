@@ -24,7 +24,6 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
   TextEditingController molecularAllergeneNameController = TextEditingController();
   MolecularFamily _selectedMolecularFamily;
   String dialogTitle;
-  //List<String> molecularFamilyListNew = [];
 
 
   @override
@@ -33,15 +32,11 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
     if (molecularAllergene != null) {
       dialogTitle = 'Edit Molecular allergene';
       molecularAllergeneNameController.text = molecularAllergene.name;
-      //_selectedMolecularFamily = molecularFamilyList.then(onValue);/** GET ID **/ //_molecularFamilyList[allergene.allergeneType];
     } else {
       dialogTitle = 'New Molecular allergene';
       molecularAllergeneNameController.text = '';
-      //_selectedMolecularFamily = _molecularAllergeneList.first;
     }
-
-    molecularFamilyList = dbHelper.getMolecularFamilies();
-    //_loadAnimals();
+    // molecularFamilyList = dbHelper.getMolecularFamilies();
   }
 
   @override
@@ -63,21 +58,11 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
 
 
 
-
-
-
-
-
           FutureBuilder<List<MolecularFamily>>(
             future: molecularFamilyList,//refreshMolecularFamilyList(),
             builder: (context, snapshot) {
               //if (snapshot.hasError) return Text(snapshot.error);
               if (snapshot.hasData) {
-
-                /*for(int i = 0; i<snapshot.data.length;i++){
-                  molecularFamilyListNew.add(snapshot.data[i].name);
-                }*/
-
                 initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data);
 
                 return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.ac_unit)),
@@ -93,24 +78,16 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
 
 
 
-
-
-
-
-
-
-
-
-
-
         ],),),
 
       actions: <Widget>[
         MaterialButton(elevation: 5.0,child: Text('Confirm'), onPressed: () async {
           print(_selectedMolecularFamily.name);
           if (_formKey.currentState.validate()) {
-            MolecularAllergene tempAllergene = MolecularAllergene(molecularAllergene==null?0:molecularAllergene.id,
-                molecularAllergeneNameController.text, _selectedMolecularFamily.id,
+            MolecularAllergene tempAllergene = MolecularAllergene(
+                molecularAllergene==null?0:molecularAllergene.id,
+                molecularAllergeneNameController.text,
+                _selectedMolecularFamily.id,
                 molecularAllergene==null?'0xff42a5f5':molecularAllergene.color);
             Navigator.of(context).pop(tempAllergene);
           }
@@ -136,14 +113,12 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
 
 
   void initCurrentSelectedMolecularFamily(MolecularAllergene molecularAllergene, List<MolecularFamily> molecularFamilyList) {
-
     if(_selectedMolecularFamily == null){
       if (molecularAllergene != null) // is edit
         _selectedMolecularFamily = getSelectedMolecularFamilyFromID(molecularAllergene.molecular_family_id,molecularFamilyList);
       else  // is new
         _selectedMolecularFamily = molecularFamilyList.length>0?molecularFamilyList.first:null;
     }
-    //return _selectedMolecularFamily;
   }
 
 
@@ -158,8 +133,8 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
 
 
 
-  Future<List<MolecularFamily>> refreshMolecularFamilyList() async {
+  /*Future<List<MolecularFamily>> refreshMolecularFamilyList() async {
     setState(() {molecularFamilyList = dbHelper.getMolecularFamilies();});
     return molecularFamilyList;
-  }
+  }*/
 }

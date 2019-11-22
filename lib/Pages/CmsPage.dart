@@ -1,13 +1,11 @@
 
-import 'package:allergensapp/Beings/Allergene.dart';
-import 'package:allergensapp/Beings/MolecularAllergene.dart';
-import 'package:allergensapp/Beings/MolecularFamily.dart';
-import 'package:allergensapp/Beings/Reaction.dart';
+import 'package:allergensapp/Pages/CmsTabs/ReactionToMolecularAllergeneTab.dart';
 import 'package:allergensapp/Pages/CmsTabs/ReactionsTab.dart';
 import 'package:flutter/material.dart';
 import 'CmsTabs/AllergenesTab.dart';
 import 'CmsTabs/MolecularAllergenesTab.dart';
 import 'CmsTabs/MolecularFamiliesTab.dart';
+import 'CmsTabs/MolecularFamilyToAllergeneTab.dart';
 
 
 
@@ -40,8 +38,8 @@ class _CmsPageState extends State<CmsPage> {
       MolecularFamiliesTab(),
       MolecularAllergenesTab(),
       ReactionsTab(),
-      Text('1'),
-      Text('1'),
+      MolecularFamilyToAllergeneTab(),
+      ReactionToMolecularAllergeneTab(),
     ];
     tabItemNumber = tablist.length;
 
