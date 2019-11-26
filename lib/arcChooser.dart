@@ -4,26 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'Beings/ArcItem.dart';
 import 'Tools/GeneralTools.dart';
-import 'Tools/SqliteManager.dart';
+import 'Tools/database_helper.dart';
 
 typedef void ArcSelectedCallback(int position, ArcItem arcItem);
 
 class ArcChooser extends StatefulWidget {
   ArcSelectedCallback arcSelectedCallback;
+  // _DemonstrationPageState _demonstrationPageState;
 
-  ArcChooser({this.onTextSelect});
+  ArcChooser({Key key,this.onChoiceChange,this.onChoiceSelected}): super(key: key);
 
-  var onTextSelect;
+  var onChoiceChange,onChoiceSelected;
 
   @override
   State<StatefulWidget> createState() {
-    return ChooserState(arcSelectedCallback, onTextSelect);
+    return ChooserState(arcSelectedCallback, onChoiceChange, onChoiceSelected);
   }
 }
 
 class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin {
 
-  ChooserState(this.arcSelectedCallback, this.onTextSelect);
+  ChooserState(this.arcSelectedCallback, this.onChoiceChange, this.onChoiceSelected);
+  var onChoiceChange,onChoiceSelected;
+  //_DemonstrationPageState _demonstrationPageState;
   // var slideValue = 200;
   Offset centerPoint;
 
@@ -33,10 +36,10 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   //static double center = 270.0;
   //static double centerInRadians = GeneralTools.degreeToRadians(center);
 
-  double angleInRadians, centerItemAngle, itemAngle;
+  double angleInRadians, centerItemAngle;
   double angleInRadiansByTwo;
 
-  List<ArcItem> arcItems;
+  List<ArcItem> arcItems = List<ArcItem>();
 
   AnimationController animation;
   double animationStart;
@@ -49,52 +52,46 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
   ArcSelectedCallback arcSelectedCallback;
 
-  var onTextSelect;
+  final dbHelper = DatabaseHelper.instance;
+
+   var colorLvl = [Colors.greenAccent,Colors.amberAccent,Colors.redAccent];
+
 
 
 
   @override
   void initState() {
-    arcItems = SqliteManager.getPolens();
-
-    itemAngle = 360 / arcItems.length;
-    angleInRadians = GeneralTools.degreeToRadians(itemAngle);
-    angleInRadiansByTwo = angleInRadians / 2;
-    //centerItemAngle = GeneralTools.degreeToRadians(center - (itemAngle / 2));
-
-    // initialise startAngle !!!!! DUPLICATE !!!!!
-    /*for (int i = 0; i < arcItems.length; i++) {
-      arcItems[i].startAngle = angleInRadiansByTwo + userAngle + (i * angleInRadians);
-    }*/
-    refreshRouletteWheelRotation();
 
     animation = new AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
     animation.addListener(() {
       userAngle = lerpDouble(animationStart, animationEnd, animation.value);
       setState(() {
-
-        /** UPDATE THIS TO MAKE THE ANIMATION CONTINUE TO THE NORMAL FINISH LOCATION **/
-        /*for (int i = 0; i < arcItems.length; i++) {
-          arcItems[i].startAngle = angleInRadiansByTwo + userAngle + (i * angleInRadians);
-        }*/
-        refreshRouletteWheelRotation();
-        /************************************ *****************************************/
-
-      });
+        refreshRouletteWheelRotation(); // UPDATE THIS TO MAKE THE ANIMATION CONTINUE TO THE NORMAL FINISH LOCATION
+      }
+      );
     });
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     double centerX = MediaQuery.of(context).size.width / 2;
     double centerY = MediaQuery.of(context).size.height * 1.5;
     centerPoint = Offset(centerX, centerY);
 
-    return new GestureDetector(
-      onTap: (){
-        //print('CHOSE ITEM');
-        print(arcItems[currentPosition].text);
+    //getAllergene(0); // get pollens at the very start
+
+
+    return GestureDetector(
+      onTap: () {
+        onChoiceSelected(arcItems[currentPosition].id);
+
+        /** ANIMATE ROULETTE WHEEL HERE
+         * IN ANIMATION --
+         * CHANGE DATA --
+         * OUT ANIMATION -- **/
 
       },
 
@@ -112,8 +109,14 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
         var deltaX = centerPoint.dx - details.globalPosition.dx;
         var deltaY = centerPoint.dy - details.globalPosition.dy;
         var freshAngle = atan2(deltaY, deltaX);
-        userAngle += (freshAngle - startAngle)*0.3;
-        setState(() { refreshRouletteWheelRotation();});
+        userAngle += (freshAngle - startAngle) * 0.3;
+
+        /** ------------- IS SET STATE NECESSARY ? ------------- **/
+        setState(() {
+          refreshRouletteWheelRotation();
+        });
+        /** ---------------------------------------------------- **/
+
         startAngle = freshAngle;
       },
 
@@ -146,25 +149,99 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
                   : currentPosition + 1]);
         }
         animation.forward(from: 0.0);
-        onTextSelect(arcItems[currentPosition].text); // update DemonstrationPage main choice text
+        if (arcItems.length > 0)
+          onChoiceChange(arcItems[currentPosition].text); // update DemonstrationPage main choice text
       },
 
 
-
-      child: CustomPaint(
-        size: Size(MediaQuery.of(context).size.width,
-                   MediaQuery.of(context).size.width * 1 / 1.5),
+      child: arcItems.length > 0 ? CustomPaint(
+        size: Size(MediaQuery
+            .of(context)
+            .size
+            .width,
+            MediaQuery
+                .of(context)
+                .size
+                .width * 1 / 1.5),
         painter: ChooserPainter(arcItems, angleInRadians),
-      ),
+      ) : Container(),
     );
   }
 
 
-
-  void refreshRouletteWheelRotation(){
+  void refreshRouletteWheelRotation() {
     for (int i = 0; i < arcItems.length; i++) {
-      arcItems[i].startAngle = angleInRadiansByTwo + userAngle + (i * angleInRadians);
+      arcItems[i].startAngle =
+          angleInRadiansByTwo + userAngle + (i * angleInRadians);
     }
+  }
+
+
+/*
+  void getData(int dataSourceIdx, int id1, int id2){
+    switch(dataSourceIdx){
+      case 0:
+        getAllergene(0); // get allergenes input(0==pollens / 1==aliments)
+        break;
+      case 1:
+        getAllergene(1); // get allergenes input(0==pollens / 1==aliments)
+        break;
+      case 2:
+        getMolecularFamilies(1,2); // get molecular families input(allergeneId1 , allergeneId2)
+        break;
+      case 3:
+        getMolecularAllergenes(3); // get molecular allergenes input(mFamilyId)
+        break;
+      case 4:
+        getReactions(2); // get reactions input(mAllergeneId)
+        break;
+    }
+  }*/
+
+
+  void getAllergene(int type){ // 0 == pollens, 1 == aliments
+    dbHelper.getAllergeneOfType(type).then((result) {
+      setState(() {
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id)).toList() : List<ArcItem>();
+      });
+      refreshRouletteWheelData();
+    });
+  }
+
+
+  void getMolecularFamilies(int allergeneId1,int allergeneId2){ // 0 == pollens, 1 == aliments
+    dbHelper.getMolecularFamiliesOfAllergeneCombination(allergeneId1,allergeneId2).then((result) {
+      setState(() {
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id)).toList() : List<ArcItem>();
+      });
+      refreshRouletteWheelData();
+    });
+  }
+
+
+  void getMolecularAllergenes(int mFamilyId){ // 0 == pollens, 1 == aliments
+    dbHelper.getMolecularAllergenesFromMFamily(mFamilyId).then((result) {
+      setState(() {
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id)).toList() : List<ArcItem>();
+      });
+      refreshRouletteWheelData();
+    });
+  }
+
+  void getReactions(int mAllergeneId){ // 0 == pollens, 1 == aliments
+    dbHelper.getReactionsOfMolecularAllergenes(mAllergeneId).then((result) {
+      setState(() {
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.adapted_treatment,colorLvl[c.level],c.id)).toList() : List<ArcItem>();
+      });
+      refreshRouletteWheelData();
+    });
+  }
+
+  void refreshRouletteWheelData(){
+    angleInRadians = GeneralTools.degreeToRadians(arcItems.length>0? 360 / arcItems.length:0);
+    angleInRadiansByTwo = angleInRadians / 2;
+    refreshRouletteWheelRotation();
+    if(arcItems.length>0) onChoiceChange(arcItems[currentPosition].text); // initial choice when started app / demonstration page
   }
 
 
@@ -238,8 +315,9 @@ class ChooserPainter extends CustomPainter {
     // for text
     double radiusText = radius * 1.05;
 
-    var arcRect = Rect.fromLTRB(leftX2, topY2, rightX2, bottomY2);
-    var dummyRect = Rect.fromLTRB(0.0, 0.0, size.width, size.height);
+    Rect arcRect = Rect.fromLTRB(leftX2, topY2, rightX2, bottomY2);
+
+    Rect dummyRect = Rect.fromLTRB(0.0, 0.0, size.width, size.height);
 
     canvas.clipRect(dummyRect, clipOp: ClipOp.intersect);
 
@@ -304,4 +382,8 @@ class ChooserPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
+
+
+
+
 }

@@ -101,7 +101,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
                                     children: <Widget>[
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.amberAccent,
+                                          color: Colors.grey[200],
                                           shape: BoxShape.circle,
                                         ),
                                         width: 50,

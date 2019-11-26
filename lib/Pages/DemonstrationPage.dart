@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../arcChooser.dart';
 import 'CmsPage.dart';
+import 'AboutAppPage.dart';
 
 
 class DemonstrationPage extends StatefulWidget {
@@ -11,7 +12,8 @@ class DemonstrationPage extends StatefulWidget {
   _DemonstrationPageState createState() => _DemonstrationPageState();
 }
 
-class _DemonstrationPageState extends State<DemonstrationPage> with TickerProviderStateMixin {
+class _DemonstrationPageState extends State<DemonstrationPage> with SingleTickerProviderStateMixin {
+  final GlobalKey<ChooserState> _arcChooserkey = GlobalKey();
 
   final int btnAnimationDuration = 200;
   AnimationController buttonsAnimationCon;
@@ -29,13 +31,17 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
   final String drawerTabTitle = 'Database Management';
   final String tab1Text = 'Allergenes';
   final String tab2Text = 'CMS';
+  final String tab3Text = 'About App';
 
-  String choiceTitle = 'Allergene Super Long Name';
+  String choiceTitle = '';
 
   String pollenBtnText = '';
   String alimentsBtnText = '';
   String mFamilyBtnText = '';
   String mAllergeneBtnText = '';
+
+  int activatedBtnNumber= 0;
+  ArcChooser arcChooser;
 
 
 
@@ -51,16 +57,35 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     buttonsAnimationCon = AnimationController(vsync: this,duration: Duration(microseconds: 300));
     btnAnimation = Tween(begin: 1.0, end: 0.5).animate(CurvedAnimation(parent: buttonsAnimationCon,curve: Curves.easeInOut));
-
-
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    arcChooser = ArcChooser( key: _arcChooserkey,
+        onChoiceChange: (String text) {
+          setState(() {
+            choiceTitle = text;
+          });
+        },
+        onChoiceSelected: (int currentPosition){
+          //print(currentPosition);
+          if(choiceTitle.length>0) // to block buttons interaction when no selectable element exist
+            setState(() {
+              activatedBtnNumber++;
+              switch(activatedBtnNumber){
+                case 1: pollenBtnText = choiceTitle;  print('XXXXXXXXXXXXXXX');_arcChooserkey.currentState.getAllergene(1); break;
+                case 2: alimentsBtnText = choiceTitle; break;
+                case 3: mFamilyBtnText = choiceTitle; break;
+                case 4: mAllergeneBtnText = choiceTitle; break;
+              }
+            });
+        });
+    //_arcChooserkey.currentState.getAllergene(0);
+
     return
       Scaffold(
           drawer: Drawer(child: ListView(padding: EdgeInsets.zero ,children: <Widget>[
@@ -73,6 +98,10 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
             new ListTile(title: Text(tab2Text),onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => CmsPage()));}),
+
+            new ListTile(title: Text(tab3Text),onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => AboutAppPage()));}),
 
           ],),),
 
@@ -144,9 +173,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
 
 
-            IgnorePointer( child: Container(
-              color: Color.fromRGBO(0, 0, 50, 0.5),
-            )),
+            IgnorePointer( child: Container(color: Color.fromRGBO(0, 0, 50, 0.5),)),
 
 
 
@@ -155,11 +182,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
             //IgnorePointer( child :
             Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-              ArcChooser(onTextSelect: (String mainText) {
-                setState(() {
-                  choiceTitle = mainText;
-                });
-              }),
+              arcChooser,
             ],),
             //),
 
@@ -168,12 +191,15 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
             Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
 
               AnimatedContainer( duration: Duration(milliseconds: btnAnimationDuration),
-              width: allergeneBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
+              width: activatedBtnNumber>0?animatedBtnOpenSize:animatedBtnClosedSize,
               child: ButtonTheme(height: buttonHeight,
                 child: RaisedButton(onPressed: () {
-                  print(pollenBtnText);
+                  //print(pollenBtnText);
                   setState(() {
-                    allergeneBtnOpen=!allergeneBtnOpen;
+                    if(pollenBtnText.length!=0) {
+                      activatedBtnNumber = 0;
+                    }
+                    //allergeneBtnOpen=!allergeneBtnOpen;
                   });
                   //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                 },
@@ -190,12 +216,16 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
 
               AnimatedContainer( duration: Duration(milliseconds: btnAnimationDuration),
-                  width: pollenBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
+                  width: activatedBtnNumber>1?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      print(alimentsBtnText);
+                      //print(alimentsBtnText);
+
                       setState(() {
-                        pollenBtnOpen=!pollenBtnOpen;
+                        //pollenBtnOpen=!pollenBtnOpen;
+                        if(alimentsBtnText.length!=0) {
+                          activatedBtnNumber = 1;
+                        }
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
@@ -220,12 +250,15 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
 
               AnimatedContainer( duration: Duration(milliseconds: btnAnimationDuration),
-                  width: mFamilyBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
+                  width: activatedBtnNumber>2?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      print(mFamilyBtnText);
+                      //print(mFamilyBtnText);
                       setState(() {
-                        mFamilyBtnOpen=!mFamilyBtnOpen;
+                        if(mFamilyBtnText.length!=0) {
+                          activatedBtnNumber = 2;
+                        }
+                        //mFamilyBtnOpen=!mFamilyBtnOpen;
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
@@ -240,12 +273,15 @@ class _DemonstrationPageState extends State<DemonstrationPage> with TickerProvid
 
 
               AnimatedContainer( duration: Duration(milliseconds: btnAnimationDuration),
-                  width: mAllergeneBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
+                  width: activatedBtnNumber>3?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      print(mAllergeneBtnText);
+                      // print(mAllergeneBtnText);
                       setState(() {
-                        mAllergeneBtnOpen=!mAllergeneBtnOpen;
+                        if(mAllergeneBtnText.length!=0) {
+                          activatedBtnNumber = 3;
+                        }
+                        //mAllergeneBtnOpen=!mAllergeneBtnOpen;
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
