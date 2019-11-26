@@ -7,15 +7,7 @@ import 'package:allergensapp/Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../CmsPage.dart';
-
 class AllergenesTab extends StatefulWidget {
-  //var tabTitle;
-  //GlobalKey<_CmsPageState> cmsKey;
-
-
-  //AllergenesTab(this.cmsKey);
-
   @override
   _AllergenesTabState createState() => _AllergenesTabState();
 
@@ -24,14 +16,9 @@ class AllergenesTab extends StatefulWidget {
 
 class _AllergenesTabState extends State<AllergenesTab> {
 
-  //var tabTitle;
-  //GlobalKey<_CmsPageState> cmsKey;
-  //_AllergenesTabState(cmsKey);
 
   List<String> allergeneTypeList = ['Pollens', 'Aliments'];
   Future<List<Allergene>> allergeneList;
-
-
 
 
 
@@ -55,7 +42,6 @@ class _AllergenesTabState extends State<AllergenesTab> {
 
   @override
   Widget build(BuildContext context) {
-    //tabTitle();
 
     return Stack(
       children: <Widget>[

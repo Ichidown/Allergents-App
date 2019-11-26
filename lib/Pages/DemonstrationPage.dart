@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import '../arcChooser.dart';
 import 'CmsPage.dart';
-import 'AboutAppPage.dart';
 
 
 class DemonstrationPage extends StatefulWidget {
@@ -12,8 +11,7 @@ class DemonstrationPage extends StatefulWidget {
   _DemonstrationPageState createState() => _DemonstrationPageState();
 }
 
-class _DemonstrationPageState extends State<DemonstrationPage> with SingleTickerProviderStateMixin {
-  final GlobalKey<ChooserState> _arcChooserkey = GlobalKey();
+class _DemonstrationPageState extends State<DemonstrationPage> with TickerProviderStateMixin {
 
   final int btnAnimationDuration = 200;
   AnimationController buttonsAnimationCon;
@@ -31,20 +29,22 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
   final String drawerTabTitle = 'Database Management';
   final String tab1Text = 'Allergenes';
   final String tab2Text = 'CMS';
-  final String tab3Text = 'About App';
 
-  String choiceTitle = '';
+  String choiceTitle = 'Allergene Super Long Name';
 
   String pollenBtnText = '';
   String alimentsBtnText = '';
   String mFamilyBtnText = '';
   String mAllergeneBtnText = '';
 
+<<<<<<< HEAD
   int activatedBtnNumber= 0;
   ArcChooser arcChooser;
 
   int pollenId,alimentId,mFamilyId,mAllergeneId;
 
+=======
+>>>>>>> parent of 2f79fba... Database working properly
 
 
   List<Image> imageList = [
@@ -59,13 +59,17 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
 
   @override
   void initState() {
+    // TODO: implement initState
+    super.initState();
     buttonsAnimationCon = AnimationController(vsync: this,duration: Duration(microseconds: 300));
     btnAnimation = Tween(begin: 1.0, end: 0.5).animate(CurvedAnimation(parent: buttonsAnimationCon,curve: Curves.easeInOut));
-    super.initState();
+
+
   }
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
 
     arcChooser = ArcChooser( key: _arcChooserkey,
         onChoiceChange: (String text) {
@@ -104,6 +108,8 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
         });
     //_arcChooserkey.currentState.getAllergene(0);
 
+=======
+>>>>>>> parent of 2f79fba... Database working properly
     return
       Scaffold(
           drawer: Drawer(child: ListView(padding: EdgeInsets.zero ,children: <Widget>[
@@ -116,10 +122,6 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
             new ListTile(title: Text(tab2Text),onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => CmsPage()));}),
-
-            new ListTile(title: Text(tab3Text),onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => AboutAppPage()));}),
 
           ],),),
 
@@ -191,7 +193,9 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
 
 
 
-            IgnorePointer( child: Container(color: Color.fromRGBO(0, 0, 50, 0.5),)),
+            IgnorePointer( child: Container(
+              color: Color.fromRGBO(0, 0, 50, 0.5),
+            )),
 
 
 
@@ -200,7 +204,11 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
 
             //IgnorePointer( child :
             Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-              arcChooser,
+              ArcChooser(onTextSelect: (String mainText) {
+                setState(() {
+                  choiceTitle = mainText;
+                });
+              }),
             ],),
             //),
 
@@ -209,16 +217,20 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
             Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
 
               AnimatedContainer( duration: Duration(milliseconds: btnAnimationDuration),
-              width: activatedBtnNumber>0?animatedBtnOpenSize:animatedBtnClosedSize,
+              width: allergeneBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
               child: ButtonTheme(height: buttonHeight,
                 child: RaisedButton(onPressed: () {
-                  //print(pollenBtnText);
+                  print(pollenBtnText);
                   setState(() {
+<<<<<<< HEAD
                     if(pollenBtnText.length!=0) {
                       activatedBtnNumber = 0;
                       _arcChooserkey.currentState.setData(activatedBtnNumber, 0, 0);
                     }
                     //allergeneBtnOpen=!allergeneBtnOpen;
+=======
+                    allergeneBtnOpen=!allergeneBtnOpen;
+>>>>>>> parent of 2f79fba... Database working properly
                   });
                   //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                 },
@@ -235,17 +247,20 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
 
 
               AnimatedContainer( duration: Duration(milliseconds: btnAnimationDuration),
-                  width: activatedBtnNumber>1?animatedBtnOpenSize:animatedBtnClosedSize,
+                  width: pollenBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      //print(alimentsBtnText);
-
+                      print(alimentsBtnText);
                       setState(() {
+<<<<<<< HEAD
                         //pollenBtnOpen=!pollenBtnOpen;
                         if(alimentsBtnText.length!=0) {
                           activatedBtnNumber = 1;
                           _arcChooserkey.currentState.setData(activatedBtnNumber, 1, 0);
                         }
+=======
+                        pollenBtnOpen=!pollenBtnOpen;
+>>>>>>> parent of 2f79fba... Database working properly
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
@@ -270,16 +285,20 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
 
 
               AnimatedContainer( duration: Duration(milliseconds: btnAnimationDuration),
-                  width: activatedBtnNumber>2?animatedBtnOpenSize:animatedBtnClosedSize,
+                  width: mFamilyBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      //print(mFamilyBtnText);
+                      print(mFamilyBtnText);
                       setState(() {
+<<<<<<< HEAD
                         if(mFamilyBtnText.length!=0) {
                           activatedBtnNumber = 2;
                           _arcChooserkey.currentState.setData(activatedBtnNumber, pollenId, alimentId);
                         }
                         //mFamilyBtnOpen=!mFamilyBtnOpen;
+=======
+                        mFamilyBtnOpen=!mFamilyBtnOpen;
+>>>>>>> parent of 2f79fba... Database working properly
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
@@ -294,16 +313,20 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
 
 
               AnimatedContainer( duration: Duration(milliseconds: btnAnimationDuration),
-                  width: activatedBtnNumber>3?animatedBtnOpenSize:animatedBtnClosedSize,
+                  width: mAllergeneBtnOpen?animatedBtnOpenSize:animatedBtnClosedSize,
                   child: ButtonTheme(height: buttonHeight,
                     child: RaisedButton(onPressed: () {
-                      // print(mAllergeneBtnText);
+                      print(mAllergeneBtnText);
                       setState(() {
+<<<<<<< HEAD
                         if(mAllergeneBtnText.length!=0) {
                           activatedBtnNumber = 3;
                           _arcChooserkey.currentState.setData(activatedBtnNumber, mFamilyId, 0);
                         }
                         //mAllergeneBtnOpen=!mAllergeneBtnOpen;
+=======
+                        mAllergeneBtnOpen=!mAllergeneBtnOpen;
+>>>>>>> parent of 2f79fba... Database working properly
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
                     },
