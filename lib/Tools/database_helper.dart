@@ -1,5 +1,4 @@
 import 'dart:io';
-//import 'dart:typed_data';
 
 import 'package:allergensapp/Beings/Allergene.dart';
 import 'package:allergensapp/Beings/MAllergeneReaction.dart';
@@ -7,20 +6,11 @@ import 'package:allergensapp/Beings/MFamilyAllergene.dart';
 import 'package:allergensapp/Beings/MolecularAllergene.dart';
 import 'package:allergensapp/Beings/MolecularFamily.dart';
 import 'package:allergensapp/Beings/Reaction.dart';
-//import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DatabaseHelper {
-
-  // static final _databaseName = "AllergensDB.db";
-  // static final _databaseVersion = 1;
-
-  //static final table = 'my_table';
-  //static final columnId = '_id';
-  //static final columnName = 'name';
-  //static final columnAge = 'age';
 
   static final allergeneTable = 'Allergene';
   static final molecularFamilyTable = 'molecular_family';
@@ -30,9 +20,9 @@ class DatabaseHelper {
   static final molecularFamilyToAllergeneTable = 'molecular_family_Allergene_relational_link';
 
 
-  static final int databaseVersion = 1;
+  static final int databaseVersion = 2;
   static final String databaseQuery = '''
-  /*BEGIN TRANSACTION;*/
+  BEGIN TRANSACTION;
   CREATE TABLE IF NOT EXISTS "Allergene" (
   "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
   "name"	TEXT NOT NULL,
@@ -72,7 +62,7 @@ class DatabaseHelper {
   "name"	TEXT NOT NULL,
   "Allergene_id"	INTEGER NOT NULL
   );
-  /*COMMIT;*/
+  COMMIT;
   ''';
 
 
@@ -125,6 +115,7 @@ class DatabaseHelper {
 
     /** MOBILE **/
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    print(documentsDirectory.path);
     String path = join(documentsDirectory.path, "AllergensDB.db");
 
 
@@ -147,6 +138,14 @@ class DatabaseHelper {
     return await openDatabase(path, version: databaseVersion,
         onCreate: (Database db, int version) async {
       await db.execute(databaseQuery);
+
+      // Create the writable database file from the bundled demo database file:
+      /**ByteData data = await rootBundle.load("assets/AllergensDB.db");
+      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      await File(path).writeAsBytes(bytes);*/
+
+
+
     });
 
   }

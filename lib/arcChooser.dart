@@ -54,7 +54,9 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
   final dbHelper = DatabaseHelper.instance;
 
-   var colorLvl = [Colors.greenAccent,Colors.amberAccent,Colors.redAccent];
+  var colorLvl = [Colors.greenAccent,Colors.amberAccent,Colors.redAccent];
+
+  int choiceStagePosition=0, id1=0,id2 = 0;
 
 
 
@@ -82,7 +84,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     centerPoint = Offset(centerX, centerY);
 
     //getAllergene(0); // get pollens at the very start
-
+    getData();
 
     return GestureDetector(
       onTap: () {
@@ -177,26 +179,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   }
 
 
-/*
-  void getData(int dataSourceIdx, int id1, int id2){
-    switch(dataSourceIdx){
-      case 0:
-        getAllergene(0); // get allergenes input(0==pollens / 1==aliments)
-        break;
-      case 1:
-        getAllergene(1); // get allergenes input(0==pollens / 1==aliments)
-        break;
-      case 2:
-        getMolecularFamilies(1,2); // get molecular families input(allergeneId1 , allergeneId2)
-        break;
-      case 3:
-        getMolecularAllergenes(3); // get molecular allergenes input(mFamilyId)
-        break;
-      case 4:
-        getReactions(2); // get reactions input(mAllergeneId)
-        break;
-    }
-  }*/
+
 
 
   void getAllergene(int type){ // 0 == pollens, 1 == aliments
@@ -242,6 +225,35 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     angleInRadiansByTwo = angleInRadians / 2;
     refreshRouletteWheelRotation();
     if(arcItems.length>0) onChoiceChange(arcItems[currentPosition].text); // initial choice when started app / demonstration page
+  }
+
+  void setData(int choice, int id_1,int id_2){
+    choiceStagePosition = choice;
+    id1 = id_1;
+    id2 = id_2;
+    getData();
+  }
+
+
+
+  void getData(){
+    switch(choiceStagePosition){
+      case 0:
+        getAllergene(id1); // get allergenes input(0==pollens / 1==aliments)
+        break;
+      case 1:
+        getAllergene(id1); // get allergenes input(0==pollens / 1==aliments)
+        break;
+      case 2:
+        getMolecularFamilies(id1,id2); // get molecular families input(allergeneId1 , allergeneId2)
+        break;
+      case 3:
+        getMolecularAllergenes(id1); // get molecular allergenes input(mFamilyId)
+        break;
+      case 4:
+        getReactions(id1); // get reactions input(mAllergeneId)
+        break;
+    }
   }
 
 

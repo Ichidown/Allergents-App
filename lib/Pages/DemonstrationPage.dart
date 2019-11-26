@@ -43,6 +43,8 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
   int activatedBtnNumber= 0;
   ArcChooser arcChooser;
 
+  int pollenId,alimentId,mFamilyId,mAllergeneId;
+
 
 
   List<Image> imageList = [
@@ -77,10 +79,26 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
             setState(() {
               activatedBtnNumber++;
               switch(activatedBtnNumber){
-                case 1: pollenBtnText = choiceTitle;  print('XXXXXXXXXXXXXXX');_arcChooserkey.currentState.getAllergene(1); break;
-                case 2: alimentsBtnText = choiceTitle; break;
-                case 3: mFamilyBtnText = choiceTitle; break;
-                case 4: mAllergeneBtnText = choiceTitle; break;
+                case 1:
+                  pollenBtnText = choiceTitle;
+                  pollenId=currentPosition;
+                  _arcChooserkey.currentState.setData(activatedBtnNumber, currentPosition, 0);
+                  break;
+                case 2:
+                  alimentsBtnText = choiceTitle;
+                  alimentId=currentPosition;
+                  _arcChooserkey.currentState.setData(activatedBtnNumber, pollenId, alimentId);
+                  break;
+                case 3:
+                  mFamilyBtnText = choiceTitle;
+                  mFamilyId=currentPosition;
+                  _arcChooserkey.currentState.setData(activatedBtnNumber, mFamilyId, 0);
+                  break;
+                case 4:
+                  mAllergeneBtnText = choiceTitle;
+                  mAllergeneId=currentPosition;
+                  _arcChooserkey.currentState.setData(activatedBtnNumber, mAllergeneId, 0);
+                  break;
               }
             });
         });
@@ -198,6 +216,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                   setState(() {
                     if(pollenBtnText.length!=0) {
                       activatedBtnNumber = 0;
+                      _arcChooserkey.currentState.setData(activatedBtnNumber, 0, 0);
                     }
                     //allergeneBtnOpen=!allergeneBtnOpen;
                   });
@@ -225,6 +244,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                         //pollenBtnOpen=!pollenBtnOpen;
                         if(alimentsBtnText.length!=0) {
                           activatedBtnNumber = 1;
+                          _arcChooserkey.currentState.setData(activatedBtnNumber, 1, 0);
                         }
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
@@ -257,6 +277,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                       setState(() {
                         if(mFamilyBtnText.length!=0) {
                           activatedBtnNumber = 2;
+                          _arcChooserkey.currentState.setData(activatedBtnNumber, pollenId, alimentId);
                         }
                         //mFamilyBtnOpen=!mFamilyBtnOpen;
                       });
@@ -280,6 +301,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                       setState(() {
                         if(mAllergeneBtnText.length!=0) {
                           activatedBtnNumber = 3;
+                          _arcChooserkey.currentState.setData(activatedBtnNumber, mFamilyId, 0);
                         }
                         //mAllergeneBtnOpen=!mAllergeneBtnOpen;
                       });
