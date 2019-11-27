@@ -19,16 +19,11 @@ class CmsPage extends StatefulWidget {
 class _CmsPageState extends State<CmsPage> {
   static const String routeName = '/cms';
 
-
-
-
-
-
-
-
   List<Widget> tablist;
   int tabItemNumber;
-  String title = 'Content Manager System';//AllergenesTab().getTabTitle();
+  String title = 'Content Manager System';
+
+  _CmsPageState();//AllergenesTab().getTabTitle();
 
   @override
   void initState() {
@@ -42,7 +37,7 @@ class _CmsPageState extends State<CmsPage> {
       ReactionToMolecularAllergeneTab(),
     ];
     tabItemNumber = tablist.length;
-
+    super.initState();
   }
 
   @override
@@ -74,6 +69,10 @@ class _CmsPageState extends State<CmsPage> {
   }
 
 
+
+  void updateTitle(String newText){
+    setState(() {title = newText;});
+  }
 
 
 

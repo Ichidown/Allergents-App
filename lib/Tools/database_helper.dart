@@ -1,8 +1,5 @@
 import 'dart:io';
-<<<<<<< HEAD
-=======
-import 'dart:typed_data';
->>>>>>> parent of 2f79fba... Database working properly
+//import 'dart:typed_data';
 
 import 'package:allergensapp/Beings/Allergene.dart';
 import 'package:allergensapp/Beings/MAllergeneReaction.dart';
@@ -10,15 +7,20 @@ import 'package:allergensapp/Beings/MFamilyAllergene.dart';
 import 'package:allergensapp/Beings/MolecularAllergene.dart';
 import 'package:allergensapp/Beings/MolecularFamily.dart';
 import 'package:allergensapp/Beings/Reaction.dart';
-<<<<<<< HEAD
-=======
-import 'package:flutter/services.dart';
->>>>>>> parent of 2f79fba... Database working properly
+//import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DatabaseHelper {
+
+  // static final _databaseName = "AllergensDB.db";
+  // static final _databaseVersion = 1;
+
+  //static final table = 'my_table';
+  //static final columnId = '_id';
+  //static final columnName = 'name';
+  //static final columnAge = 'age';
 
   static final allergeneTable = 'Allergene';
   static final molecularFamilyTable = 'molecular_family';
@@ -28,9 +30,9 @@ class DatabaseHelper {
   static final molecularFamilyToAllergeneTable = 'molecular_family_Allergene_relational_link';
 
 
-  static final int databaseVersion = 2;
+  static final int databaseVersion = 1;
   static final String databaseQuery = '''
-  BEGIN TRANSACTION;
+  /*BEGIN TRANSACTION;*/
   CREATE TABLE IF NOT EXISTS "Allergene" (
   "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
   "name"	TEXT NOT NULL,
@@ -70,7 +72,7 @@ class DatabaseHelper {
   "name"	TEXT NOT NULL,
   "Allergene_id"	INTEGER NOT NULL
   );
-  COMMIT;
+  /*COMMIT;*/
   ''';
 
 
@@ -94,16 +96,16 @@ class DatabaseHelper {
 
 
 
-  Future<String> get _localPath async {
+  /*Future<String> get _localPath async {
     //final directory = await getApplicationDocumentsDirectory();
     return (await getApplicationDocumentsDirectory()).path;
-  }
+  }*/
 
 
-  Future<File> get _localFile async {
+  /*Future<File> get _localFile async {
     final path = await _localPath;
     return File('$path/AllergensDB.db');
-  }
+  }*/
 
 
 
@@ -123,17 +125,16 @@ class DatabaseHelper {
 
     /** MOBILE **/
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    print(documentsDirectory.path);
     String path = join(documentsDirectory.path, "AllergensDB.db");
 
 
   // !!!!!!!!!!!! SAVE IN DEVICE MEMORY !!!!!!!!!!!!!!
-    Directory tempDir = await getTemporaryDirectory();
-    String tempDirPath = join(tempDir.path, "AllergensDB.db");
+    //Directory tempDir = await getApplicationDocumentsDirectory();
+    /**String tempDirPath = join(tempDir.path, "AllergensDB.db");*/
     //print(tempDir.path);
 
     // Only copy if the database doesn't exist
-    if (FileSystemEntity.typeSync(tempDirPath) == FileSystemEntityType.notFound){
+    /**if (FileSystemEntity.typeSync(tempDirPath) == FileSystemEntityType.notFound){
 
       // Load database from asset and copy
       ByteData data = await rootBundle.load(join('assets', 'AllergensDB.db'));
@@ -141,26 +142,13 @@ class DatabaseHelper {
 
       // Save copied asset to documents
       await new File(path).writeAsBytes(bytes);
-<<<<<<< HEAD
     }*/
 
     return await openDatabase(path, version: databaseVersion,
         onCreate: (Database db, int version) async {
       await db.execute(databaseQuery);
-
-      // Create the writable database file from the bundled demo database file:
-      /**ByteData data = await rootBundle.load("assets/AllergensDB.db");
-      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-      await File(path).writeAsBytes(bytes);*/
-
-
-
     });
-=======
-    }
->>>>>>> parent of 2f79fba... Database working properly
 
-    return await openDatabase(path, version: databaseVersion, onCreate: _onCreate);
   }
 
 
@@ -170,9 +158,9 @@ class DatabaseHelper {
 
 
   // SQL code to create the database table (executed only if not found)
-  Future _onCreate(Database db, int version) async {
+  /**Future _onCreate(Database db, int version) async {
     await db.execute(databaseQuery);
-  }
+  }*/
   
   // All of the rows are returned as a list of maps, where each map is
   // a key-value list of columns.
@@ -233,6 +221,12 @@ class DatabaseHelper {
     return res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];
   }
 
+  Future<List<Allergene>> getAllergeneOfType(int type) async {
+    Database db = await instance.database;
+    var res = await db.query(allergeneTable, where: 'Allergene_type = $type');
+    return res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];
+  }
+
   Future<int> insertAllergene(Map<String, dynamic> row) async { return insertQuery(row, allergeneTable);}
   Future<int> updateAllergene(Map<String, dynamic> row) async { return updateQuery(row, allergeneTable);}
   Future<int> deleteAllergene(int id) async {
@@ -249,6 +243,12 @@ class DatabaseHelper {
   Future<List<MolecularFamily>> getMolecularFamilies() async {
     Database db = await instance.database;
     var res = await db.query(molecularFamilyTable);
+    return res.isNotEmpty ? res.map((c) => MolecularFamily.fromJson(c)).toList() : [];
+  }
+
+  Future<List<MolecularFamily>> getMolecularFamiliesOfAllergeneCombination(int allergeneId1,int allergeneId2) async {
+    Database db = await instance.database;
+    var res = await db.query(molecularFamilyTable, where: '$molecularFamilyTable.id in (SELECT molecular_family_id FROM $molecularFamilyToAllergeneTable WHERE $molecularFamilyToAllergeneTable.Allergene_1_id = $allergeneId1 AND $molecularFamilyToAllergeneTable.Allergene_2_id = $allergeneId2)');
     return res.isNotEmpty ? res.map((c) => MolecularFamily.fromJson(c)).toList() : [];
   }
 
@@ -272,6 +272,12 @@ class DatabaseHelper {
     return res.isNotEmpty ? res.map((c) => MolecularAllergene.fromJson(c)).toList() : [];
   }
 
+  Future<List<MolecularAllergene>> getMolecularAllergenesFromMFamily(int id) async {
+    Database db = await instance.database;
+    var res = await db.query(molecularAllergeneTable, where: 'molecular_family_id = $id');
+    return res.isNotEmpty ? res.map((c) => MolecularAllergene.fromJson(c)).toList() : [];
+  }
+
   Future<int> insertMolecularAllergene(Map<String, dynamic> row) async { return insertQuery(row, molecularAllergeneTable);}
   Future<int> updateMolecularAllergene(Map<String, dynamic> row) async { return updateQuery(row, molecularAllergeneTable);}
   Future<int> deleteMolecularAllergene(int id) async {
@@ -288,6 +294,12 @@ class DatabaseHelper {
   Future<List<Reaction>> getReactions() async {
     Database db = await instance.database;
     var res = await db.query(reactionTable);
+    return res.isNotEmpty ? res.map((c) => Reaction.fromJson(c)).toList() : [];
+  }
+
+  Future<List<Reaction>> getReactionsOfMolecularAllergenes(int mAllergeneId) async {
+    Database db = await instance.database;
+    var res = await db.query(reactionTable, where: '$reactionTable.id in (SELECT reaction_id FROM $reactionToMolecularAllergeneTable WHERE $reactionToMolecularAllergeneTable.molecular_Allergene_id = $mAllergeneId)');
     return res.isNotEmpty ? res.map((c) => Reaction.fromJson(c)).toList() : [];
   }
 

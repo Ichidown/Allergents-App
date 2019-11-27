@@ -94,8 +94,20 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
                                     children: <Widget>[
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.amberAccent,
+                                          color: Colors.grey[200],
                                           shape: BoxShape.circle,
+                                          /**boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey[600],
+                                              offset: const Offset(0.0, 0.0),
+                                            ),
+                                            BoxShadow(
+                                              color: Colors.black,
+                                              offset: const Offset(0.0, 0.0),
+                                              spreadRadius: -20.0,
+                                              blurRadius: 0.0,
+                                            ),
+                                          ],*/
                                         ),
                                         width: 50,
                                       ),
