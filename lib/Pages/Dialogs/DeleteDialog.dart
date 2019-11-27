@@ -8,8 +8,7 @@ class DeleteDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Container(margin: EdgeInsets.all(0),padding : EdgeInsets.all(0),alignment: Alignment.center, child:
-    SingleChildScrollView(child:
+    return Center(child: ListView(shrinkWrap: true, children:[
     AlertDialog(title: Text('Confirm Delete'),
       content:Column(children: <Widget>[
         Text(messageText),
@@ -25,7 +24,6 @@ class DeleteDialog extends StatelessWidget {
 
       ],
     ),
-    )
-    );
+    ],),);
   }
 }

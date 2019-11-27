@@ -43,13 +43,15 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
   int activatedBtnNumber= 0;
   ArcChooser arcChooser;
 
+  int pollenId,alimentId,mFamilyId,mAllergenId,reactionId;
+
+
 
 
   List<Image> imageList = [
     Image.asset('assets/images/india3_19.jpg'),
     Image.asset('assets/images/Aliments.jpg'),
     Image.asset('assets/images/1 cuTSPlTq0a_327iTPJyD-Q.png'),
-
   ];
   PageController imageViewController = PageController(initialPage: 1);
 
@@ -71,16 +73,16 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
             choiceTitle = text;
           });
         },
-        onChoiceSelected: (int currentPosition){
+        onChoiceSelected: (int itemId){
           //print(currentPosition);
           if(choiceTitle.length>0) // to block buttons interaction when no selectable element exist
             setState(() {
               activatedBtnNumber++;
               switch(activatedBtnNumber){
-                case 1: pollenBtnText = choiceTitle;  print('XXXXXXXXXXXXXXX');_arcChooserkey.currentState.getAllergene(1); break;
-                case 2: alimentsBtnText = choiceTitle; break;
-                case 3: mFamilyBtnText = choiceTitle; break;
-                case 4: mAllergeneBtnText = choiceTitle; break;
+                case 1: pollenBtnText = choiceTitle; pollenId=itemId;  _arcChooserkey.currentState.setData(activatedBtnNumber,1,0); break;
+                case 2: alimentsBtnText = choiceTitle; alimentId=itemId; _arcChooserkey.currentState.setData(activatedBtnNumber,pollenId,alimentId); break;
+                case 3: mFamilyBtnText = choiceTitle; mFamilyId=itemId; _arcChooserkey.currentState.setData(activatedBtnNumber,mFamilyId,0); break;
+                case 4: mAllergeneBtnText = choiceTitle; mAllergenId=itemId; _arcChooserkey.currentState.setData(activatedBtnNumber,mAllergenId,0); break;
               }
             });
         });
@@ -198,6 +200,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                   setState(() {
                     if(pollenBtnText.length!=0) {
                       activatedBtnNumber = 0;
+                      _arcChooserkey.currentState.setData(activatedBtnNumber,0,0);
                     }
                     //allergeneBtnOpen=!allergeneBtnOpen;
                   });
@@ -225,6 +228,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                         //pollenBtnOpen=!pollenBtnOpen;
                         if(alimentsBtnText.length!=0) {
                           activatedBtnNumber = 1;
+                          _arcChooserkey.currentState.setData(activatedBtnNumber,1,0);
                         }
                       });
                       //clicked?buttonsAnimationCon.forward():buttonsAnimationCon.reverse();
@@ -257,6 +261,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                       setState(() {
                         if(mFamilyBtnText.length!=0) {
                           activatedBtnNumber = 2;
+                          _arcChooserkey.currentState.setData(activatedBtnNumber,pollenId,alimentId);
                         }
                         //mFamilyBtnOpen=!mFamilyBtnOpen;
                       });
@@ -280,6 +285,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                       setState(() {
                         if(mAllergeneBtnText.length!=0) {
                           activatedBtnNumber = 3;
+                          _arcChooserkey.currentState.setData(activatedBtnNumber,mFamilyId,0);
                         }
                         //mAllergeneBtnOpen=!mAllergeneBtnOpen;
                       });

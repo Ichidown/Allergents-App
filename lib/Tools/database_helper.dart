@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'dart:io';
 //import 'dart:typed_data';
 
@@ -31,8 +32,60 @@ class DatabaseHelper {
 
 
   static final int databaseVersion = 1;
+
+  static final String allergeneTableCreation = '''
+  CREATE TABLE IF NOT EXISTS "Allergene" (
+  "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  "name"	TEXT NOT NULL,
+  "Allergene_type"	INTEGER NOT NULL,
+  "image"	BLOB,
+  "color"	TEXT NOT NULL
+  );''';
+
+  static final String mAllergeneReactionTableCreation = ''' CREATE TABLE IF NOT EXISTS "molecular_Allergene_reaction_relational_link" (
+  "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  "molecular_Allergene_id"	INTEGER NOT NULL,
+  "reaction_id"	INTEGER NOT NULL
+  );''';
+
+
+  static final String reactionTableCreation= '''CREATE TABLE "reaction" (
+	"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	"level"	INTEGER NOT NULL,
+	"adapted_treatment"	TEXT NOT NULL
+  );''';
+
+  static final String mAllergenTableCreation = '''CREATE TABLE "molecular_Allergene" (
+  "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  "name"	TEXT NOT NULL,
+  "molecular_family_id"	INTEGER NOT NULL,
+  "color"	TEXT NOT NULL
+  );''';
+
+  static final String mFamilyAllergenTableCreation = '''CREATE TABLE IF NOT EXISTS "molecular_family_Allergene_relational_link" (
+  "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  "Allergene_1_id"	INTEGER NOT NULL,
+  "Allergene_2_id"	INTEGER NOT NULL,
+  "molecular_family_id"	INTEGER NOT NULL
+  );''';
+
+  static final String mFamilyTableCreation = '''CREATE TABLE "molecular_family" (
+  "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  "name"	TEXT NOT NULL,
+  "color"	TEXT NOT NULL
+  );''';
+
+  static final String foodTableCreation = '''CREATE TABLE IF NOT EXISTS "food" (
+  "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+  "name"	TEXT NOT NULL,
+  "Allergene_id"	INTEGER NOT NULL
+  );''';
+
+
+
+
   static final String databaseQuery = '''
-  /*BEGIN TRANSACTION;*/
+  BEGIN TRANSACTION;
   CREATE TABLE IF NOT EXISTS "Allergene" (
   "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
   "name"	TEXT NOT NULL,
@@ -72,7 +125,7 @@ class DatabaseHelper {
   "name"	TEXT NOT NULL,
   "Allergene_id"	INTEGER NOT NULL
   );
-  /*COMMIT;*/
+  COMMIT;
   ''';
 
 
@@ -146,7 +199,13 @@ class DatabaseHelper {
 
     return await openDatabase(path, version: databaseVersion,
         onCreate: (Database db, int version) async {
-      await db.execute(databaseQuery);
+          await db.execute(allergeneTableCreation);
+          await db.execute(mAllergeneReactionTableCreation);
+          await db.execute(reactionTableCreation);
+          await db.execute(mAllergenTableCreation);
+          await db.execute(mFamilyAllergenTableCreation);
+          await db.execute(mFamilyTableCreation);
+          await db.execute(foodTableCreation);
     });
 
   }

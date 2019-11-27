@@ -41,9 +41,7 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(margin: EdgeInsets.all(0),padding : EdgeInsets.all(0),alignment: Alignment.center, child:
-
-    SingleChildScrollView(child:
+    return Center(child: ListView(shrinkWrap: true, children:[
     AlertDialog(title: Text(dialogTitle),
       content:Form( key: _formKey,
         child: Column(children: <Widget>[
@@ -98,8 +96,7 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
         },),
       ],
     ),
-    )
-    );
+    ],),);
   }
 
 

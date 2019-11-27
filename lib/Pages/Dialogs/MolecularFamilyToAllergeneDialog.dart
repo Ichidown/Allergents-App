@@ -50,9 +50,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
 
   @override
   Widget build(BuildContext context) {
-    return Container(margin: EdgeInsets.all(0),padding : EdgeInsets.all(0),alignment: Alignment.center, child:
-
-    SingleChildScrollView(child:
+    return Center(child: ListView(shrinkWrap: true, children:[
     AlertDialog(title: Text(mFamilyAllergene != null? dialogEditTitle : dialogInsertTitle),
       content:Form( key: _formKey,
         child: Column(children: <Widget>[
@@ -81,6 +79,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
                     items: snapshot.data.map((Allergene molecularAllergene) {
                       return DropdownMenuItem<Allergene>(child: Text(molecularAllergene.name), value:molecularAllergene);
                     }).toList(),
+                    validator: (value) { if (value == null) { return 'Please create an allergene first';} return null;},
                   );
                 }
                 return DropdownButtonFormField(items: null, onChanged: (newValue){},); //CircularProgressIndicator();
@@ -100,6 +99,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
                     items: snapshot.data.map((Allergene molecularAllergene) {
                       return DropdownMenuItem<Allergene>(child: Text(molecularAllergene.name), value:molecularAllergene);
                     }).toList(),
+                    validator: (value) { if (value == null) { return 'Please create an allergene first';} return null;},
                   );
                 }
                 return DropdownButtonFormField(items: null, onChanged: (newValue){},); //CircularProgressIndicator();
@@ -120,6 +120,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
                     items: snapshot.data.map((MolecularFamily reaction) {
                       return DropdownMenuItem<MolecularFamily>(child: Text(reaction.name), value:reaction);
                     }).toList(),
+                    validator: (value) { if (value == null) { return 'Please create a molecular family first';} return null;},
                   );
                 }
                 return DropdownButtonFormField(items: null, onChanged: (newValue){},); //CircularProgressIndicator();
@@ -148,8 +149,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
 
 
     ),
-    )
-    );
+    ],),);
   }
 
 

@@ -54,7 +54,10 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
   final dbHelper = DatabaseHelper.instance;
 
-   var colorLvl = [Colors.greenAccent,Colors.amberAccent,Colors.redAccent];
+  var colorLvl = [Colors.greenAccent,Colors.amberAccent,Colors.redAccent];
+
+  int currentDataChoiceLvl = 0;
+  int id1 = 0, id2 = 0;
 
 
 
@@ -82,7 +85,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     centerPoint = Offset(centerX, centerY);
 
     //getAllergene(0); // get pollens at the very start
-
+    getData();
 
     return GestureDetector(
       onTap: () {
@@ -242,6 +245,24 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     angleInRadiansByTwo = angleInRadians / 2;
     refreshRouletteWheelRotation();
     if(arcItems.length>0) onChoiceChange(arcItems[currentPosition].text); // initial choice when started app / demonstration page
+  }
+
+  void setData(int choiceLvl, int id1, int id2){
+    currentDataChoiceLvl = choiceLvl;
+    this.id1 = id1;
+    this.id2 = id2;
+    getData();
+  }
+
+
+  void getData(){
+    switch(currentDataChoiceLvl){
+      case 0: getAllergene(0); break;
+      case 1: getAllergene(1); break;
+      case 2: getMolecularFamilies(id1,id2); break;
+      case 3: getMolecularAllergenes(id1); break;
+      case 4: getReactions(id1); break;
+    }
   }
 
 

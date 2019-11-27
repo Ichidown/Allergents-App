@@ -48,9 +48,7 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
 
   @override
   Widget build(BuildContext context) {
-    return Container(margin: EdgeInsets.all(0),padding : EdgeInsets.all(0),alignment: Alignment.center, child:
-
-    SingleChildScrollView(child:
+    return Center(child: ListView(shrinkWrap: true, children:[
     AlertDialog(title: Text(dialogTitle),
       content:Form( key: _formKey,
         child: Column(children: <Widget>[
@@ -79,6 +77,7 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
                       items: snapshot.data.map((MolecularAllergene molecularAllergene) {
                       return DropdownMenuItem<MolecularAllergene>(child: Text(molecularAllergene.name), value:molecularAllergene);
                       }).toList(),
+                      validator: (value) { if (value == null) { return 'Please create a molecular allergene first';} return null;},
                       );
                 }
                 return DropdownButtonFormField(items: null, onChanged: (newValue){},); //CircularProgressIndicator();
@@ -99,6 +98,7 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
                     items: snapshot.data.map((Reaction reaction) {
                       return DropdownMenuItem<Reaction>(child: Text(reaction.adapted_treatment), value:reaction);
                     }).toList(),
+                    validator: (value) { if (value == null) { return 'Please create a reaction first';} return null;},
                   );
                 }
                 return DropdownButtonFormField(items: null, onChanged: (newValue){},); //CircularProgressIndicator();
@@ -126,8 +126,7 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
 
 
     ),
-    )
-    );
+    ],),);
   }
 
 
