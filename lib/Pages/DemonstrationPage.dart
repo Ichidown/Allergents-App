@@ -1,5 +1,5 @@
 
-import 'package:allergensapp/Pages/Dialogs/ConclusionDialog.dart';
+import '../Pages/Dialogs/ConclusionDialog.dart';
 import 'package:flutter/material.dart';
 import '../arcChooser.dart';
 import 'CmsPage.dart';

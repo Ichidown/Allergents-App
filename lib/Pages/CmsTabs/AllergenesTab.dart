@@ -1,9 +1,9 @@
-import 'package:allergensapp/Beings/Allergene.dart';
-import 'package:allergensapp/Pages/Dialogs/ColorPickerDialog.dart';
-import 'package:allergensapp/Pages/Dialogs/DeleteDialog.dart';
-import 'package:allergensapp/Pages/Dialogs/AllergeneDialog.dart';
-import 'package:allergensapp/Tools/UiTools.dart';
-import 'package:allergensapp/Tools/database_helper.dart';
+import '../../Beings/Allergene.dart';
+import '../../Pages/Dialogs/ColorPickerDialog.dart';
+import '../../Pages/Dialogs/DeleteDialog.dart';
+import '../../Pages/Dialogs/AllergeneDialog.dart';
+import '../../Tools/UiTools.dart';
+import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 

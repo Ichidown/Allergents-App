@@ -32,7 +32,7 @@ ListView(scrollDirection: Axis.horizontal,shrinkWrap: true,children: <Widget>[
 
     Card(elevation: 5,margin: EdgeInsets.all(10),child: Column(children: <Widget>[
         Padding(padding: EdgeInsets.all(10),child: Text('Developped By :', style: textStyle,),),
-        Flexible(child: Image(fit: BoxFit.cover,image: AssetImage('assets/images/ProfilePic-Cropped.png'))),
+        Flexible(child: Image(fit: BoxFit.cover,image: AssetImage('assets/images/Developer.jpg'))),
         Padding(padding: EdgeInsets.all(10),child: Column(children: <Widget>[
         Text('Mehemmai Mohammed Ridha', style: mainTextStyle,),
         SizedBox(height: 20),
@@ -46,7 +46,7 @@ ListView(scrollDirection: Axis.horizontal,shrinkWrap: true,children: <Widget>[
 
   Card(elevation: 5,margin: EdgeInsets.all(10),child: Column(children: <Widget>[
     Padding(padding: EdgeInsets.all(10),child: Text('In Collaboration With :', style: textStyle,),),
-    Flexible(child: Image(fit: BoxFit.cover,image: AssetImage('assets/images/Aliments.jpg'))),
+    Flexible(child: Image(fit: BoxFit.cover,image: AssetImage('assets/images/Owner.jpg'))),
     Padding(padding: EdgeInsets.all(10),child: Column(children: <Widget>[
       Text('Djemai Belaid', style: mainTextStyle,),
       SizedBox(height: 20),

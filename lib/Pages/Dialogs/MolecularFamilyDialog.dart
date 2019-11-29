@@ -1,4 +1,4 @@
-import 'package:allergensapp/Beings/MolecularFamily.dart';
+import '../../Beings/MolecularFamily.dart';
 import 'package:flutter/material.dart';
 
 

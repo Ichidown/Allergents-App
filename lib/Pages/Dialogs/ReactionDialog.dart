@@ -1,4 +1,4 @@
-import 'package:allergensapp/Beings/Reaction.dart';
+import '../../Beings/Reaction.dart';
 import 'package:flutter/material.dart';
 
 

@@ -27,7 +27,7 @@ class MyHomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 20.0
             ),),
-          image: new Image.network('assets/images/india3_19.jpg'),
+          image: new Image.network('assets/images/Developer.jpg'),
           backgroundColor: Colors.white,
           styleTextUnderTheLoader: new TextStyle(),
           photoSize: 100.0,

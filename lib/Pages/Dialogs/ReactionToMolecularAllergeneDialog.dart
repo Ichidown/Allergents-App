@@ -1,7 +1,7 @@
-import 'package:allergensapp/Beings/MAllergeneReaction.dart';
-import 'package:allergensapp/Beings/MolecularAllergene.dart';
-import 'package:allergensapp/Beings/Reaction.dart';
-import 'package:allergensapp/Tools/database_helper.dart';
+import '../../Beings/MAllergeneReaction.dart';
+import '../../Beings/MolecularAllergene.dart';
+import '../../Beings/Reaction.dart';
+import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 
 

@@ -1,12 +1,12 @@
 import 'dart:collection';
 
-import 'package:allergensapp/Beings/Allergene.dart';
-import 'package:allergensapp/Beings/MFamilyAllergene.dart';
-import 'package:allergensapp/Beings/MolecularFamily.dart';
-import 'package:allergensapp/Pages/Dialogs/DeleteDialog.dart';
-import 'package:allergensapp/Pages/Dialogs/MolecularFamilyToAllergeneDialog.dart';
-import 'package:allergensapp/Tools/UiTools.dart';
-import 'package:allergensapp/Tools/database_helper.dart';
+import '../../Beings/Allergene.dart';
+import '../../Beings/MFamilyAllergene.dart';
+import '../../Beings/MolecularFamily.dart';
+import '../../Pages/Dialogs/DeleteDialog.dart';
+import '../../Pages/Dialogs/MolecularFamilyToAllergeneDialog.dart';
+import '../../Tools/UiTools.dart';
+import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 

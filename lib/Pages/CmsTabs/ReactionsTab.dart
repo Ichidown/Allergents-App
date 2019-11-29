@@ -1,8 +1,8 @@
-import 'package:allergensapp/Beings/Reaction.dart';
-import 'package:allergensapp/Pages/Dialogs/DeleteDialog.dart';
-import 'package:allergensapp/Pages/Dialogs/ReactionDialog.dart';
-import 'package:allergensapp/Tools/UiTools.dart';
-import 'package:allergensapp/Tools/database_helper.dart';
+import '../../Beings/Reaction.dart';
+import '../../Pages/Dialogs/DeleteDialog.dart';
+import '../../Pages/Dialogs/ReactionDialog.dart';
+import '../../Tools/UiTools.dart';
+import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 

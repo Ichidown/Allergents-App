@@ -11,6 +11,7 @@ import 'package:allergensapp/Beings/Reaction.dart';
 import 'package:flutter/services.dart';
 //import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+//import 'package:simple_permissions/simple_permissions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -167,21 +168,23 @@ class DatabaseHelper {
 
 
 
+  /// Check a [permission] and return a [Future] with the result
+  /** static Future<bool> checkPermission(Permission permission) */
+
+
 
   // this opens the database (and creates it if it doesn't exist)
   _initDatabase() async {
 
-    // Construct a file path to copy database to
-    /** DESKTOP **/
-    /**var context = new p.Context(style: Style.platform);
-    String path = context.join('assets', 'AllergensDB.db');
-     OR just use this bellow (Not yet tested)
-    String path = p.join('assets', 'AllergensDB.db');
-    **/
+
 
     /** MOBILE **/
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "AllergensDB.db");
+    Directory documentsDirectory = await getExternalStorageDirectory();//getApplicationDocumentsDirectory();
+    //String path = '${documentsDirectory.path}/AstrolabData';//'/storage/emulated/0/AstrolabData';
+    //var testdir = await new Directory(path).create(recursive: true);
+
+
+    String path = '${documentsDirectory.path}/AllergensDB.db';//  join(documentsDirectory.path, "AllergensDB.db");
 
 
     // Check if the database exists

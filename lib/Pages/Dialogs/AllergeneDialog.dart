@@ -1,5 +1,5 @@
-import 'package:allergensapp/Beings/Allergene.dart';
-import 'package:allergensapp/Tools/database_helper.dart';
+import '../../Beings/Allergene.dart';
+import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 
 

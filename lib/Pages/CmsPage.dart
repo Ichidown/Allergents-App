@@ -1,6 +1,6 @@
 
-import 'package:allergensapp/Pages/CmsTabs/ReactionToMolecularAllergeneTab.dart';
-import 'package:allergensapp/Pages/CmsTabs/ReactionsTab.dart';
+import '../Pages/CmsTabs/ReactionToMolecularAllergeneTab.dart';
+import '../Pages/CmsTabs/ReactionsTab.dart';
 import 'package:flutter/material.dart';
 import 'CmsTabs/AllergenesTab.dart';
 import 'CmsTabs/MolecularAllergenesTab.dart';
