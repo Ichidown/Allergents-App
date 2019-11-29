@@ -19,6 +19,7 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
   final dbHelper = DatabaseHelper.instance;
   final _formKey = GlobalKey<FormState>();
   TextEditingController allergeneNameController = TextEditingController();
+  TextEditingController allergeneCrossGroupController = TextEditingController();
   static List<String> _typeList = ['Pollens', 'Aliments']; // Option 2
   String dialogTitle,_selectedType;
 
@@ -28,12 +29,15 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
     if(allergene != null){
       dialogTitle = 'Edit Allergene';
       allergeneNameController.text = allergene.name;
+      allergeneCrossGroupController.text = allergene.crossGroup;
       _selectedType = _typeList[allergene.allergeneType];
     } else{
       dialogTitle = 'New Allergene';
       allergeneNameController.text = '';
+      allergeneCrossGroupController.text = '';
       _selectedType = _typeList.first;
     }
+    super.initState();
   }
 
   @override
@@ -51,6 +55,9 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
               items: _typeList.map((location) { return DropdownMenuItem(child: new Text(location), value: location,);}).toList(),
             ),
 
+            TextFormField(controller:allergeneCrossGroupController, decoration: InputDecoration(labelText: 'Allergene Cross Group',)),
+
+
           ],),),
 
         actions: <Widget>[
@@ -58,7 +65,8 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
             if (_formKey.currentState.validate()) {
               Allergene tempAllergene = Allergene(allergene==null?0:allergene.id,
                   allergeneNameController.text,_typeList.indexOf(_selectedType),
-                  allergene==null?'0xff8e24aa':allergene.color);
+                  allergene==null?'0xff8e24aa':allergene.color,
+                  allergeneCrossGroupController.text);
               Navigator.of(context).pop(tempAllergene);
             }
           },),

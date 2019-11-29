@@ -8,6 +8,7 @@ import 'package:allergensapp/Beings/MFamilyAllergene.dart';
 import 'package:allergensapp/Beings/MolecularAllergene.dart';
 import 'package:allergensapp/Beings/MolecularFamily.dart';
 import 'package:allergensapp/Beings/Reaction.dart';
+import 'package:flutter/services.dart';
 //import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -39,7 +40,8 @@ class DatabaseHelper {
   "name"	TEXT NOT NULL,
   "Allergene_type"	INTEGER NOT NULL,
   "image"	BLOB,
-  "color"	TEXT NOT NULL
+  "color"	TEXT NOT NULL,
+  "cross_group"	TEXT
   );''';
 
   static final String mAllergeneReactionTableCreation = ''' CREATE TABLE IF NOT EXISTS "molecular_Allergene_reaction_relational_link" (
@@ -66,7 +68,8 @@ class DatabaseHelper {
   "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
   "Allergene_1_id"	INTEGER NOT NULL,
   "Allergene_2_id"	INTEGER NOT NULL,
-  "molecular_family_id"	INTEGER NOT NULL
+  "molecular_family_id"	INTEGER NOT NULL,
+  "occurrence_frequency"	INTEGER
   );''';
 
   static final String mFamilyTableCreation = '''CREATE TABLE "molecular_family" (
@@ -179,6 +182,27 @@ class DatabaseHelper {
     /** MOBILE **/
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "AllergensDB.db");
+
+
+    // Check if the database exists
+    var exists = await databaseExists(path);
+
+    // Make sure the parent directory exists
+    if (!exists) {
+      try {
+        await Directory(dirname(path)).create(recursive: true);
+      } catch (_) {}
+      // Copy from asset
+      ByteData data = await rootBundle.load(join("assets", "AllergensDB.db"));
+      List<int> bytes =
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+
+      // Write and flush the bytes written
+      await File(path).writeAsBytes(bytes, flush: true);
+    }
+
+    // open the database
+    return await openDatabase(path, readOnly: false);
 
 
   // !!!!!!!!!!!! SAVE IN DEVICE MEMORY !!!!!!!!!!!!!!
@@ -307,7 +331,9 @@ class DatabaseHelper {
 
   Future<List<MolecularFamily>> getMolecularFamiliesOfAllergeneCombination(int allergeneId1,int allergeneId2) async {
     Database db = await instance.database;
-    var res = await db.query(molecularFamilyTable, where: '$molecularFamilyTable.id in (SELECT molecular_family_id FROM $molecularFamilyToAllergeneTable WHERE $molecularFamilyToAllergeneTable.Allergene_1_id = $allergeneId1 AND $molecularFamilyToAllergeneTable.Allergene_2_id = $allergeneId2)');
+    //var res = await db.query(molecularFamilyTable, where: '$molecularFamilyTable.id in (SELECT molecular_family_id FROM $molecularFamilyToAllergeneTable WHERE $molecularFamilyToAllergeneTable.Allergene_1_id = $allergeneId1 AND $molecularFamilyToAllergeneTable.Allergene_2_id = $allergeneId2)');
+    var res = await db.rawQuery("SELECT $molecularFamilyTable.id,name,color,occurrence_frequency FROM $molecularFamilyTable JOIN $molecularFamilyToAllergeneTable ON $molecularFamilyTable.id = $molecularFamilyToAllergeneTable.molecular_family_id"
+        " WHERE $molecularFamilyTable.id in (SELECT molecular_family_id FROM $molecularFamilyToAllergeneTable WHERE $molecularFamilyToAllergeneTable.Allergene_1_id = $allergeneId1 AND $molecularFamilyToAllergeneTable.Allergene_2_id = $allergeneId2)");
     return res.isNotEmpty ? res.map((c) => MolecularFamily.fromJson(c)).toList() : [];
   }
 

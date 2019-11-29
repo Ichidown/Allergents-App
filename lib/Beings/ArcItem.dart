@@ -5,6 +5,7 @@ class ArcItem {
   Color color;
   double startAngle;
   int id;
+  String detail;
 
-  ArcItem(this.text, this.color,this.id /*this.startAngle*/);
+  ArcItem(this.text, this.color,this.id,this.detail /*this.startAngle*/);
 }

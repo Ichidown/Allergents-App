@@ -10,11 +10,11 @@ import 'package:flutter/rendering.dart';
 import '../CmsPage.dart';
 
 class AllergenesTab extends StatefulWidget {
-  //var tabTitle;
+  //var setTabTitle;
   //GlobalKey<_CmsPageState> cmsKey;
 
 
-  //AllergenesTab(this.cmsKey);
+  //AllergenesTab({this.setTabTitle});
 
   @override
   _AllergenesTabState createState() => _AllergenesTabState();
@@ -25,8 +25,9 @@ class AllergenesTab extends StatefulWidget {
 class _AllergenesTabState extends State<AllergenesTab> {
 
   //var tabTitle;
+  //var setTabTitle;
   //GlobalKey<_CmsPageState> cmsKey;
-  //_AllergenesTabState(cmsKey);
+  //_AllergenesTabState(this.setTabTitle);
 
   List<String> allergeneTypeList = ['Pollens', 'Aliments'];
   Future<List<Allergene>> allergeneList;
@@ -56,6 +57,9 @@ class _AllergenesTabState extends State<AllergenesTab> {
   @override
   Widget build(BuildContext context) {
     //tabTitle();
+
+    //print('Allergene Tab');
+    //setTabTitle('Allergene Tab');
 
     return Stack(
       children: <Widget>[

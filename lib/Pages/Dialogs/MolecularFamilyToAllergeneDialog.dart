@@ -3,12 +3,14 @@ import 'package:allergensapp/Beings/MFamilyAllergene.dart';
 import 'package:allergensapp/Beings/MolecularFamily.dart';
 import 'package:allergensapp/Tools/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class MolecularFamilyToAllergeneDialog extends StatefulWidget {
   Future<List<Allergene>> allergeneList;
   Future<List<MolecularFamily>> molecularFamilyList;
   MFamilyAllergene mFamilyAllergene;
+
   MolecularFamilyToAllergeneDialog(this.mFamilyAllergene, this.allergeneList, this.molecularFamilyList);
 
   @override
@@ -19,6 +21,7 @@ class MolecularFamilyToAllergeneDialog extends StatefulWidget {
 class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAllergeneDialog> {
   Future<List<Allergene>> allergeneList;
   Future<List<MolecularFamily>> molecularFamilyList;
+  TextEditingController occurrenceFrequencyController = TextEditingController();
 
   MFamilyAllergene mFamilyAllergene;
   _MolecularFamilyToAllergeneDialogState(this.mFamilyAllergene, this.allergeneList, this.molecularFamilyList);
@@ -47,6 +50,16 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
     }
     // molecularAllergeneList = dbHelper.getMolecularAllergenes();
   }*/
+
+  @override
+  void initState() {
+    if(mFamilyAllergene != null)
+      occurrenceFrequencyController.text = mFamilyAllergene.occurrenceFrequency.toString();
+    else
+      occurrenceFrequencyController.text = '';
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +139,11 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
                 return DropdownButtonFormField(items: null, onChanged: (newValue){},); //CircularProgressIndicator();
               }),
 
+
+
+          TextFormField(controller:occurrenceFrequencyController, decoration: InputDecoration(labelText: 'Occurrence Frequency',),
+              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],keyboardType: TextInputType.number),
+
         ],),),
 
       actions: <Widget>[
@@ -135,7 +153,8 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
                 mFamilyAllergene==null?0:mFamilyAllergene.id,
                 _selectedAllergene_1.id,
                 _selectedAllergene_2.id,
-                _selectedMolecularFamily.id);
+                _selectedMolecularFamily.id,
+                occurrenceFrequencyController.text==''?-1:int.parse(occurrenceFrequencyController.text));
             Navigator.of(context).pop(tempMFamilyAllergene);
           }
         },),

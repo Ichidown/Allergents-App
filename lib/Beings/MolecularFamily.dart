@@ -5,8 +5,9 @@ class MolecularFamily {
   int id;
   String name;
   String color;
+  int occurrenceFrequency;
 
-  MolecularFamily(this.id, this.name, this.color);
+  MolecularFamily(this.id, this.name, this.color, this.occurrenceFrequency);
 
 
   MolecularFamily molecularFamilyFromJson(String str) {
@@ -15,7 +16,7 @@ class MolecularFamily {
   }
 
   factory MolecularFamily.fromJson(Map<String, dynamic> json){
-    return new MolecularFamily(json["id"],json["name"],json["color"]);
+    return new MolecularFamily(json["id"],json["name"],json["color"],json["occurrence_frequency"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -23,6 +24,7 @@ class MolecularFamily {
       'id': id,
       'name': name,
       'color':color,
+      //'occurrence_frequency':occurrenceFrequency,
     };
   }
 
@@ -30,6 +32,7 @@ class MolecularFamily {
     return {
       'name': name,
       'color':color,
+      //'occurrence_frequency':occurrenceFrequency,
     };
   }
 }

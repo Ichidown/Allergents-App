@@ -6,9 +6,10 @@ class Allergene {
   String name;
   int allergeneType;
   String color;
+  String crossGroup;
   // image
 
-  Allergene(this.id, this.name, this.allergeneType,this.color);
+  Allergene(this.id, this.name, this.allergeneType,this.color,this.crossGroup);
 
 
   Allergene allergeneFromJson(String str) {
@@ -17,7 +18,7 @@ class Allergene {
   }
 
   factory Allergene.fromJson(Map<String, dynamic> json){
-    return new Allergene(json["id"],json["name"],json["Allergene_type"],json["color"]);
+    return new Allergene(json["id"],json["name"],json["Allergene_type"],json["color"],json["cross_group"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -26,6 +27,7 @@ class Allergene {
       'name': name,
       'Allergene_type': allergeneType,
       'color':color,
+      'cross_group':crossGroup,
     };
   }
 
@@ -34,6 +36,7 @@ class Allergene {
       'name': name,
       'Allergene_type': allergeneType,
       'color':color,
+      'cross_group':crossGroup,
     };
   }
 }

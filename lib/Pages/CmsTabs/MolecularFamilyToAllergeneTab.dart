@@ -110,7 +110,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
                                     ]),
 
                                 title: Text('${allergeneListHash[snapshot.data[i].allergeneID1]} + ${allergeneListHash[snapshot.data[i].allergeneID2]}'),
-                                subtitle: Text(molecularFamilyListHash[snapshot.data[i].molecularFamilyID]),
+                                subtitle: Text("${molecularFamilyListHash[snapshot.data[i].molecularFamilyID]}  (${snapshot.data[i].occurrenceFrequency==-1?'Unknown':snapshot.data[i].occurrenceFrequency}%)"),
                                 trailing:
 
                                 GestureDetector(

@@ -18,6 +18,7 @@ class CmsPage extends StatefulWidget {
 
 class _CmsPageState extends State<CmsPage> {
   static const String routeName = '/cms';
+  TextStyle tabTextStyle = new TextStyle(fontSize: 9);
 
   List<Widget> tablist;
   int tabItemNumber;
@@ -47,14 +48,14 @@ class _CmsPageState extends State<CmsPage> {
       child: Scaffold( backgroundColor: Colors.grey[200],
         appBar: PreferredSize( preferredSize: Size.fromHeight(90.0),
           child : AppBar(
-            bottom: TabBar(
+            bottom: TabBar(labelPadding: EdgeInsets.all(2),
               tabs: [
-                Tab(icon: Icon(Icons.directions_car)),//,text: 'Allergenes',),
-                Tab(icon: Icon(Icons.directions_transit)),//,text: 'Molecular families'),
-                Tab(icon: Icon(Icons.directions_bike)),//,text: 'Molecular allergens'),
-                Tab(icon: Icon(Icons.airline_seat_flat_angled)),//,text: 'Adapted treatment'),
-                Tab(icon: Icon(Icons.extension)),//,text: 'Molecular families X Allergenes'),
-                Tab(icon: Icon(Icons.ac_unit)),//,text: 'Molecular allergene X reaction'),
+                Tab(child: Text('Allergenes',style: tabTextStyle,)),
+                Tab(child: Text('Molecular families',style: tabTextStyle,)),
+                Tab(child: Text('Molecular allergens',style: tabTextStyle,)),
+                Tab(child: Text('Adapted treatment',style: tabTextStyle,)),
+                Tab(child: Text('Molecular families / Allergenes',style: tabTextStyle,)),
+                Tab(child: Text('Molecular allergene / Reaction',style: tabTextStyle,)),
               ],
             ),
             title: Text(title),

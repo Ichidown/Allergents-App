@@ -6,9 +6,10 @@ class MFamilyAllergene {
   int allergeneID1;
   int allergeneID2;
   int molecularFamilyID;
+  int occurrenceFrequency;
 
 
-  MFamilyAllergene(this.id, this.allergeneID1, this.allergeneID2, this.molecularFamilyID);
+  MFamilyAllergene(this.id, this.allergeneID1, this.allergeneID2, this.molecularFamilyID,this.occurrenceFrequency);
 
   MFamilyAllergene mFamilyAllergeneFromJson(String str) {
     final jsonData = json.decode(str);
@@ -16,7 +17,7 @@ class MFamilyAllergene {
   }
 
   factory MFamilyAllergene.fromJson(Map<String, dynamic> json){
-    return new MFamilyAllergene(json["id"],json["Allergene_1_id"],json["Allergene_2_id"],json["molecular_family_id"]);
+    return new MFamilyAllergene(json["id"],json["Allergene_1_id"],json["Allergene_2_id"],json["molecular_family_id"],json['occurrence_frequency']);
   }
 
   Map<String, dynamic> toJson() {
@@ -25,6 +26,7 @@ class MFamilyAllergene {
       'Allergene_1_id': allergeneID1,
       'Allergene_2_id': allergeneID2,
       'molecular_family_id': molecularFamilyID,
+      'occurrence_frequency':occurrenceFrequency,
     };
   }
 
@@ -33,6 +35,7 @@ class MFamilyAllergene {
       'Allergene_1_id': allergeneID1,
       'Allergene_2_id': allergeneID2,
       'molecular_family_id': molecularFamilyID,
+      'occurrence_frequency':occurrenceFrequency,
     };
   }
 }

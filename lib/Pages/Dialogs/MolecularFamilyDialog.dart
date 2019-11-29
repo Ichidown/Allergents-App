@@ -48,7 +48,7 @@ class _MolecularFamilyDialogState extends State<MolecularFamilyDialog> {
           if (_formKey.currentState.validate()) {
             MolecularFamily tempAllergene = MolecularFamily(molecularFamily==null?0:molecularFamily.id,
                 molecularFamilyController.text,
-                molecularFamily==null?'0xff42a5f5':molecularFamily.color);
+                molecularFamily==null?'0xff42a5f5':molecularFamily.color,0);
             Navigator.of(context).pop(tempAllergene);
           }
         },),

@@ -8,18 +8,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class MolecularFamiliesTab extends StatefulWidget {
+  //var setTabTitle;
+  //MolecularFamiliesTab({this.setTabTitle});
   @override
   _MolecularFamiliesTabState createState() => _MolecularFamiliesTabState();
 }
 
 class _MolecularFamiliesTabState extends State<MolecularFamiliesTab> {
   Future<List<MolecularFamily>> molecularFamilyList;
+  //var setTabTitle;
 
   final dbHelper = DatabaseHelper.instance;
   final String deleateMsg = 'Are you sure you want to deleate this molecular family ?';
 
+  //_MolecularFamiliesTabState(this.setTabTitle);
+
+
   @override
   Widget build(BuildContext context) {
+
+    //print('Mollecular families Tab');
+    //setTabTitle('Allergene Tab');
 
     return Stack(
       children: <Widget>[

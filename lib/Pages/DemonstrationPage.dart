@@ -1,4 +1,5 @@
 
+import 'package:allergensapp/Pages/Dialogs/ConclusionDialog.dart';
 import 'package:flutter/material.dart';
 import '../arcChooser.dart';
 import 'CmsPage.dart';
@@ -34,6 +35,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
   final String tab3Text = 'About App';
 
   String choiceTitle = '';
+  String choiceSubTitle = '';
 
   String pollenBtnText = '';
   String alimentsBtnText = '';
@@ -68,22 +70,25 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
   Widget build(BuildContext context) {
 
     arcChooser = ArcChooser( key: _arcChooserkey,
-        onChoiceChange: (String text) {
+        onChoiceChange: (String text, String detail) {
           setState(() {
             choiceTitle = text;
+            choiceSubTitle = detail;
           });
         },
         onChoiceSelected: (int itemId){
-          //print(currentPosition);
           if(choiceTitle.length>0) // to block buttons interaction when no selectable element exist
             setState(() {
-              activatedBtnNumber++;
+              if(activatedBtnNumber<5)activatedBtnNumber++;
               switch(activatedBtnNumber){
                 case 1: pollenBtnText = choiceTitle; pollenId=itemId;  _arcChooserkey.currentState.setData(activatedBtnNumber,1,0); break;
                 case 2: alimentsBtnText = choiceTitle; alimentId=itemId; _arcChooserkey.currentState.setData(activatedBtnNumber,pollenId,alimentId); break;
                 case 3: mFamilyBtnText = choiceTitle; mFamilyId=itemId; _arcChooserkey.currentState.setData(activatedBtnNumber,mFamilyId,0); break;
                 case 4: mAllergeneBtnText = choiceTitle; mAllergenId=itemId; _arcChooserkey.currentState.setData(activatedBtnNumber,mAllergenId,0); break;
+                case 5: showDialog(context: context, builder: (context) {
+                  return ConclusionDialog();}).then((onValue) {});
               }
+
             });
         });
     //_arcChooserkey.currentState.getAllergene(0);
@@ -327,9 +332,15 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                 Container( alignment: Alignment.topCenter, padding: EdgeInsets.all(10),
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  child:
-                  Text(choiceTitle,textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white,fontSize: 30)),
+                  child: Column(children: <Widget>[
+                    Text(choiceTitle,textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.white,fontSize: 30)),
+
+                    Text(choiceSubTitle,textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey[300],fontSize: 16)),
+                  ],)
+
+
                 ),
               )
 
@@ -390,11 +401,11 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
   }
 
 
-  void updateTitle(String newText){
+  /*void updateTitle(String newText){
     setState(() {
       choiceTitle = newText;
     });
-  }
+  }*/
 
   /*AnimatedBuilder imageSlider(int index){
     return AnimatedBuilder(

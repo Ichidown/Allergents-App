@@ -153,7 +153,8 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
         }
         animation.forward(from: 0.0);
         if (arcItems.length > 0)
-          onChoiceChange(arcItems[currentPosition].text); // update DemonstrationPage main choice text
+          onChoiceChange(arcItems[currentPosition].text,arcItems[currentPosition].detail); // update DemonstrationPage main choice text
+        else onChoiceChange('','');
       },
 
 
@@ -205,7 +206,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   void getAllergene(int type){ // 0 == pollens, 1 == aliments
     dbHelper.getAllergeneOfType(type).then((result) {
       setState(() {
-        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id)).toList() : List<ArcItem>();
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id,c.crossGroup)).toList() : List<ArcItem>();
       });
       refreshRouletteWheelData();
     });
@@ -215,7 +216,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   void getMolecularFamilies(int allergeneId1,int allergeneId2){ // 0 == pollens, 1 == aliments
     dbHelper.getMolecularFamiliesOfAllergeneCombination(allergeneId1,allergeneId2).then((result) {
       setState(() {
-        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id)).toList() : List<ArcItem>();
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id, c.occurrenceFrequency==-1?'Unknown%':"(${c.occurrenceFrequency}%)")).toList() : List<ArcItem>();
       });
       refreshRouletteWheelData();
     });
@@ -225,7 +226,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   void getMolecularAllergenes(int mFamilyId){ // 0 == pollens, 1 == aliments
     dbHelper.getMolecularAllergenesFromMFamily(mFamilyId).then((result) {
       setState(() {
-        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id)).toList() : List<ArcItem>();
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id,'')).toList() : List<ArcItem>();
       });
       refreshRouletteWheelData();
     });
@@ -234,7 +235,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   void getReactions(int mAllergeneId){ // 0 == pollens, 1 == aliments
     dbHelper.getReactionsOfMolecularAllergenes(mAllergeneId).then((result) {
       setState(() {
-        arcItems = result.length>0 ? result.map((c) => ArcItem(c.adapted_treatment,colorLvl[c.level],c.id)).toList() : List<ArcItem>();
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.adapted_treatment,colorLvl[c.level],c.id,'')).toList() : List<ArcItem>();
       });
       refreshRouletteWheelData();
     });
@@ -244,7 +245,8 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     angleInRadians = GeneralTools.degreeToRadians(arcItems.length>0? 360 / arcItems.length:0);
     angleInRadiansByTwo = angleInRadians / 2;
     refreshRouletteWheelRotation();
-    if(arcItems.length>0) onChoiceChange(arcItems[currentPosition].text); // initial choice when started app / demonstration page
+    if(arcItems.length>0) onChoiceChange(arcItems[currentPosition].text,arcItems[currentPosition].detail); // initial choice when started app / demonstration page
+    else onChoiceChange('','');
   }
 
   void setData(int choiceLvl, int id1, int id2){
