@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class ArcItem {
@@ -6,6 +8,7 @@ class ArcItem {
   double startAngle;
   int id;
   String detail;
+  Uint8List image;
 
-  ArcItem(this.text, this.color,this.id,this.detail /*this.startAngle*/);
+  ArcItem(this.text, this.color,this.id,this.detail,this.image);
 }

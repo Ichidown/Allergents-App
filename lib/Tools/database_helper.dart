@@ -308,6 +308,7 @@ class DatabaseHelper {
   }
 
   Future<List<Allergene>> getAllergeneOfType(int type) async {
+    print('Allergens List');
     Database db = await instance.database;
     var res = await db.query(allergeneTable, where: 'Allergene_type = $type');
     return res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];

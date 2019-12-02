@@ -1,6 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:allergensapp/Tools/GeneralTools.dart';
+
 import '../../Beings/Allergene.dart';
 import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 
 class AllergeneDialog extends StatefulWidget {
@@ -15,6 +22,8 @@ class AllergeneDialog extends StatefulWidget {
 class _AllergeneDialogState extends State<AllergeneDialog> {
   Allergene allergene;
   _AllergeneDialogState(this.allergene);
+  ImageProvider _image;
+  Uint8List _imageBytes;
 
   final dbHelper = DatabaseHelper.instance;
   final _formKey = GlobalKey<FormState>();
@@ -31,11 +40,13 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
       allergeneNameController.text = allergene.name;
       allergeneCrossGroupController.text = allergene.crossGroup;
       _selectedType = _typeList[allergene.allergeneType];
+      _image = allergene.image!=null?MemoryImage(allergene.image):AssetImage('assets/images/NewImage.png');
     } else{
       dialogTitle = 'New Allergene';
       allergeneNameController.text = '';
       allergeneCrossGroupController.text = '';
       _selectedType = _typeList.first;
+      _image = AssetImage('assets/images/NewImage.png');
     }
     super.initState();
   }
@@ -57,6 +68,25 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
 
             TextFormField(controller:allergeneCrossGroupController, decoration: InputDecoration(labelText: 'Allergene Cross Group',)),
 
+            //Tooltip(message: 'Pick an Image',child:
+            GestureDetector(child: SizedBox(width: 200,height: 150,child:
+            /*Image(image: _image,)*/
+            Container( margin: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: _image,
+                  fit: BoxFit.cover,
+                )
+
+              ))
+              ,),
+              onTap: (){
+              pickImage();
+              },)
+            //),
+
+
+
 
           ],),),
 
@@ -66,7 +96,8 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
               Allergene tempAllergene = Allergene(allergene==null?0:allergene.id,
                   allergeneNameController.text,_typeList.indexOf(_selectedType),
                   allergene==null?'0xff8e24aa':allergene.color,
-                  allergeneCrossGroupController.text);
+                  allergeneCrossGroupController.text,
+                  _imageBytes);
               Navigator.of(context).pop(tempAllergene);
             }
           },),
@@ -77,6 +108,20 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
         ],
       ),
     ],),);
+  }
+
+
+  Future pickImage() async {
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    //image.readAsBytesSync();
+    //_imageBytes = GeneralTools.base64String(image.readAsBytesSync());
+
+    if (image!=null)
+      //_imageBytes = image.readAsBytesSync();
+      _imageBytes = GeneralTools.dataFromBase64String(GeneralTools.base64String(image.readAsBytesSync()));
+      setState(() {
+        _image = FileImage(image);//Image.memory(image.readAsBytesSync());
+      });
   }
 
 }

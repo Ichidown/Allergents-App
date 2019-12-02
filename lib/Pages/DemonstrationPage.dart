@@ -1,4 +1,6 @@
 
+import 'dart:typed_data';
+
 import '../Pages/Dialogs/ConclusionDialog.dart';
 import 'package:flutter/material.dart';
 import '../arcChooser.dart';
@@ -47,15 +49,9 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
 
   int pollenId,alimentId,mFamilyId,mAllergenId,reactionId;
 
-
-
-
-  List<Image> imageList = [
-    Image.asset('assets/images/india3_19.jpg'),
-    Image.asset('assets/images/Aliments.jpg'),
-    Image.asset('assets/images/1 cuTSPlTq0a_327iTPJyD-Q.png'),
-  ];
   PageController imageViewController = PageController(initialPage: 1);
+
+  ImageProvider bgImage;
 
 
 
@@ -63,6 +59,8 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
   void initState() {
     buttonsAnimationCon = AnimationController(vsync: this,duration: Duration(microseconds: 300));
     btnAnimation = Tween(begin: 1.0, end: 0.5).animate(CurvedAnimation(parent: buttonsAnimationCon,curve: Curves.easeInOut));
+    bgImage = AssetImage("assets/images/i89767-.jpg");
+
     super.initState();
   }
 
@@ -70,10 +68,16 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
   Widget build(BuildContext context) {
 
     arcChooser = ArcChooser( key: _arcChooserkey,
-        onChoiceChange: (String text, String detail) {
+        onChoiceChange: (String text, String detail, Uint8List image) {
           setState(() {
             choiceTitle = text;
             choiceSubTitle = detail;
+
+            //if (activatedBtnNumber<1){
+              if(image!=null) bgImage = MemoryImage(image);
+              else bgImage = AssetImage("assets/images/i89767-.jpg");
+            //}
+
           });
         },
         onChoiceSelected: (int itemId){
@@ -129,7 +133,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
 
             Container(
               decoration: BoxDecoration(
-                image: DecorationImage( image: AssetImage("assets/images/i89767-.jpg"), fit: BoxFit.cover,),
+                image: DecorationImage( image: bgImage, fit: BoxFit.cover,),
               ),
             //child: imageList[0],
             ),

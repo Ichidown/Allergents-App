@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 class Allergene {
   int id;
@@ -7,9 +8,9 @@ class Allergene {
   int allergeneType;
   String color;
   String crossGroup;
-  // image
+  Uint8List image;
 
-  Allergene(this.id, this.name, this.allergeneType,this.color,this.crossGroup);
+  Allergene(this.id, this.name, this.allergeneType,this.color,this.crossGroup, this.image);
 
 
   Allergene allergeneFromJson(String str) {
@@ -18,7 +19,7 @@ class Allergene {
   }
 
   factory Allergene.fromJson(Map<String, dynamic> json){
-    return new Allergene(json["id"],json["name"],json["Allergene_type"],json["color"],json["cross_group"]);
+    return new Allergene(json["id"],json["name"],json["Allergene_type"],json["color"],json["cross_group"],json["image"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -28,6 +29,7 @@ class Allergene {
       'Allergene_type': allergeneType,
       'color':color,
       'cross_group':crossGroup,
+      'image':image,
     };
   }
 
@@ -37,6 +39,7 @@ class Allergene {
       'Allergene_type': allergeneType,
       'color':color,
       'cross_group':crossGroup,
+      'image':image,
     };
   }
 }
