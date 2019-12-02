@@ -30,29 +30,34 @@ ListView(scrollDirection: Axis.horizontal,shrinkWrap: true,children: <Widget>[
 
 
 
-    Card(elevation: 5,margin: EdgeInsets.all(10),child: Column(children: <Widget>[
+    Card(elevation: 5,margin: EdgeInsets.all(20),child: Column(children: <Widget>[
         Padding(padding: EdgeInsets.all(10),child: Text('Developped By :', style: textStyle,),),
         Flexible(child: Image(fit: BoxFit.cover,image: AssetImage('assets/images/Developer.jpg'))),
         Padding(padding: EdgeInsets.all(10),child: Column(children: <Widget>[
-        Text('Mehemmai Mohammed Ridha', style: mainTextStyle,),
+        //Text('Mehemmai Mohammed Ridha', style: mainTextStyle,),
+        Container(alignment: Alignment.center,width: 230, child: Text('Mehemmai Mohammed Ridha', style: mainTextStyle,),),
         SizedBox(height: 20),
-        GestureDetector(child: Row(children: <Widget>[Icon(Icons.public,color: Colors.lightBlue,), Text('  Ichidown.github.io', style: linkStyle)],), onTap: (){_launchURL('https://ichidown.github.io/');},),
-        GestureDetector(child: Row(children: <Widget>[Icon(Icons.mail,color: Colors.lightBlue,), Text('  MedRidhaMeh@Gmail.com', style: linkStyle)],), onTap: (){_launchURL('mailto:MedRidhaMeh@Gmail.com');},),
-        GestureDetector(child: Row(children: <Widget>[Icon(Icons.phone,color: Colors.lightBlue,), Text('  0550772849', style: linkStyle)],), onTap: (){_launchURL('tel:0550772849');},),
+        Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
+          GestureDetector(child: Row(children: <Widget>[Icon(Icons.mail,color: Colors.lightBlue,), Text('  MedRidhaMeh@Gmail.com', style: linkStyle)],), onTap: (){_launchURL('mailto:MedRidhaMeh@Gmail.com');},),
+          GestureDetector(child: Row(children: <Widget>[Icon(Icons.public,color: Colors.lightBlue,), Text('  Ichidown.github.io', style: linkStyle)],), onTap: (){_launchURL('https://ichidown.github.io/');},),
+          GestureDetector(child: Row(children: <Widget>[Icon(Icons.phone,color: Colors.lightBlue,), Text('  0550772849', style: linkStyle)],), onTap: (){_launchURL('tel:0550772849');},),
+        ],),
         ],),),
     ],)
     ),
 
 
-  Card(elevation: 5,margin: EdgeInsets.all(10),child: Column(children: <Widget>[
+  Card(elevation: 5,margin: EdgeInsets.all(20),child: Column(children: <Widget>[
     Padding(padding: EdgeInsets.all(10),child: Text('In Collaboration With :', style: textStyle,),),
     Flexible(child: Image(fit: BoxFit.cover,image: AssetImage('assets/images/Owner.jpg'))),
     Padding(padding: EdgeInsets.all(10),child: Column(children: <Widget>[
-      Text('Djemai Belaid', style: mainTextStyle,),
+      Container(alignment: Alignment.center,width: 230, child: Text('Djemai Belaid', style: mainTextStyle,),),
       SizedBox(height: 20),
-      GestureDetector(child: Row(children: <Widget>[Icon(Icons.public,color: Colors.lightBlue,), Text('  some Web Link', style: linkStyle)],), onTap: (){_launchURL('some Web Link');},),
-      GestureDetector(child: Row(children: <Widget>[Icon(Icons.mail,color: Colors.lightBlue,), Text('  belaiddjoumouai@hotmail.fr', style: linkStyle)],), onTap: (){_launchURL('mailto:belaiddjoumouai@hotmail.fr');},),
-      GestureDetector(child: Row(children: <Widget>[Icon(Icons.phone,color: Colors.lightBlue,), Text('  0661374237', style: linkStyle)],), onTap: (){_launchURL('tel:0661374237');},),
+      Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
+        GestureDetector(child: Row(children: <Widget>[Icon(Icons.mail,color: Colors.lightBlue,), Text('  belaiddjoumouai@hotmail.fr', style: linkStyle)],), onTap: (){_launchURL('mailto:belaiddjoumouai@hotmail.fr');},),
+        GestureDetector(child: Row(children: <Widget>[Icon(Icons.phone,color: Colors.lightBlue,), Text('  0661374237', style: linkStyle)],), onTap: (){_launchURL('tel:0661374237');},),
+      ]),
+      SizedBox(height: 20),
     ],),),
   ],)
   ),

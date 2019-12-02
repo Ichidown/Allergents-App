@@ -12,11 +12,16 @@ import 'CmsTabs/MolecularFamilyToAllergeneTab.dart';
 
 
 class CmsPage extends StatefulWidget {
+  var onAllergensChangeEvent;
+
+  CmsPage(this.onAllergensChangeEvent, /*{this.onAllergensChangeEvent}*/): super();
+
   @override
-  _CmsPageState createState() => _CmsPageState();
+  _CmsPageState createState() => _CmsPageState(onAllergensChangeEvent);
 }
 
 class _CmsPageState extends State<CmsPage> {
+  var onAllergensChangeEvent;
   static const String routeName = '/cms';
   TextStyle tabTextStyle = new TextStyle(fontSize: 9);
 
@@ -24,13 +29,17 @@ class _CmsPageState extends State<CmsPage> {
   int tabItemNumber;
   String title = 'Content Manager System';
 
-  _CmsPageState();//AllergenesTab().getTabTitle();
+  _CmsPageState(this.onAllergensChangeEvent);
+
+
+
+
 
   @override
   void initState() {
 
     tablist =  [
-      AllergenesTab(),
+      AllergenesTab(onAllergensChangeEvent),
       MolecularFamiliesTab(),
       MolecularAllergenesTab(),
       ReactionsTab(),
@@ -50,12 +59,12 @@ class _CmsPageState extends State<CmsPage> {
           child : AppBar(
             bottom: TabBar(labelPadding: EdgeInsets.all(2),
               tabs: [
-                Tab(child: Text('Allergenes',style: tabTextStyle,)),
-                Tab(child: Text('Molecular families',style: tabTextStyle,)),
-                Tab(child: Text('Molecular allergens',style: tabTextStyle,)),
-                Tab(child: Text('Adapted treatment',style: tabTextStyle,)),
-                Tab(child: Text('Molecular families / Allergenes',style: tabTextStyle,)),
-                Tab(child: Text('Molecular allergene / Reaction',style: tabTextStyle,)),
+                Tab(icon: Icon(Icons.local_florist)),// child: Text('Allergenes',style: tabTextStyle,)),
+                Tab(icon: Icon(Icons.category)),//,child: Text('Molecular families',style: tabTextStyle,)),
+                Tab(icon: Icon(Icons.bubble_chart)),//child: Text('Molecular allergens',style: tabTextStyle,)),
+                Tab(icon: Icon(Icons.airline_seat_flat_angled)),//child: Text('Adapted treatment',style: tabTextStyle,)),
+                Tab(icon: Icon(Icons.spa)),//child: Text('Molecular families / Allergenes',style: tabTextStyle,)),
+                Tab(icon: Icon(Icons.streetview)),//child: Text('Molecular allergene / Reaction',style: tabTextStyle,)),
               ],
             ),
             title: Text(title),

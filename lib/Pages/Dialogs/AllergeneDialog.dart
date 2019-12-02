@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -8,6 +7,7 @@ import '../../Beings/Allergene.dart';
 import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+//import 'package:simple_permissions/simple_permissions.dart';
 
 
 class AllergeneDialog extends StatefulWidget {
@@ -31,6 +31,7 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
   TextEditingController allergeneCrossGroupController = TextEditingController();
   static List<String> _typeList = ['Pollens', 'Aliments']; // Option 2
   String dialogTitle,_selectedType;
+  ImageProvider noImage = AssetImage('assets/images/NewImage.png');
 
 
   @override
@@ -46,7 +47,7 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
       allergeneNameController.text = '';
       allergeneCrossGroupController.text = '';
       _selectedType = _typeList.first;
-      _image = AssetImage('assets/images/NewImage.png');
+      _image = noImage;
     }
     super.initState();
   }
@@ -93,11 +94,18 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
         actions: <Widget>[
           MaterialButton(elevation: 5.0,child: Text('Confirm'), onPressed: () async {
             if (_formKey.currentState.validate()) {
-              Allergene tempAllergene = Allergene(allergene==null?0:allergene.id,
+              Allergene tempAllergene = allergene==null?
+              // Create
+              Allergene(0,
                   allergeneNameController.text,_typeList.indexOf(_selectedType),
-                  allergene==null?'0xff8e24aa':allergene.color,
-                  allergeneCrossGroupController.text,
-                  _imageBytes);
+                  GeneralTools.getRandomColor(), allergeneCrossGroupController.text,
+                  _imageBytes):
+              // Edit
+              Allergene(allergene.id,
+                  allergeneNameController.text,_typeList.indexOf(_selectedType),
+                  allergene.color, allergeneCrossGroupController.text,
+                  _imageBytes==null?allergene.image:_imageBytes);
+
               Navigator.of(context).pop(tempAllergene);
             }
           },),
@@ -112,16 +120,21 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
 
 
   Future pickImage() async {
-    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    //image.readAsBytesSync();
-    //_imageBytes = GeneralTools.base64String(image.readAsBytesSync());
 
-    if (image!=null)
-      //_imageBytes = image.readAsBytesSync();
-      _imageBytes = GeneralTools.dataFromBase64String(GeneralTools.base64String(image.readAsBytesSync()));
-      setState(() {
-        _image = FileImage(image);//Image.memory(image.readAsBytesSync());
-      });
+    //PermissionStatus permissionResult = await SimplePermissions.requestPermission(Permission. WriteExternalStorage);
+    //if (permissionResult == PermissionStatus.authorized){
+      File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+      if (image!=null){
+        _imageBytes = GeneralTools.dataFromBase64String(GeneralTools.base64String(image.readAsBytesSync()));
+        setState(() {
+          _image = FileImage(image);
+        });
+      }
+    //}
+
+
+
   }
 
 }

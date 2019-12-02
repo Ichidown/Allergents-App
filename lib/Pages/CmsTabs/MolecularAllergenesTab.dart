@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:allergensapp/Widgets/TabTitleBar.dart';
+
 import '../../Beings/MolecularAllergene.dart';
 import '../../Beings/MolecularFamily.dart';
 import '../../Pages/Dialogs/ColorPickerDialog.dart';
@@ -23,6 +25,7 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
 
   final dbHelper = DatabaseHelper.instance;
   final String deleateMsg = 'Are you sure you want to deleate this molecular allergene ?';
+  final String title = 'Molecular allergen list';
 
   @override
   void initState() {
@@ -48,7 +51,7 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
             }),
 
         SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 80),
+            padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
             child: FutureBuilder<List<MolecularAllergene>>(
                 future: refreshMolecularAllergeneList(),
                 builder: (context, snapshot) {
@@ -80,7 +83,6 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
                                     return ColorPickerDialog();
                                   }).then((onValue) {
                                     if (onValue != null){
-                                      print(onValue);
                                       updateMolecularAllergeneColor(snapshot.data[i] ,onValue);
                                     }
                                   });
@@ -123,6 +125,9 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
                     );
                   }
                 })),
+
+        TabTitleBar(title),
+
         Align(
             alignment: Alignment.bottomRight,
             child: Container(

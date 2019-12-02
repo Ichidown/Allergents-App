@@ -1,3 +1,5 @@
+import 'package:allergensapp/Tools/UiTools.dart';
+
 import '../../Beings/Reaction.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +19,7 @@ class _ReactionDialogState extends State<ReactionDialog> {
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController adaptedTreatmentController = TextEditingController();
-  static List<String> _reactionLevelList = ['Light', 'Moderate','Severe']; // Option 2
+  static List<String> _reactionLevelList = UiTools.getReactionLvlList();//= ['Light', 'Moderate','Severe'];
   String dialogTitle,_selectedReactionLevel;
 
 

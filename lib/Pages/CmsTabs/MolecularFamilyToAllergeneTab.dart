@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:allergensapp/Widgets/TabTitleBar.dart';
+
 import '../../Beings/Allergene.dart';
 import '../../Beings/MFamilyAllergene.dart';
 import '../../Beings/MolecularFamily.dart';
@@ -36,6 +38,8 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
   final String insertFailedMsg = 'Error while creating the Molecular Family To Allergene link';
 
 
+  final String title = 'Molecular families to Allergenes link list';
+
   @override
   void initState() {
     allergeneList = dbHelper.getAllergenes();
@@ -68,9 +72,8 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
               return Container();
             }),
 
-
         SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 80),
+            padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
             child: FutureBuilder<List<MFamilyAllergene>>(
                 future: refreshMFamilyAllergene(),
                 builder: (context, snapshot) {
@@ -134,6 +137,9 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
                     );
                   }
                 })),
+
+        TabTitleBar(title),
+
         Align(
             alignment: Alignment.bottomRight,
             child: Container(

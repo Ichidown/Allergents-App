@@ -1,3 +1,5 @@
+import 'package:allergensapp/Widgets/TabTitleBar.dart';
+
 import '../../Beings/Reaction.dart';
 import '../../Pages/Dialogs/DeleteDialog.dart';
 import '../../Pages/Dialogs/ReactionDialog.dart';
@@ -12,7 +14,7 @@ class ReactionsTab extends StatefulWidget {
 }
 
 class _ReactionsTabState extends State<ReactionsTab> {
-  List<String> levelList = ['Light', 'Moderate','Severe'];
+  List<String> levelList = UiTools.getReactionLvlList();//['Light', 'Moderate','Severe'];
   Future<List<Reaction>> reactionList;
   final dbHelper = DatabaseHelper.instance;
 
@@ -20,15 +22,16 @@ class _ReactionsTabState extends State<ReactionsTab> {
 
 
   final String deleateMsg = 'Are you sure you want to deleate this reaction ?';
-
+  final String title = 'Reaction / Adapted treatment list';
 
   @override
   Widget build(BuildContext context) {
 
     return Stack(
       children: <Widget>[
+
         SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 80),
+            padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
             child: FutureBuilder<List<Reaction>>(
                 future: refreshReaction(),
                 builder: (context, snapshot) {
@@ -94,6 +97,9 @@ class _ReactionsTabState extends State<ReactionsTab> {
                     );
                   }
                 })),
+
+        TabTitleBar(title),
+
         Align(
             alignment: Alignment.bottomRight,
             child: Container(

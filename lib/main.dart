@@ -1,41 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:custom_splash/custom_splash.dart';
 import 'Pages/DemonstrationPage.dart';
-import 'Pages/LoadingPage.dart';
-import 'package:splashscreen/splashscreen.dart';
 
 void main() {
-  runApp(MyHomePage());
+  runApp(MaterialApp(
+    home: CustomSplash(
+      imagePath: 'assets/images/Logo.png',
+      backGroundColor: Color.fromRGBO(20, 20, 30, 1),
+      animationEffect: 'zoom-in',
+      home: DemonstrationPage(),
+      //customFunction: duringSplash,
+      duration: 2300,
+      type: CustomSplashType.StaticDuration,
+    ),
+  ));
 }
-
-class MyHomePage extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(theme: new ThemeData(accentColor: Colors.blue,),
-      routes: {
-        //'/': (context) => LoadingPage(),
-        '/': (context) => DemonstrationPage(),
-      },
-    );
-
-
-      return new SplashScreen(
-          seconds: 14,
-          navigateAfterSeconds: new Text('sss'),
-          title: new Text('Welcome In SplashScreen',
-            style: new TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0
-            ),),
-          image: new Image.network('assets/images/Developer.jpg'),
-          backgroundColor: Colors.white,
-          styleTextUnderTheLoader: new TextStyle(),
-          photoSize: 100.0,
-          onClick: ()=>print("Flutter Egypt"),
-          loaderColor: Colors.red
-      );
-
-  }
-
-}
-

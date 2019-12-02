@@ -1,3 +1,5 @@
+import 'package:allergensapp/Tools/GeneralTools.dart';
+
 import '../../Beings/MolecularAllergene.dart';
 import '../../Beings/MolecularFamily.dart';
 import '../../Tools/database_helper.dart';
@@ -86,7 +88,7 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
                 molecularAllergene==null?0:molecularAllergene.id,
                 molecularAllergeneNameController.text,
                 _selectedMolecularFamily.id,
-                molecularAllergene==null?'0xff42a5f5':molecularAllergene.color);
+                molecularAllergene==null?GeneralTools.getRandomColor():molecularAllergene.color);
             Navigator.of(context).pop(tempAllergene);
           }
         },),

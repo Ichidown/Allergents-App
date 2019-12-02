@@ -26,15 +26,11 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
   ChooserState(this.arcSelectedCallback, this.onChoiceChange, this.onChoiceSelected);
   var onChoiceChange,onChoiceSelected;
-  //_DemonstrationPageState _demonstrationPageState;
-  // var slideValue = 200;
+
   Offset centerPoint;
 
   double userAngle = 0.0;
   double startAngle;
-
-  //static double center = 270.0;
-  //static double centerInRadians = GeneralTools.degreeToRadians(center);
 
   double angleInRadians, centerItemAngle;
   double angleInRadiansByTwo;
@@ -68,13 +64,11 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     animation = new AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
     animation.addListener(() {
       userAngle = lerpDouble(animationStart, animationEnd, animation.value);
-      //setState(() {
-        refreshRouletteWheelRotation(); // UPDATE THIS TO MAKE THE ANIMATION CONTINUE TO THE NORMAL FINISH LOCATION
-      //}
-      //);
+      refreshRouletteWheelRotation(); // UPDATE THIS TO MAKE THE ANIMATION CONTINUE TO THE NORMAL FINISH LOCATION
     });
 
     super.initState();
+    getData();
   }
 
   @override
@@ -84,18 +78,10 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     double centerY = MediaQuery.of(context).size.height * 1.5;
     centerPoint = Offset(centerX, centerY);
 
-    //getAllergene(0); // get pollens at the very start
-    getData();
 
     return GestureDetector(
       onTap: () {
         onChoiceSelected(arcItems[currentPosition].id);
-
-        /** ANIMATE ROULETTE WHEEL HERE
-         * IN ANIMATION --
-         * CHANGE DATA --
-         * OUT ANIMATION -- **/
-
       },
 
 
@@ -113,27 +99,16 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
         var deltaY = centerPoint.dy - details.globalPosition.dy;
         var freshAngle = atan2(deltaY, deltaX);
         userAngle += (freshAngle - startAngle) * 0.3;
-
-
-
-
-        /** ------------- IS SET STATE NECESSARY ? ------------- **/
-        /**setState(() {
-          refreshRouletteWheelRotation();
-        });*/
-        /** ---------------------------------------------------- **/
-
-
-
+        refreshRouletteWheelRotation();
         startAngle = freshAngle;
       },
 
 
       onPanEnd: (DragEndDetails details) {
-        //find top arc item with Magic!!
+        //find top arc item
         bool rightToLeft = startingPoint.dx < endingPoint.dx;
 
-//        Animate it from this values
+        //Animate it from this values
         animationStart = userAngle;
         if (rightToLeft) {
           animationEnd += angleInRadians;
@@ -159,53 +134,25 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
         animation.forward(from: 0.0);
         if (arcItems.length > 0)
           onChoiceChange(arcItems[currentPosition].text,arcItems[currentPosition].detail,arcItems[currentPosition].image); // update DemonstrationPage main choice text
-        else onChoiceChange('','');
+        else onChoiceChange('','',null);
       },
 
 
       child: arcItems.length > 0 ? CustomPaint(
-        size: Size(MediaQuery
-            .of(context)
-            .size
-            .width,
-            MediaQuery
-                .of(context)
-                .size
-                .width * 1 / 1.5),
-        painter: ChooserPainter(arcItems, angleInRadians),
+        size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 1 / 1.5),
+        painter: ChooserPainter(arcItems, angleInRadians, MediaQuery.of(context).size.height, MediaQuery.of(context).size.width,MediaQuery.of(context).orientation),
       ) : Container(),
     );
   }
 
 
   void refreshRouletteWheelRotation() {
-    for (int i = 0; i < arcItems.length; i++) {
-      arcItems[i].startAngle =
-          angleInRadiansByTwo + userAngle + (i * angleInRadians);
-    }
+    setState(() {
+      for (int i = 0; i < arcItems.length; i++) {
+        arcItems[i].startAngle = angleInRadiansByTwo + userAngle + (i * angleInRadians);
+      }
+    });
   }
-
-
-/*
-  void getData(int dataSourceIdx, int id1, int id2){
-    switch(dataSourceIdx){
-      case 0:
-        getAllergene(0); // get allergenes input(0==pollens / 1==aliments)
-        break;
-      case 1:
-        getAllergene(1); // get allergenes input(0==pollens / 1==aliments)
-        break;
-      case 2:
-        getMolecularFamilies(1,2); // get molecular families input(allergeneId1 , allergeneId2)
-        break;
-      case 3:
-        getMolecularAllergenes(3); // get molecular allergenes input(mFamilyId)
-        break;
-      case 4:
-        getReactions(2); // get reactions input(mAllergeneId)
-        break;
-    }
-  }*/
 
 
   void getAllergene(int type){ // 0 == pollens, 1 == aliments
@@ -251,7 +198,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     angleInRadiansByTwo = angleInRadians / 2;
     refreshRouletteWheelRotation();
     if(arcItems.length>0) onChoiceChange(arcItems[currentPosition].text,arcItems[currentPosition].detail,arcItems[currentPosition].image); // initial choice when started app / demonstration page
-    else onChoiceChange('','');
+    else onChoiceChange('','',null);
   }
 
   void setData(int choiceLvl, int id1, int id2){
@@ -296,14 +243,18 @@ class ChooserPainter extends CustomPainter {
     ..color = Colors.white //Color(0xFFF9D976)
     ..strokeWidth = 1.0
     ..style = PaintingStyle.fill;
+  double screenHeight,screenWidth;
 
   List<ArcItem> arcItems;
   double angleInRadians, angleInRadians1, angleInRadians2, angleInRadians3, angleInRadians4,angleInRadiansByTwo;
 
-  ChooserPainter(List<ArcItem> arcItems, double angleInRadians) {
+  Orientation screenOrientation;
+
+  ChooserPainter(List<ArcItem> arcItems, double angleInRadians, this.screenHeight,this.screenWidth,this.screenOrientation) {
     this.arcItems = arcItems;
     this.angleInRadians = angleInRadians;
     this.angleInRadiansByTwo = angleInRadians / 2;
+
 
     angleInRadians1 = angleInRadians / 6;
     angleInRadians2 = angleInRadians / 3;
@@ -315,7 +266,10 @@ class ChooserPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //common calc
     double centerX = size.width / 2;
-    double centerY = 600;//size.height * 1.1;
+    double centerY = screenOrientation == Orientation.landscape? screenWidth:screenHeight;//size.height * 1.1;
+
+    print(screenHeight.toString());
+
     Offset center = Offset(centerX, centerY);
     double radius = sqrt((size.width * size.width) / 3);
 

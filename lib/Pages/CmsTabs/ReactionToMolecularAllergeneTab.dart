@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:allergensapp/Widgets/TabTitleBar.dart';
+
 import '../../Beings/MAllergeneReaction.dart';
 import '../../Beings/MolecularAllergene.dart';
 import '../../Beings/Reaction.dart';
@@ -27,6 +29,7 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
 
 
   final String deleateMsg = 'Are you sure you want to deleate this reaction ?';
+  final String title = 'Molecular allergene to Reaction link list';
 
 
   @override
@@ -62,8 +65,9 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
             }),
 
 
+
         SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 80),
+            padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
             child: FutureBuilder<List<MAllergeneReaction>>(
                 future: refreshMAllergeneReaction(),
                 builder: (context, snapshot) {
@@ -139,6 +143,9 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
                     );
                   }
                 })),
+
+        TabTitleBar(title),
+
         Align(
             alignment: Alignment.bottomRight,
             child: Container(

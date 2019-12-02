@@ -1,3 +1,4 @@
+import 'package:allergensapp/Tools/GeneralTools.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/material_picker.dart';
 
@@ -35,7 +36,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
             MaterialPicker(
                pickerColor: Colors.redAccent,
                onColorChanged: (Color color) {
-                  Navigator.of(context).pop(color.toHex());
+                  Navigator.of(context).pop(GeneralTools.toHex(color));
                  //print(color.toString());
                  },
                enableLabel: true, // only on portrait mode
@@ -74,17 +75,18 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
-  static Color fromHex(String hexString) {
+  /*static Color fromHex(String hexString) {
     final buffer = StringBuffer();
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
-  }
+  }*/
 
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
-  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '0x' : ''}'
+  /**String toHex({bool leadingHashSign = true}) =>
+      '${leadingHashSign ? '0x' : ''}'
       '${alpha.toRadixString(16)}'
       '${red.toRadixString(16)}'
       '${green.toRadixString(16)}'
-      '${blue.toRadixString(16)}';
+      '${blue.toRadixString(16)}';*/
 }

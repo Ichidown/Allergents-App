@@ -1,3 +1,5 @@
+import 'package:allergensapp/Widgets/TabTitleBar.dart';
+
 import '../../Beings/Allergene.dart';
 import '../../Pages/Dialogs/ColorPickerDialog.dart';
 import '../../Pages/Dialogs/DeleteDialog.dart';
@@ -10,24 +12,24 @@ import 'package:flutter/rendering.dart';
 import '../CmsPage.dart';
 
 class AllergenesTab extends StatefulWidget {
-  //var setTabTitle;
+  var onAllergensChangeEvent;
   //GlobalKey<_CmsPageState> cmsKey;
 
-
-  //AllergenesTab({this.setTabTitle});
+  AllergenesTab(this.onAllergensChangeEvent): super();
 
   @override
-  _AllergenesTabState createState() => _AllergenesTabState();
+  _AllergenesTabState createState() => _AllergenesTabState(onAllergensChangeEvent);
 
 }
 
 
 class _AllergenesTabState extends State<AllergenesTab> {
 
+  var onAllergensChangeEvent;
   //var tabTitle;
   //var setTabTitle;
   //GlobalKey<_CmsPageState> cmsKey;
-  //_AllergenesTabState(this.setTabTitle);
+  _AllergenesTabState(this.onAllergensChangeEvent);
 
   List<String> allergeneTypeList = ['Pollens', 'Aliments'];
   Future<List<Allergene>> allergeneList;
@@ -45,6 +47,7 @@ class _AllergenesTabState extends State<AllergenesTab> {
 
   final dbHelper = DatabaseHelper.instance;
   final String deleateMsg = 'Are you sure you want to deleate this allergene ?';
+  final String title = 'Allergen List';
 
 
 
@@ -63,8 +66,10 @@ class _AllergenesTabState extends State<AllergenesTab> {
 
     return Stack(
       children: <Widget>[
+
+
         SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 80),
+            padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
             child: FutureBuilder<List<Allergene>>(
                 future: refreshAllergeneList(),
                 // initialData: allergeneList,
@@ -98,7 +103,6 @@ class _AllergenesTabState extends State<AllergenesTab> {
                                 return ColorPickerDialog();
                               }).then((onValue) {
                                 if (onValue != null){
-                                  print(onValue);
                                   updateAllergeneColor(snapshot.data[i] ,onValue);
                                 }
                               });
@@ -141,6 +145,9 @@ class _AllergenesTabState extends State<AllergenesTab> {
                     );
                   }
                 })),
+
+        TabTitleBar(title),
+
         Align(
             alignment: Alignment.bottomRight,
             child: Container(
@@ -178,7 +185,10 @@ class _AllergenesTabState extends State<AllergenesTab> {
 
   void deleteAllergenes(int index) async {
     bool success = await dbHelper.deleteAllergene(index) > 0; // if deleted something
-    if (success) refreshAllergeneList();
+    if (success) {
+      refreshAllergeneList();
+      onAllergensChangeEvent();
+    }
 
     UiTools.newSnackBar(
         success?'Allergene deleted successfully':'Error while deleting the allergene',
@@ -194,7 +204,10 @@ class _AllergenesTabState extends State<AllergenesTab> {
                         await dbHelper.insertAllergene(returnedValue.toJsonNoId());
 
       bool success = id>0;
-      if(success) refreshAllergeneList();
+      if(success) {
+        refreshAllergeneList();
+        onAllergensChangeEvent();
+      }
 
       UiTools.newSnackBar(
           success?(isEdit?'Allergene edited successfully':'Allergene created successfully'):
@@ -207,6 +220,7 @@ class _AllergenesTabState extends State<AllergenesTab> {
     tempValue.color = color;
     dbHelper.updateAllergene(tempValue.toJson());
     refreshAllergeneList();
+    onAllergensChangeEvent();
   }
 
 

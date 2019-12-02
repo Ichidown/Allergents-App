@@ -3,6 +3,7 @@ import 'dart:io';
 //import 'dart:typed_data';
 
 import 'package:allergensapp/Beings/Allergene.dart';
+import 'package:allergensapp/Beings/Conclusion.dart';
 import 'package:allergensapp/Beings/MAllergeneReaction.dart';
 import 'package:allergensapp/Beings/MFamilyAllergene.dart';
 import 'package:allergensapp/Beings/MolecularAllergene.dart';
@@ -34,7 +35,7 @@ class DatabaseHelper {
 
 
   static final int databaseVersion = 1;
-
+/*
   static final String allergeneTableCreation = '''
   CREATE TABLE IF NOT EXISTS "Allergene" (
   "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -131,7 +132,7 @@ class DatabaseHelper {
   );
   COMMIT;
   ''';
-
+*/
 
 
 
@@ -224,7 +225,7 @@ class DatabaseHelper {
       await new File(path).writeAsBytes(bytes);
     }*/
 
-    return await openDatabase(path, version: databaseVersion,
+    /*return await openDatabase(path, version: databaseVersion,
         onCreate: (Database db, int version) async {
           await db.execute(allergeneTableCreation);
           await db.execute(mAllergeneReactionTableCreation);
@@ -233,7 +234,7 @@ class DatabaseHelper {
           await db.execute(mFamilyAllergenTableCreation);
           await db.execute(mFamilyTableCreation);
           await db.execute(foodTableCreation);
-    });
+    });*/
 
   }
 
@@ -308,7 +309,6 @@ class DatabaseHelper {
   }
 
   Future<List<Allergene>> getAllergeneOfType(int type) async {
-    print('Allergens List');
     Database db = await instance.database;
     var res = await db.query(allergeneTable, where: 'Allergene_type = $type');
     return res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];
@@ -440,6 +440,40 @@ class DatabaseHelper {
 
 
 
+  /// ****************************** molecular_Allergene_reaction_relational_link **********************************/
+
+  Future<Conclusion> getConclusion(int source1Id,int source2Id, int mFamilyId, int mAllergenId, int reactionId) async {
+    Database db = await instance.database;
+
+    var source1 = await db.rawQuery("SELECT name,cross_group FROM $allergeneTable WHERE id = $source1Id LIMIT 1;");
+    var source2 = await db.rawQuery("SELECT name,cross_group FROM $allergeneTable WHERE id = $source2Id LIMIT 1;");
+    var mFamily = await db.rawQuery("SELECT name FROM $molecularFamilyTable WHERE id = $mFamilyId LIMIT 1;");
+    var mAllergen = await db.rawQuery("SELECT name FROM $molecularAllergeneTable WHERE id = $mAllergenId LIMIT 1;");
+    var reaction = await db.rawQuery("SELECT adapted_treatment,level FROM $reactionTable WHERE id = $reactionId LIMIT 1;");
+    var frequency = await db.rawQuery("SELECT occurrence_frequency FROM $molecularFamilyToAllergeneTable WHERE Allergene_1_id = $source1Id AND Allergene_2_id = $source2Id AND molecular_family_id = $mFamilyId LIMIT 1;");
+
+    /*print("${source1[0].values.elementAt(0)}    "
+        "${source1[0].values.elementAt(1)}    "
+        "${source2[0].values.elementAt(0)}    "
+        "${source2[0].values.elementAt(1)}    "
+        "${mFamily[0].values.single}    "
+        "${mAllergen[0].values.single}    "
+        "${reaction[0].values.elementAt(0)}    "
+        "${reaction[0].values.elementAt(1)}    "
+        "${frequency[0].values.single}    "
+    );*/
+    return new Conclusion(
+        source1[0].values.elementAt(0),
+        source2[0].values.elementAt(0),
+        source1[0].values.elementAt(1),
+        source2[0].values.elementAt(1),
+        mFamily[0].values.single,
+        frequency[0].values.single,
+        mAllergen[0].values.single,
+        reaction[0].values.elementAt(1),
+        reaction[0].values.elementAt(0));
+
+  }
 
 
 

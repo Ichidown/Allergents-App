@@ -1,12 +1,20 @@
+import 'package:allergensapp/Beings/Conclusion.dart';
+import 'package:allergensapp/Tools/GeneralTools.dart';
+import 'package:allergensapp/Tools/UiTools.dart';
 import 'package:flutter/material.dart';
 
 
 class ConclusionDialog extends StatelessWidget {
 
-  ConclusionDialog();
+  Future<Conclusion> conclusionObj;
+  ConclusionDialog(this.conclusionObj);
+  TextStyle mediumTextStyle = TextStyle(fontSize: 15.0, color: Colors.blueAccent,fontWeight: FontWeight.bold);
+  TextStyle bigTextStyle = TextStyle(fontSize: 15.0, color: Colors.grey[600], fontWeight: FontWeight.normal);
 
   @override
   Widget build(BuildContext context) {
+
+
 
     return Center(child:
         Stack(children: <Widget>[
@@ -24,18 +32,34 @@ class ConclusionDialog extends StatelessWidget {
               ),
 
             ],),
-              content:Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
+              content: FutureBuilder<Conclusion>(
+                  future: conclusionObj,
+                  builder: (context, snapshot) {
+                    if(snapshot.hasData) {
+                      return Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
+
+                      RichText(
+                      text: TextSpan(
+                        style: mediumTextStyle,
+                        children: <TextSpan>[
+                          TextSpan(text: 'Polen : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.source1}\n'),
+                          TextSpan(text: 'Polen cross group : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.source1CrossGroup}\n'),
+                          TextSpan(text: 'Aliment : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.source2}\n'),
+                          TextSpan(text: 'Aliment cross group : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.source2CrossGroup}\n'),
+                          TextSpan(text: 'Molecular Family : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.molecularFamily}\n'),
+                          TextSpan(text: 'Molecular Family Occurence Frequency : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.occurrenceFrequency==-1?'unknown':snapshot.data.occurrenceFrequency}%\n'),
+                          TextSpan(text: 'Molecular Allergen : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.molecularAllergene}\n'),
+                          TextSpan(text: 'Reaction Level : ', style: bigTextStyle), TextSpan(text: '${UiTools.getReactionByLvl(snapshot.data.reactionLvl)}\n'),
+                          TextSpan(text: 'Adapted Treatment : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.adaptedTreatment}\n'),
+                        ],),),
+
+                        SizedBox(height: 50,),
+                      ],);
+                    } else
+                      return Container();
+                  }),
 
 
-
-                Text('Polen :'),
-                Text('Aliment :'),
-                Text('Molecular Family :'),
-                Text('Reaction Level :'),
-                Text('Adapted Treatment :'),
-
-                SizedBox(height: 50,),
-              ],),
             ),
           ],),
 
