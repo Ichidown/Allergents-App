@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'Beings/ArcItem.dart';
 import 'Tools/GeneralTools.dart';
+import 'Tools/UiTools.dart';
 import 'Tools/database_helper.dart';
 
 typedef void ArcSelectedCallback(int position, ArcItem arcItem);
@@ -156,7 +157,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
 
   void getAllergene(int type){ // 0 == pollens, 1 == aliments
-    dbHelper.getAllergeneOfType(type).then((result) {
+    dbHelper.getAllergenOfType(type).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id,c.crossGroup,c.image)).toList() : List<ArcItem>();
       });
@@ -187,7 +188,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   void getReactions(int mAllergeneId){ // 0 == pollens, 1 == aliments
     dbHelper.getReactionsOfMolecularAllergenes(mAllergeneId).then((result) {
       setState(() {
-        arcItems = result.length>0 ? result.map((c) => ArcItem(c.adapted_treatment,colorLvl[c.level],c.id,'',null)).toList() : List<ArcItem>();
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.adapted_treatment,colorLvl[c.level],c.id,UiTools.getReactionByLvl(c.level),null)).toList() : List<ArcItem>();
       });
       refreshRouletteWheelData();
     });
@@ -267,8 +268,6 @@ class ChooserPainter extends CustomPainter {
     //common calc
     double centerX = size.width / 2;
     double centerY = screenOrientation == Orientation.landscape? screenWidth:screenHeight;//size.height * 1.1;
-
-    print(screenHeight.toString());
 
     Offset center = Offset(centerX, centerY);
     double radius = sqrt((size.width * size.width) / 3);

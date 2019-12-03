@@ -42,7 +42,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
 
   @override
   void initState() {
-    allergeneList = dbHelper.getAllergenes();
+    allergeneList = dbHelper.getAllergens();
     molecularFamilyList = dbHelper.getMolecularFamilies();
 
     super.initState();

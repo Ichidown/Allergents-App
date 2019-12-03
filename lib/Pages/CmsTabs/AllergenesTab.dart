@@ -179,12 +179,12 @@ class _AllergenesTabState extends State<AllergenesTab> {
 
 
   Future<List<Allergene>> refreshAllergeneList() async {
-    setState(() {allergeneList = dbHelper.getAllergenes();});
+    setState(() {allergeneList = dbHelper.getAllergens();});
     return allergeneList;
   }
 
   void deleteAllergenes(int index) async {
-    bool success = await dbHelper.deleteAllergene(index) > 0; // if deleted something
+    bool success = await dbHelper.deleteAllergen(index) > 0; // if deleted something
     if (success) {
       refreshAllergeneList();
       onAllergensChangeEvent();
@@ -200,8 +200,8 @@ class _AllergenesTabState extends State<AllergenesTab> {
     if (returnedValue != null){
       bool isEdit = returnedValue.id != 0;
 
-      int id = isEdit ? await dbHelper.updateAllergene(returnedValue.toJson()):
-                        await dbHelper.insertAllergene(returnedValue.toJsonNoId());
+      int id = isEdit ? await dbHelper.updateAllergen(returnedValue.toJson()):
+                        await dbHelper.insertAllergen(returnedValue.toJsonNoId());
 
       bool success = id>0;
       if(success) {
@@ -218,7 +218,7 @@ class _AllergenesTabState extends State<AllergenesTab> {
 
   void updateAllergeneColor(Allergene tempValue, String color){ /** This should be optimised **/
     tempValue.color = color;
-    dbHelper.updateAllergene(tempValue.toJson());
+    dbHelper.updateAllergen(tempValue.toJson());
     refreshAllergeneList();
     onAllergensChangeEvent();
   }

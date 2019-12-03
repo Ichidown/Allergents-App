@@ -86,7 +86,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
                 //if (snapshot.hasError) return Text(snapshot.error);
                 if (snapshot.hasData) {
                   initCurrentSelectedAllergene_1(mFamilyAllergene, snapshot.data);
-                  return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.ac_unit)),
+                  return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.looks_one)),
                     onChanged: (newValue) {setState(() {_selectedAllergene_1 = newValue;});},
                     value: _selectedAllergene_1,//initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data),
                     items: snapshot.data.map((Allergene molecularAllergene) {
@@ -106,7 +106,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
                 //if (snapshot.hasError) return Text(snapshot.error);
                 if (snapshot.hasData) {
                   initCurrentSelectedAllergene_2(mFamilyAllergene, snapshot.data);
-                  return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.ac_unit)),
+                  return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.looks_two)),
                     onChanged: (newValue) {setState(() {_selectedAllergene_2 = newValue;});},
                     value: _selectedAllergene_2,//initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data),
                     items: snapshot.data.map((Allergene molecularAllergene) {
@@ -127,7 +127,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
                 //if (snapshot.hasError) return Text(snapshot.error);
                 if (snapshot.hasData) {
                   initCurrentSelectedMolecularFamily(mFamilyAllergene, snapshot.data);
-                  return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.airline_seat_flat)),
+                  return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.category)),
                     onChanged: (newValue) {setState(() {_selectedMolecularFamily = newValue;});},
                     value: _selectedMolecularFamily,//initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data),
                     items: snapshot.data.map((MolecularFamily reaction) {
@@ -141,7 +141,7 @@ class _MolecularFamilyToAllergeneDialogState extends State<MolecularFamilyToAlle
 
 
 
-          TextFormField(controller:occurrenceFrequencyController, decoration: InputDecoration(labelText: 'Occurrence Frequency',),
+          TextFormField(controller:occurrenceFrequencyController, decoration: InputDecoration(labelText: 'Occurrence Frequency',icon: Text('%', style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900,color: Colors.grey),)),
               inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],keyboardType: TextInputType.number),
 
         ],),),

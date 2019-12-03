@@ -62,7 +62,7 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
             TextFormField(controller:allergeneNameController, decoration: InputDecoration(labelText: 'Allergene Name',),
                 validator: (value) { if (value.isEmpty) { return 'Please enter some text';} return null;},),
 
-            DropdownButton(value: _selectedType,
+            DropdownButtonFormField(value: _selectedType,decoration: new InputDecoration(icon: Icon(Icons.local_florist)),
               onChanged: (newValue) { setState(() {_selectedType = newValue;});},
               items: _typeList.map((location) { return DropdownMenuItem(child: new Text(location), value: location,);}).toList(),
             ),

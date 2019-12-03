@@ -19,7 +19,7 @@ class Allergene {
   }
 
   factory Allergene.fromJson(Map<String, dynamic> json){
-    return new Allergene(json["id"],json["name"],json["Allergene_type"],json["color"],json["cross_group"],json["image"]);
+    return new Allergene(json["id"],json["name"],json["Allergene_type"],json["color"],json["cross_group"],json["image"]/*null*/);
   }
 
   Map<String, dynamic> toJson() {

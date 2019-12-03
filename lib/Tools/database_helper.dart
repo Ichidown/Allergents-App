@@ -302,25 +302,35 @@ class DatabaseHelper {
 
 /// ****************************** Allergene **********************************/
 
-  Future<List<Allergene>> getAllergenes() async {
+  Future<List<Allergene>> getAllergens() async {
     Database db = await instance.database;
-    var res = await db.query(allergeneTable);
+    //var res = await db.query(allergeneTable);
+    var res = await db.rawQuery("SELECT id,name,Allergene_type,color,cross_group,image FROM $allergeneTable;");
     return res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];
   }
 
-  Future<List<Allergene>> getAllergeneOfType(int type) async {
+  Future<List<Allergene>> getAllergenOfType(int type) async {
     Database db = await instance.database;
     var res = await db.query(allergeneTable, where: 'Allergene_type = $type');
     return res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];
   }
 
-  Future<int> insertAllergene(Map<String, dynamic> row) async { return insertQuery(row, allergeneTable);}
-  Future<int> updateAllergene(Map<String, dynamic> row) async { return updateQuery(row, allergeneTable);}
-  Future<int> deleteAllergene(int id) async {
+  Future<int> insertAllergen(Map<String, dynamic> row) async { return insertQuery(row, allergeneTable);}
+  Future<int> updateAllergen(Map<String, dynamic> row) async { return updateQuery(row, allergeneTable);}
+  Future<int> deleteAllergen(int id) async {
     Database db = await instance.database;
     await db.rawDelete('DELETE FROM $molecularFamilyToAllergeneTable WHERE Allergene_1_id = $id OR Allergene_2_id = $id;');
     return deleteQuery(id, allergeneTable);
   }
+
+
+  /**Future<Allergene> getAllergenImage(Allergene allergene) async {
+    Database db = await instance.database;
+    //var res = await db.query(allergeneTable);
+    var res = await db.rawQuery("SELECT image FROM $allergeneTable WHERE id = ${allergene.id} LIMIT 1;");
+    allergene.image = res[0].values.single;
+    return allergene; //res.isNotEmpty ? res.map((Map<dynamic, dynamic> row) => Allergene.fromJson(row)).toList(): [];
+  }*/
 
 
 
