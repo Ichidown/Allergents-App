@@ -3,9 +3,9 @@ import 'dart:convert';
 class Reaction {
   int id;
   int level;
-  String adapted_treatment;
+  String adaptedTreatment;
 
-  Reaction(this.id, this.level, this.adapted_treatment);
+  Reaction(this.id, this.level, this.adaptedTreatment);
 
 
   Reaction reactionFromJson(String str) {
@@ -21,14 +21,14 @@ class Reaction {
     return {
       'id': id,
       'level': level,
-      'adapted_treatment': adapted_treatment,
+      'adapted_treatment': adaptedTreatment,
     };
   }
 
   Map<String, dynamic> toJsonNoId() {
     return {
       'level': level,
-      'adapted_treatment': adapted_treatment,
+      'adapted_treatment': adaptedTreatment,
     };
   }
 }

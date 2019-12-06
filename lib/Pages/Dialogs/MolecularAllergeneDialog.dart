@@ -1,13 +1,13 @@
 import 'package:allergensapp/Tools/GeneralTools.dart';
 
-import '../../Beings/MolecularAllergene.dart';
+import '../../Beings/MolecularAllergen.dart';
 import '../../Beings/MolecularFamily.dart';
 import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 
 
 class MolecularAllergeneDialog extends StatefulWidget {
-  MolecularAllergene molecularAllergene;
+  MolecularAllergen molecularAllergene;
   Future<List<MolecularFamily>> molecularFamilyList;
   MolecularAllergeneDialog(this.molecularAllergene,this.molecularFamilyList);
 
@@ -17,7 +17,7 @@ class MolecularAllergeneDialog extends StatefulWidget {
 }
 
 class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
-  MolecularAllergene molecularAllergene;
+  MolecularAllergen molecularAllergene;
   Future<List<MolecularFamily>> molecularFamilyList;
   _MolecularAllergeneDialogState(this.molecularAllergene, this.molecularFamilyList);
 
@@ -28,14 +28,24 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
   String dialogTitle;
 
 
+  final String validatorText1 = "S'il vous plaît entrer quelque chose";
+  final String textFieldLabel = "Nom de l'allergène moléculaire";
+
+  final String confirmBtnText = 'Confirmer';
+  final String cancelBtnText = 'Annuler';
+
+  final String dialogEditTitle = "Modifier l'allergène moléculaire";
+  final String dialogInsertTitle = 'Nouvel allergène moléculaire';
+
+
   @override
   Widget initState() {
     super.initState();
     if (molecularAllergene != null) {
-      dialogTitle = 'Edit Molecular allergene';
+      dialogTitle = dialogEditTitle;
       molecularAllergeneNameController.text = molecularAllergene.name;
     } else {
-      dialogTitle = 'New Molecular allergene';
+      dialogTitle = dialogInsertTitle;
       molecularAllergeneNameController.text = '';
     }
     // molecularFamilyList = dbHelper.getMolecularFamilies();
@@ -48,10 +58,10 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
       content:Form( key: _formKey,
         child: Column(children: <Widget>[
 
-          TextFormField(controller:molecularAllergeneNameController, decoration: InputDecoration(labelText: 'Molecular Allergene Name',),
+          TextFormField(controller:molecularAllergeneNameController, decoration: InputDecoration(labelText: textFieldLabel,),
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter some text';
+                return validatorText1;
               }
               return null;
             },),
@@ -81,10 +91,10 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
         ],),),
 
       actions: <Widget>[
-        MaterialButton(elevation: 5.0,child: Text('Confirm'), onPressed: () async {
+        MaterialButton(elevation: 5.0,child: Text(confirmBtnText), onPressed: () async {
           print(_selectedMolecularFamily.name);
           if (_formKey.currentState.validate()) {
-            MolecularAllergene tempAllergene = MolecularAllergene(
+            MolecularAllergen tempAllergene = MolecularAllergen(
                 molecularAllergene==null?0:molecularAllergene.id,
                 molecularAllergeneNameController.text,
                 _selectedMolecularFamily.id,
@@ -93,7 +103,7 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
           }
         },),
 
-        MaterialButton(elevation: 5.0,child: Text('Cancel'), onPressed: (){
+        MaterialButton(elevation: 5.0,child: Text(cancelBtnText), onPressed: (){
           Navigator.of(context).pop(null);//'0');// 0 = canceled && null/2 = error
         },),
       ],
@@ -111,10 +121,10 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
 
 
 
-  void initCurrentSelectedMolecularFamily(MolecularAllergene molecularAllergene, List<MolecularFamily> molecularFamilyList) {
+  void initCurrentSelectedMolecularFamily(MolecularAllergen molecularAllergene, List<MolecularFamily> molecularFamilyList) {
     if(_selectedMolecularFamily == null){
       if (molecularAllergene != null) // is edit
-        _selectedMolecularFamily = getSelectedMolecularFamilyFromID(molecularAllergene.molecular_family_id,molecularFamilyList);
+        _selectedMolecularFamily = getSelectedMolecularFamilyFromID(molecularAllergene.molecularFamilyId,molecularFamilyList);
       else  // is new
         _selectedMolecularFamily = molecularFamilyList.length>0?molecularFamilyList.first:null;
     }

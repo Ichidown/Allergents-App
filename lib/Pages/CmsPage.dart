@@ -14,7 +14,7 @@ import 'CmsTabs/MolecularFamilyToAllergeneTab.dart';
 class CmsPage extends StatefulWidget {
   var onAllergensChangeEvent;
 
-  CmsPage(this.onAllergensChangeEvent, /*{this.onAllergensChangeEvent}*/): super();
+  CmsPage(this.onAllergensChangeEvent): super();
 
   @override
   _CmsPageState createState() => _CmsPageState(onAllergensChangeEvent);
@@ -25,9 +25,9 @@ class _CmsPageState extends State<CmsPage> {
   static const String routeName = '/cms';
   TextStyle tabTextStyle = new TextStyle(fontSize: 9);
 
-  List<Widget> tablist;
+  List<Widget> tabList;
   int tabItemNumber;
-  String title = 'Content Manager System';
+  String title = "Gestion du contenu";
 
   _CmsPageState(this.onAllergensChangeEvent);
 
@@ -38,7 +38,7 @@ class _CmsPageState extends State<CmsPage> {
   @override
   void initState() {
 
-    tablist =  [
+    tabList =  [
       AllergenesTab(onAllergensChangeEvent),
       MolecularFamiliesTab(),
       MolecularAllergenesTab(),
@@ -46,7 +46,7 @@ class _CmsPageState extends State<CmsPage> {
       MolecularFamilyToAllergeneTab(),
       ReactionToMolecularAllergeneTab(),
     ];
-    tabItemNumber = tablist.length;
+    tabItemNumber = tabList.length;
     super.initState();
   }
 
@@ -72,7 +72,7 @@ class _CmsPageState extends State<CmsPage> {
           ),
         ),
 
-        body: TabBarView(children: tablist,
+        body: TabBarView(children: tabList,
         ),
       ),
     );

@@ -9,7 +9,7 @@ class Conclusion {
 
   String molecularFamily;
   int occurrenceFrequency;
-  String molecularAllergene;
+  String molecularAllergen;
 
   int reactionLvl;
   String adaptedTreatment;
@@ -17,7 +17,7 @@ class Conclusion {
 
   Conclusion(this.source1, this.source2, this.source1CrossGroup,
       this.source2CrossGroup, this.molecularFamily, this.occurrenceFrequency,
-      this.molecularAllergene, this.reactionLvl, this.adaptedTreatment);
+      this.molecularAllergen, this.reactionLvl, this.adaptedTreatment);
 
   Conclusion conclusionFromJson(String str) {
     final jsonData = json.decode(str);

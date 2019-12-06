@@ -24,7 +24,6 @@ class MolecularFamily {
       'id': id,
       'name': name,
       'color':color,
-      //'occurrence_frequency':occurrenceFrequency,
     };
   }
 
@@ -32,7 +31,6 @@ class MolecularFamily {
     return {
       'name': name,
       'color':color,
-      //'occurrence_frequency':occurrenceFrequency,
     };
   }
 }

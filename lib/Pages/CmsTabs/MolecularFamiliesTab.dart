@@ -1,5 +1,4 @@
 import 'package:allergensapp/Widgets/TabTitleBar.dart';
-
 import '../../Beings/MolecularFamily.dart';
 import '../../Pages/Dialogs/ColorPickerDialog.dart';
 import '../../Pages/Dialogs/DeleteDialog.dart';
@@ -10,28 +9,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class MolecularFamiliesTab extends StatefulWidget {
-  //var setTabTitle;
-  //MolecularFamiliesTab({this.setTabTitle});
   @override
   _MolecularFamiliesTabState createState() => _MolecularFamiliesTabState();
 }
 
 class _MolecularFamiliesTabState extends State<MolecularFamiliesTab> {
   Future<List<MolecularFamily>> molecularFamilyList;
-  //var setTabTitle;
 
   final dbHelper = DatabaseHelper.instance;
-  final String deleateMsg = 'Are you sure you want to deleate this molecular family ?';
-  final String title = 'Molecular family list';
+  final String deleateMsg = "Êtes-vous sûr de vouloir supprimer cette famille moléculaire?";
+  final String title = "Liste de famille moléculaire";
 
-  //_MolecularFamiliesTabState(this.setTabTitle);
+  final String newItemMsg = 'Nouvelle famille moléculaire';
+  final String deleteSuccessfulMsg = 'Famille moléculaire supprimée avec succès';
+  final String deleteFailedMsg = 'Erreur lors de la suppression de la famille moléculaire';
+  final String editSuccessfulMsg = 'Famille moléculaire modifiée avec succès';
+  final String insertSuccessfulMsg = 'Famille moléculaire créée avec succès';
+  final String editFailedMsg = "Erreur lors de l'édition de la famille moléculaire";
+  final String insertFailedMsg = 'Erreur lors de la création de la famille moléculaire';
+
 
 
   @override
   Widget build(BuildContext context) {
-
-    //print('Mollecular families Tab');
-    //setTabTitle('Allergene Tab');
 
     return Stack(
       children: <Widget>[
@@ -83,7 +83,7 @@ class _MolecularFamiliesTabState extends State<MolecularFamiliesTab> {
                                             ),
                                             width: 50,
                                           ),
-                                          Text(snapshot.data[i].id.toString()),
+                                          Text(snapshot.data[i].id.toString(),style: TextStyle(color: Colors.white)),
                                         ])
                                 ),
                                 title: Text(snapshot.data[i].name),
@@ -105,10 +105,7 @@ class _MolecularFamiliesTabState extends State<MolecularFamiliesTab> {
                               ));
                         });
                   } else {
-                    return ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    );
+                    return Center(child: SizedBox(width: 100,height: 100,child: CircularProgressIndicator(),),);
                   }
                 })),
 
@@ -119,7 +116,7 @@ class _MolecularFamiliesTabState extends State<MolecularFamiliesTab> {
             child: Container(
               margin: EdgeInsets.all(10),
               child: FloatingActionButton(
-                tooltip: 'New Molecular Family',
+                tooltip: newItemMsg,
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -155,7 +152,7 @@ class _MolecularFamiliesTabState extends State<MolecularFamiliesTab> {
     if (success) refreshMolecularFamilyList();
 
     UiTools.newSnackBar(
-        success?'Molecular family deleted successfully':'Error while deleting the molecular family',
+        success?deleteSuccessfulMsg:deleteFailedMsg,
         success?Colors.green:Colors.redAccent, 1, context);
   }
 
@@ -171,8 +168,8 @@ class _MolecularFamiliesTabState extends State<MolecularFamiliesTab> {
       if(success) refreshMolecularFamilyList();
 
       UiTools.newSnackBar(
-          success?(isEdit?'Molecular family edited successfully':'Molecular family created successfully'):
-          (isEdit?'Error while editing the molecular family':'Error while creating the molecular family'),
+          success?(isEdit?editSuccessfulMsg:insertSuccessfulMsg):
+          (isEdit?editFailedMsg:insertFailedMsg),
           success?Colors.green:Colors.redAccent, 1, context);
     }
   }

@@ -21,8 +21,21 @@ class _ReactionsTabState extends State<ReactionsTab> {
 
 
 
-  final String deleateMsg = 'Are you sure you want to deleate this reaction ?';
-  final String title = 'Reaction / Adapted treatment list';
+  final String deleteMsg = 'Êtes-vous sûr de vouloir supprimer cette réaction?';
+  final String title = 'Liste de réaction / traitement adapté';
+
+
+  final String newItemMsg = 'Nouvelle réaction';
+  final String deleteSuccessfulMsg = 'Réaction supprimée avec succès';
+  final String deleteFailedMsg = 'Erreur lors de la suppression de la réaction';
+  final String editSuccessfulMsg = 'Réaction modifiée avec succès';
+  final String insertSuccessfulMsg = 'Réaction créée avec succès';
+  final String editFailedMsg = "Erreur lors de l'édition de la réaction";
+  final String insertFailedMsg = 'Erreur lors de la création de la réaction';
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +66,7 @@ class _ReactionsTabState extends State<ReactionsTab> {
                                 },
                                 onLongPress: () {
                                   showDialog(context: context, builder: (context) {
-                                    return DeleteDialog(deleateMsg);
+                                    return DeleteDialog(deleteMsg);
                                   }).then((onValue) {
                                     if (onValue) deleteReaction(snapshot.data[i].id);
                                   });
@@ -62,9 +75,9 @@ class _ReactionsTabState extends State<ReactionsTab> {
                                     children: <Widget>[
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: snapshot.data[i].level==0?Colors.greenAccent:
-                                          snapshot.data[i].level==1?Colors.amberAccent:
-                                          Colors.redAccent,
+                                          color: snapshot.data[i].level==0?Colors.lightBlueAccent:
+                                          snapshot.data[i].level==1?Colors.greenAccent:
+                                          snapshot.data[i].level==2?Colors.amberAccent:Colors.redAccent,
                                           shape: BoxShape.circle,
                                         ),
                                         width: 50,
@@ -72,14 +85,14 @@ class _ReactionsTabState extends State<ReactionsTab> {
                                       Text(snapshot.data[i].id.toString()),
                                     ]),
 
-                                title: Text(snapshot.data[i].adapted_treatment),
+                                title: Text(snapshot.data[i].adaptedTreatment),
                                 subtitle: Text(levelList[snapshot.data[i].level]),
                                 trailing:
 
                                 GestureDetector(
                                   onTap: () {
                                     showDialog(context: context, builder: (context) {
-                                      return DeleteDialog(deleateMsg);
+                                      return DeleteDialog(deleteMsg);
                                     }).then((onValue) {
                                       if (onValue) deleteReaction(snapshot.data[i].id);
                                     });
@@ -91,10 +104,7 @@ class _ReactionsTabState extends State<ReactionsTab> {
                               ));
                         });
                   } else {
-                    return ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    );
+                    return Center(child: SizedBox(width: 100,height: 100,child: CircularProgressIndicator(),),);
                   }
                 })),
 
@@ -105,7 +115,7 @@ class _ReactionsTabState extends State<ReactionsTab> {
             child: Container(
               margin: EdgeInsets.all(10),
               child: FloatingActionButton(
-                tooltip: 'New Reaction',
+                tooltip: newItemMsg,
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -141,15 +151,12 @@ class _ReactionsTabState extends State<ReactionsTab> {
     if (success) refreshReaction();
 
     UiTools.newSnackBar(
-        success?'Reaction deleted successfully':'Error while deleting the reaction',
+        success?deleteSuccessfulMsg:deleteFailedMsg,
         success?Colors.green:Colors.redAccent, 1, context);
   }
 
 
   void newReaction(Reaction returnedValue) async {
-    
-
-
     if (returnedValue != null){
       bool isEdit = returnedValue.id != 0;
 
@@ -160,8 +167,8 @@ class _ReactionsTabState extends State<ReactionsTab> {
       if(success) refreshReaction();
 
       UiTools.newSnackBar(
-          success?(isEdit?'Reaction edited successfully':'Reaction created successfully'):
-          (isEdit?'Error while editing the reaction':'Error while creating the reaction'),
+          success?(isEdit?editSuccessfulMsg:insertSuccessfulMsg):
+          (isEdit?editFailedMsg:insertFailedMsg),
           success?Colors.green:Colors.redAccent, 1, context);
     }
   }

@@ -23,14 +23,25 @@ class _ReactionDialogState extends State<ReactionDialog> {
   String dialogTitle,_selectedReactionLevel;
 
 
+  final String validatorText1 = "S'il vous plaît entrer quelque chose";
+  final String textFieldLabel = 'Traitement adapté';
+
+  final String confirmBtnText = 'Confirmer';
+  final String cancelBtnText = 'Annuler';
+
+  final String dialogEditTitle = "Modifier la réaction";
+  final String dialogInsertTitle = 'Nouvelle réaction';
+
+
+
   @override
   Widget initState(){
     if(reaction != null){
-      dialogTitle = 'Edit Reaction';
-      adaptedTreatmentController.text = reaction.adapted_treatment;
+      dialogTitle = dialogEditTitle;
+      adaptedTreatmentController.text = reaction.adaptedTreatment;
       _selectedReactionLevel = _reactionLevelList[reaction.level];
     } else{
-      dialogTitle = 'New Reaction';
+      dialogTitle = dialogInsertTitle;
       adaptedTreatmentController.text = '';
       _selectedReactionLevel = _reactionLevelList[0];
     }
@@ -43,8 +54,8 @@ class _ReactionDialogState extends State<ReactionDialog> {
       content:Form( key: _formKey,
         child: Column(children: <Widget>[
 
-          TextFormField(controller:adaptedTreatmentController, decoration: InputDecoration(labelText: 'Adapted Treatment',),
-            validator: (value) { if (value.isEmpty) { return 'Please enter some text';} return null;},),
+          TextFormField(controller:adaptedTreatmentController, decoration: InputDecoration(labelText: textFieldLabel,),
+            validator: (value) { if (value.isEmpty) { return validatorText1;} return null;},),
 
           DropdownButtonFormField(value: _selectedReactionLevel,decoration: new InputDecoration(icon: Icon(Icons.transfer_within_a_station)),
             onChanged: (newValue) { setState(() {_selectedReactionLevel = newValue;});},
@@ -54,7 +65,7 @@ class _ReactionDialogState extends State<ReactionDialog> {
         ],),),
 
       actions: <Widget>[
-        MaterialButton(elevation: 5.0,child: Text('Confirm'), onPressed: () async {
+        MaterialButton(elevation: 5.0,child: Text(confirmBtnText), onPressed: () async {
           if (_formKey.currentState.validate()) {
             Reaction tempReaction = Reaction(reaction==null?0:reaction.id,
                 _reactionLevelList.indexOf(_selectedReactionLevel),
@@ -63,7 +74,7 @@ class _ReactionDialogState extends State<ReactionDialog> {
           }
         },),
 
-        MaterialButton(elevation: 5.0,child: Text('Cancel'), onPressed: (){
+        MaterialButton(elevation: 5.0,child: Text(cancelBtnText), onPressed: (){
           Navigator.of(context).pop(null);//'0');// 0 = canceled && null/2 = error
         },),
       ],

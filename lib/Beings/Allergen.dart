@@ -2,31 +2,31 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-class Allergene {
+class Allergen {
   int id;
   String name;
-  int allergeneType;
+  int allergenType;
   String color;
   String crossGroup;
   Uint8List image;
 
-  Allergene(this.id, this.name, this.allergeneType,this.color,this.crossGroup, this.image);
+  Allergen(this.id, this.name, this.allergenType,this.color,this.crossGroup, this.image);
 
 
-  Allergene allergeneFromJson(String str) {
+  Allergen allergenFromJson(String str) {
     final jsonData = json.decode(str);
-    return Allergene.fromJson(jsonData);
+    return Allergen.fromJson(jsonData);
   }
 
-  factory Allergene.fromJson(Map<String, dynamic> json){
-    return new Allergene(json["id"],json["name"],json["Allergene_type"],json["color"],json["cross_group"],json["image"]/*null*/);
+  factory Allergen.fromJson(Map<String, dynamic> json){
+    return new Allergen(json["id"],json["name"],json["Allergene_type"],json["color"],json["cross_group"],json["image"]/*null*/);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
-      'Allergene_type': allergeneType,
+      'Allergene_type': allergenType,
       'color':color,
       'cross_group':crossGroup,
       'image':image,
@@ -36,7 +36,7 @@ class Allergene {
   Map<String, dynamic> toJsonNoId() {
     return {
       'name': name,
-      'Allergene_type': allergeneType,
+      'Allergene_type': allergenType,
       'color':color,
       'cross_group':crossGroup,
       'image':image,

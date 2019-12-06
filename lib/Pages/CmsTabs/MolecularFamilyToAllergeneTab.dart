@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:allergensapp/Widgets/TabTitleBar.dart';
 
-import '../../Beings/Allergene.dart';
-import '../../Beings/MFamilyAllergene.dart';
+import '../../Beings/Allergen.dart';
+import '../../Beings/MFamilyAllergen.dart';
 import '../../Beings/MolecularFamily.dart';
 import '../../Pages/Dialogs/DeleteDialog.dart';
 import '../../Pages/Dialogs/MolecularFamilyToAllergeneDialog.dart';
@@ -18,9 +18,9 @@ class MolecularFamilyToAllergeneTab extends StatefulWidget {
 }
 
 class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllergeneTab> {
-  Future<List<Allergene>> allergeneList;
+  Future<List<Allergen>> allergeneList;
   Future<List<MolecularFamily>> molecularFamilyList;
-  Future<List<MFamilyAllergene>> mFamilyAllergeneList;
+  Future<List<MFamilyAllergen>> mFamilyAllergeneList;
   HashMap molecularFamilyListHash = new HashMap();
   HashMap allergeneListHash = new HashMap();
   final dbHelper = DatabaseHelper.instance;
@@ -28,17 +28,18 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
 
 
 
-  final String deleteMsg = 'Are you sure you want to deleate this Molecular Family To Allergene link ?';
-  final String newItemMsg = 'New Molecular Family To Allergene link Link';
-  final String deleteSuccessfulMsg = 'Molecular Family To Allergene link deleted successfully';
-  final String deleteFailedMsg = 'Error while deleting the Molecular Family To Allergene link';
-  final String editSuccessfulMsg = 'Molecular Family To Allergene link edited successfully';
-  final String insertSuccessfulMsg = 'Molecular Family To Allergene link created successfully';
-  final String editFailedMsg = 'Error while editing the Molecular Family To Allergene link';
-  final String insertFailedMsg = 'Error while creating the Molecular Family To Allergene link';
+  final String deleteMsg = 'Êtes-vous sûr de vouloir supprimer ce lien Famille moléculaire / Allergène ?';
+
+  final String newItemMsg = 'Nouveau lien famille / allergènes moléculaires';
+  final String deleteSuccessfulMsg = 'Le lien Famille moléculaire / Allergène a été supprimé avec succès';
+  final String deleteFailedMsg = 'Erreur lors de la suppression du lien Famille moléculaire / Allergène';
+  final String editSuccessfulMsg = 'Le lien Famille moléculaire / Allergène a été édité avec succès';
+  final String insertSuccessfulMsg = 'Lien Molecular Family / Allergene créé avec succès';
+  final String editFailedMsg = 'Erreur lors de la modification du lien Famille moléculaire / Allergène';
+  final String insertFailedMsg = 'Erreur lors de la création du lien famille moléculaire / allergène';
 
 
-  final String title = 'Molecular families to Allergenes link list';
+  final String title = 'Liste de liens familles moléculaires / Allergènes';
 
   @override
   void initState() {
@@ -56,7 +57,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
       children: <Widget>[
 
         /** Initialise allergene List HashMap */
-        FutureBuilder<List<Allergene>>(
+        FutureBuilder<List<Allergen>>(
             future: allergeneList,
             builder: (context, snapshot) {
               if(snapshot.hasData)
@@ -74,7 +75,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
 
         SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
-            child: FutureBuilder<List<MFamilyAllergene>>(
+            child: FutureBuilder<List<MFamilyAllergen>>(
                 future: refreshMFamilyAllergene(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -112,7 +113,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
                                       Text(snapshot.data[i].id.toString()),
                                     ]),
 
-                                title: Text('${allergeneListHash[snapshot.data[i].allergeneID1]} + ${allergeneListHash[snapshot.data[i].allergeneID2]}'),
+                                title: Text('${allergeneListHash[snapshot.data[i].allergenID1]} + ${allergeneListHash[snapshot.data[i].allergenID2]}'),
                                 subtitle: Text("${molecularFamilyListHash[snapshot.data[i].molecularFamilyID]}  (${snapshot.data[i].occurrenceFrequency==-1?'Unknown':snapshot.data[i].occurrenceFrequency}%)"),
                                 trailing:
 
@@ -131,10 +132,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
                               ));
                         });
                   } else {
-                    return ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    );
+                    return Center(child: SizedBox(width: 100,height: 100,child: CircularProgressIndicator(),),);
                   }
                 })),
 
@@ -171,7 +169,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
 
 
 
-  Future<List<MFamilyAllergene>> refreshMFamilyAllergene() async {
+  Future<List<MFamilyAllergen>> refreshMFamilyAllergene() async {
     setState(() {mFamilyAllergeneList = dbHelper.getMolecularFamilyToAllergeneList();});
     return mFamilyAllergeneList;
   }
@@ -186,7 +184,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
   }
 
 
-  void newMFamilyAllergene(MFamilyAllergene returnedValue) async {
+  void newMFamilyAllergene(MFamilyAllergen returnedValue) async {
     if (returnedValue != null){
       bool isEdit = returnedValue.id != 0;
 

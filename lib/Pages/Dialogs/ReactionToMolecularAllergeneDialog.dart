@@ -1,14 +1,14 @@
-import '../../Beings/MAllergeneReaction.dart';
-import '../../Beings/MolecularAllergene.dart';
+import '../../Beings/MAllergenReaction.dart';
+import '../../Beings/MolecularAllergen.dart';
 import '../../Beings/Reaction.dart';
 import '../../Tools/database_helper.dart';
 import 'package:flutter/material.dart';
 
 
 class ReactionToMolecularAllergeneDialog extends StatefulWidget {
-  Future<List<MolecularAllergene>> molecularAllergeneList;
+  Future<List<MolecularAllergen>> molecularAllergeneList;
   Future<List<Reaction>> reactionList;
-  MAllergeneReaction mAllergeneReaction;
+  MAllergenReaction mAllergeneReaction;
   ReactionToMolecularAllergeneDialog(this.mAllergeneReaction, this.molecularAllergeneList, this.reactionList);
 
   @override
@@ -17,33 +17,35 @@ class ReactionToMolecularAllergeneDialog extends StatefulWidget {
 }
 
 class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecularAllergeneDialog> {
-  Future<List<MolecularAllergene>> molecularAllergeneList;
+  Future<List<MolecularAllergen>> molecularAllergeneList;
   Future<List<Reaction>> reactionList;
 
-  MAllergeneReaction mAllergeneReaction;
+  MAllergenReaction mAllergeneReaction;
   _ReactionToMolecularAllergeneDialogState(this.mAllergeneReaction, this.molecularAllergeneList, this.reactionList);
 
   final _formKey = GlobalKey<FormState>();
   String dialogTitle;
-  MolecularAllergene _selectedMolecularAllergene;
+  MolecularAllergen _selectedMolecularAllergene;
   Reaction _selectedReaction;
   final dbHelper = DatabaseHelper.instance;
 
 
+  final String confirmBtnText = 'Confirmer';
+  final String cancelBtnText = 'Annuler';
+
+  final String validatorText1 = "Veuillez créer un allergène moléculaire d'abord";
+  final String validatorText2 = "Veuillez créer une réaction d'abord";
+
+  final String dialogEditTitle = "Modifier le lien réactif / allergène moléculaire";
+  final String dialogInsertTitle = 'Nouveau lien réaction / allergène moléculaire';
+
+
   @override
   Widget initState(){
-    if(mAllergeneReaction != null){
-      dialogTitle = 'Edit Reaction / Molecular Allergene Link';
-      //adaptedTreatmentController.text = mAllergeneReaction.adapted_treatment;
-      //_selectedReaction = _reactionLevelList[mAllergeneReaction.level];
-      //_selectedMolecularAllergene = _reactionLevelList[mAllergeneReaction.level];
-    } else {
-      dialogTitle = 'New Reaction / Molecular Allergene Link';
-      //adaptedTreatmentController.text = '';
-      //_selectedReaction = _reactionLevelList[0];
-      //_selectedMolecularAllergene = _reactionLevelList[0];
-    }
-    // molecularAllergeneList = dbHelper.getMolecularAllergenes();
+    if(mAllergeneReaction != null)
+      dialogTitle = dialogEditTitle;
+    else
+      dialogTitle = dialogInsertTitle;
   }
 
   @override
@@ -52,32 +54,19 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
     AlertDialog(title: Text(dialogTitle),
       content:Form( key: _formKey,
         child: Column(children: <Widget>[
-/*
-          DropdownButtonFormField(value: _selectedReaction,decoration: new InputDecoration(icon: Icon(Icons.transfer_within_a_station)),
-            onChanged: (newValue) { setState(() {_selectedReaction = newValue;});},
-            items: _reactionLevelList.map((location) { return DropdownMenuItem(child: new Text(location), value: location,);}).toList(),
-          ),
 
-          DropdownButtonFormField(value: _selectedMolecularAllergene,decoration: new InputDecoration(icon: Icon(Icons.transfer_within_a_station)),
-            onChanged: (newValue) { setState(() {_selectedMolecularAllergene = newValue;});},
-            items: _reactionLevelList.map((location) { return DropdownMenuItem(child: new Text(location), value: location,);}).toList(),
-          ),
-*/
-
-
-          FutureBuilder<List<MolecularAllergene>>(
+          FutureBuilder<List<MolecularAllergen>>(
               future: molecularAllergeneList,//refreshMolecularFamilyList(),
               builder: (context, snapshot) {
-                //if (snapshot.hasError) return Text(snapshot.error);
                 if (snapshot.hasData) {
                   initCurrentSelectedMolecularAllergene(mAllergeneReaction, snapshot.data);
                   return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.bubble_chart)),
                       onChanged: (newValue) {setState(() {_selectedMolecularAllergene = newValue;});},
                       value: _selectedMolecularAllergene,//initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data),
-                      items: snapshot.data.map((MolecularAllergene molecularAllergene) {
-                      return DropdownMenuItem<MolecularAllergene>(child: Text(molecularAllergene.name), value:molecularAllergene);
+                      items: snapshot.data.map((MolecularAllergen molecularAllergene) {
+                      return DropdownMenuItem<MolecularAllergen>(child: Text(molecularAllergene.name), value:molecularAllergene);
                       }).toList(),
-                      validator: (value) { if (value == null) { return 'Please create a molecular allergene first';} return null;},
+                      validator: (value) { if (value == null) { return validatorText1;} return null;},
                       );
                 }
                 return DropdownButtonFormField(items: null, onChanged: (newValue){},); //CircularProgressIndicator();
@@ -89,16 +78,15 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
           FutureBuilder<List<Reaction>>(
               future: reactionList,//refreshMolecularFamilyList(),
               builder: (context, snapshot) {
-                //if (snapshot.hasError) return Text(snapshot.error);
                 if (snapshot.hasData) {
                   initCurrentSelectedReaction(mAllergeneReaction, snapshot.data);
                   return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.airline_seat_flat)),
                     onChanged: (newValue) {setState(() {_selectedReaction = newValue;});},
                     value: _selectedReaction,//initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data),
                     items: snapshot.data.map((Reaction reaction) {
-                      return DropdownMenuItem<Reaction>(child: Text(reaction.adapted_treatment), value:reaction);
+                      return DropdownMenuItem<Reaction>(child: Text(reaction.adaptedTreatment), value:reaction);
                     }).toList(),
-                    validator: (value) { if (value == null) { return 'Please create a reaction first';} return null;},
+                    validator: (value) { if (value == null) { return validatorText2;} return null;},
                   );
                 }
                 return DropdownButtonFormField(items: null, onChanged: (newValue){},); //CircularProgressIndicator();
@@ -107,9 +95,9 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
         ],),),
 
       actions: <Widget>[
-        MaterialButton(elevation: 5.0,child: Text('Confirm'), onPressed: () async {
+        MaterialButton(elevation: 5.0,child: Text(confirmBtnText), onPressed: () async {
           if (_formKey.currentState.validate()) {
-            MAllergeneReaction tempMAllergeneReaction = MAllergeneReaction(
+            MAllergenReaction tempMAllergeneReaction = MAllergenReaction(
                 mAllergeneReaction==null?0:mAllergeneReaction.id,
                 _selectedMolecularAllergene.id,
                 _selectedReaction.id);
@@ -117,7 +105,7 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
           }
         },),
 
-        MaterialButton(elevation: 5.0,child: Text('Cancel'), onPressed: (){
+        MaterialButton(elevation: 5.0,child: Text(cancelBtnText), onPressed: (){
           Navigator.of(context).pop(null);//'0');// 0 = canceled && null/2 = error
         },),
       ],
@@ -130,17 +118,17 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
   }
 
 
-  void initCurrentSelectedMolecularAllergene(MAllergeneReaction mAllergeneReaction, List<MolecularAllergene> molecularAllergeneList) {
+  void initCurrentSelectedMolecularAllergene(MAllergenReaction mAllergeneReaction, List<MolecularAllergen> molecularAllergeneList) {
     if(_selectedMolecularAllergene == null){
       if (mAllergeneReaction != null) // is edit
-        _selectedMolecularAllergene = getSelectedMolecularAllergeneFromID(mAllergeneReaction.molecularAllergeneID,molecularAllergeneList);
+        _selectedMolecularAllergene = getSelectedMolecularAllergeneFromID(mAllergeneReaction.molecularAllergenID,molecularAllergeneList);
       else  // is new
         _selectedMolecularAllergene = molecularAllergeneList.length>0?molecularAllergeneList.first:null;
     }
   }
 
 
-  void initCurrentSelectedReaction(MAllergeneReaction mAllergeneReaction, List<Reaction> reactionList) {
+  void initCurrentSelectedReaction(MAllergenReaction mAllergeneReaction, List<Reaction> reactionList) {
     if(_selectedReaction == null){
       if (mAllergeneReaction != null) // is edit
         _selectedReaction = getSelectedReactionFromID(mAllergeneReaction.reactionID,reactionList);
@@ -149,7 +137,7 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
     }
   }
 
-  MolecularAllergene getSelectedMolecularAllergeneFromID(int molecularAllergeneId, List<MolecularAllergene> molecularAllergeneList){
+  MolecularAllergen getSelectedMolecularAllergeneFromID(int molecularAllergeneId, List<MolecularAllergen> molecularAllergeneList){
     for(int i = 0;i<molecularAllergeneList.length;i++){
       if ( molecularAllergeneId == molecularAllergeneList[i].id)
         return molecularAllergeneList[i];

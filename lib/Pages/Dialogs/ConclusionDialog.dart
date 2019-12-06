@@ -1,5 +1,4 @@
 import 'package:allergensapp/Beings/Conclusion.dart';
-import 'package:allergensapp/Tools/GeneralTools.dart';
 import 'package:allergensapp/Tools/UiTools.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +13,18 @@ class ConclusionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final String title = 'Détails';
+
+    final String unknownText = 'inconnue';
+    final String pollenLabel = 'Polen : ';
+    final String pollenCrossGroupLabel = 'Polen / Allergies croisées : ';
+    final String alimentLabel = 'Aliment : ';
+    final String alimentCrossGroupLabel = 'Aliment / Allergies croisées : ';
+    final String molecularFamilyLabel = 'Famille moléculaire : ';
+    final String molecularFamilyOccurrenceFrequencyLabel = "Fréquence d'occurrence de la famille moléculaire : ";
+    final String molecularAllergenLabel = 'Allergène Moléculaire : ';
+    final String reactionLevelLabel = 'Niveau de réaction : ';
+    final String adaptedTreatmentLabel = 'Traitement adapté : ';
 
 
     return Center(child:
@@ -24,7 +35,7 @@ class ConclusionDialog extends StatelessWidget {
 
 
             AlertDialog(title: Row(children: <Widget>[
-              Expanded(child: Text('Details'),),
+              Expanded(child: Text(title),),
               Container(child:
               FloatingActionButton(backgroundColor: Colors.white,elevation: 0.0,child: Icon(Icons.clear,color: Colors.grey,),
                 onPressed: (){Navigator.of(context).pop(false);},
@@ -42,15 +53,15 @@ class ConclusionDialog extends StatelessWidget {
                       text: TextSpan(
                         style: mediumTextStyle,
                         children: <TextSpan>[
-                          TextSpan(text: 'Polen : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.source1}\n'),
-                          TextSpan(text: 'Polen cross group : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.source1CrossGroup}\n'),
-                          TextSpan(text: 'Aliment : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.source2}\n'),
-                          TextSpan(text: 'Aliment cross group : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.source2CrossGroup}\n'),
-                          TextSpan(text: 'Molecular Family : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.molecularFamily}\n'),
-                          TextSpan(text: 'Molecular Family Occurence Frequency : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.occurrenceFrequency==-1?'unknown':snapshot.data.occurrenceFrequency}%\n'),
-                          TextSpan(text: 'Molecular Allergen : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.molecularAllergene}\n'),
-                          TextSpan(text: 'Reaction Level : ', style: bigTextStyle), TextSpan(text: '${UiTools.getReactionByLvl(snapshot.data.reactionLvl)}\n'),
-                          TextSpan(text: 'Adapted Treatment : ', style: bigTextStyle), TextSpan(text: '${snapshot.data.adaptedTreatment}\n'),
+                          TextSpan(text: pollenLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.source1}\n'),
+                          TextSpan(text: pollenCrossGroupLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.source1CrossGroup}\n'),
+                          TextSpan(text: alimentLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.source2}\n'),
+                          //TextSpan(text: alimentCrossGroupLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.source2CrossGroup}\n'),
+                          TextSpan(text: molecularFamilyLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.molecularFamily}\n'),
+                          TextSpan(text: molecularFamilyOccurrenceFrequencyLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.occurrenceFrequency==-1?unknownText:snapshot.data.occurrenceFrequency}%\n'),
+                          TextSpan(text: molecularAllergenLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.molecularAllergen}\n'),
+                          TextSpan(text: reactionLevelLabel, style: bigTextStyle), TextSpan(text: '${UiTools.getReactionByLvl(snapshot.data.reactionLvl)}\n'),
+                          TextSpan(text: adaptedTreatmentLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.adaptedTreatment}\n'),
                         ],),),
 
                         SizedBox(height: 50,),

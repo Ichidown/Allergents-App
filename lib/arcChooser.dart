@@ -11,7 +11,6 @@ typedef void ArcSelectedCallback(int position, ArcItem arcItem);
 
 class ArcChooser extends StatefulWidget {
   ArcSelectedCallback arcSelectedCallback;
-  // _DemonstrationPageState _demonstrationPageState;
 
   ArcChooser({Key key,this.onChoiceChange,this.onChoiceSelected}): super(key: key);
 
@@ -139,24 +138,30 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
       },
 
 
-      child: arcItems.length > 0 ? CustomPaint(
+      child: arcItems.length > 0 ?
+
+      CustomPaint(
         size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height * 1 / 1.5),
         painter: ChooserPainter(arcItems, angleInRadians, MediaQuery.of(context).size.height, MediaQuery.of(context).size.width,MediaQuery.of(context).orientation),
-      ) : Container(),
+      )
+
+
+          : Container(),
     );
   }
 
 
   void refreshRouletteWheelRotation() {
     setState(() {
+      //print(arcItems.length/angleInRadiansByTwo);
       for (int i = 0; i < arcItems.length; i++) {
-        arcItems[i].startAngle = angleInRadiansByTwo + userAngle + (i * angleInRadians);
+        arcItems[i].startAngle = 4.28+/**angleInRadiansByTwo*arcItems.length +*/ userAngle + (i * angleInRadians)/** + 4.65*/;// + 10.88;
       }
     });
   }
 
 
-  void getAllergene(int type){ // 0 == pollens, 1 == aliments
+  void getAllergen(int type){ // 0 == pollens, 1 == aliments
     dbHelper.getAllergenOfType(type).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id,c.crossGroup,c.image)).toList() : List<ArcItem>();
@@ -167,7 +172,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
 
   void getMolecularFamilies(int allergeneId1,int allergeneId2){ // 0 == pollens, 1 == aliments
-    dbHelper.getMolecularFamiliesOfAllergeneCombination(allergeneId1,allergeneId2).then((result) {
+    dbHelper.getMolecularFamiliesOfAllergenCombination(allergeneId1,allergeneId2).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id, c.occurrenceFrequency==-1?'Unknown%':"(${c.occurrenceFrequency}%)",null)).toList() : List<ArcItem>();
       });
@@ -177,7 +182,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
 
   void getMolecularAllergenes(int mFamilyId){ // 0 == pollens, 1 == aliments
-    dbHelper.getMolecularAllergenesFromMFamily(mFamilyId).then((result) {
+    dbHelper.getMolecularAllergensFromMFamily(mFamilyId).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id,'',null)).toList() : List<ArcItem>();
       });
@@ -188,7 +193,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   void getReactions(int mAllergeneId){ // 0 == pollens, 1 == aliments
     dbHelper.getReactionsOfMolecularAllergenes(mAllergeneId).then((result) {
       setState(() {
-        arcItems = result.length>0 ? result.map((c) => ArcItem(c.adapted_treatment,colorLvl[c.level],c.id,UiTools.getReactionByLvl(c.level),null)).toList() : List<ArcItem>();
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.adaptedTreatment,colorLvl[c.level],c.id,UiTools.getReactionByLvl(c.level),null)).toList() : List<ArcItem>();
       });
       refreshRouletteWheelData();
     });
@@ -212,12 +217,17 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 
   void getData(){
     switch(currentDataChoiceLvl){
-      case 0: getAllergene(0); break;
-      case 1: getAllergene(1); break;
+      case 0: getAllergen(0); break;
+      case 1: getAllergen(1); break;
       case 2: getMolecularFamilies(id1,id2); break;
       case 3: getMolecularAllergenes(id1); break;
       case 4: getReactions(id1); break;
     }
+    setState(() { // reset wheel rotation
+      /**userAngle = 0;*/
+      currentPosition = 0;
+    });
+
   }
 
 
@@ -267,7 +277,7 @@ class ChooserPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //common calc
     double centerX = size.width / 2;
-    double centerY = screenOrientation == Orientation.landscape? screenWidth:screenHeight;//size.height * 1.1;
+    double centerY = (screenOrientation == Orientation.landscape)? screenWidth/1.07:screenHeight;//size.height * 1.1;
 
     Offset center = Offset(centerX, centerY);
     double radius = sqrt((size.width * size.width) / 3);
@@ -294,7 +304,7 @@ class ChooserPainter extends CustomPainter {
     double bottomY3 = centerY + radiusShadow;
 
     // for text
-    double radiusText = radius * 1.05;
+    double radiusText = radius * 1.07;
 
     Rect arcRect = Rect.fromLTRB(leftX2, topY2, rightX2, bottomY2);
 
@@ -313,9 +323,14 @@ class ChooserPainter extends CustomPainter {
             ..color = arcItems[i].color);
 
       //Draw text
-      TextSpan span = new TextSpan(text: arcItems[i].text,
-          style: new TextStyle(fontWeight: FontWeight.normal, fontSize: 12.0, color: Colors.white));
-      TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.justify, textDirection: TextDirection.ltr,);
+      int textAcceptableLength = (500/arcItems.length).round();// set text max length depending on the number of items
+      TextSpan span = new TextSpan(
+          text: arcItems[i].text.length>textAcceptableLength?
+            "${arcItems[i].text.substring(0,textAcceptableLength)}\n-${arcItems[i].text.substring(textAcceptableLength)}":
+            arcItems[i].text,
+          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 10.0, color: Colors.white));
+      TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.justify, textDirection: TextDirection.ltr,
+          textScaleFactor:min(0.7 + 5/(arcItems.length), 1.5) );
       tp.layout();
 
       //find additional angle to make text in center
@@ -330,13 +345,10 @@ class ChooserPainter extends CustomPainter {
       canvas.save();
       canvas.translate(tX, tY);
 
-      //print((360/arcItems.length)* (pi / 180));
-
       /** KEEP THIS ONE IN CASE YOU WANT A BETTER TEXT ROTATION **/
       /** canvas.rotate(arcItems[i].startAngle); **/
 
-      //print(360/arcItems.length);
-      /**canvas.rotate( arcItems[i].startAngle + angleInRadians*2 + angleInRadiansByTwo);*/
+      canvas.rotate( arcItems[i].startAngle + angleInRadians*(arcItems.length/4.1 /** Magic number **/) + angleInRadiansByTwo);
 
       tp.paint(canvas, new Offset(0.0, 0.0));
       canvas.restore();
@@ -348,15 +360,25 @@ class ChooserPainter extends CustomPainter {
         Rect.fromLTRB(leftX3, topY3, rightX3, bottomY3),
         GeneralTools.degreeToRadians(180.0),
         GeneralTools.degreeToRadians(180.0));
-    canvas.drawShadow(shadowPath, Colors.blueGrey[900], 15.0, true);
+    canvas.drawShadow(shadowPath, Colors.black, 15.0, true);
+
+
+
+
 
     //bottom white arc
-    canvas.drawArc(
+    /**canvas.drawArc(
         Rect.fromLTRB(leftX, topY, rightX, bottomY),
         GeneralTools.degreeToRadians(360.0),
         GeneralTools.degreeToRadians(360.0),
         true,
-        whitePaint);
+        whitePaint);*/
+
+
+    //canvas.clipRRect(RRect.fromLTRBR(leftX, topY, rightX, bottomY,/*center,*/Radius.circular(100)),doAntiAlias: true);
+
+
+
   }
 
   @override

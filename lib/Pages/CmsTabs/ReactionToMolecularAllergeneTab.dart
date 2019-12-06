@@ -1,9 +1,7 @@
 import 'dart:collection';
-
 import 'package:allergensapp/Widgets/TabTitleBar.dart';
-
-import '../../Beings/MAllergeneReaction.dart';
-import '../../Beings/MolecularAllergene.dart';
+import '../../Beings/MAllergenReaction.dart';
+import '../../Beings/MolecularAllergen.dart';
 import '../../Beings/Reaction.dart';
 import '../../Pages/Dialogs/DeleteDialog.dart';
 import '../../Pages/Dialogs/ReactionToMolecularAllergeneDialog.dart';
@@ -19,8 +17,8 @@ class ReactionToMolecularAllergeneTab extends StatefulWidget {
 
 class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAllergeneTab> {
   Future<List<Reaction>> reactionList;
-  Future<List<MolecularAllergene>> molecularAllergeneList;
-  Future<List<MAllergeneReaction>> mAllergeneReactionList;
+  Future<List<MolecularAllergen>> molecularAllergeneList;
+  Future<List<MAllergenReaction>> mAllergeneReactionList;
   HashMap reactionListHash = new HashMap();
   HashMap molecularAllergeneListHash = new HashMap();
   final dbHelper = DatabaseHelper.instance;
@@ -28,14 +26,26 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
 
 
 
-  final String deleateMsg = 'Are you sure you want to deleate this reaction ?';
-  final String title = 'Molecular allergene to Reaction link list';
+  final String deleateMsg = 'Êtes-vous sûr de vouloir supprimer cette réaction ?';
+  final String title = "Liste des liens de l'allergène moléculaire / réaction";
+
+  final String newItemMsg = 'Nouveau lien réaction / allergène moléculaire';
+  final String deleteSuccessfulMsg = 'Le lien réaction / allergène moléculaire a été supprimé avec succès';
+  final String deleteFailedMsg = 'Erreur lors de la suppression du lien réaction / allergène moléculaire';
+  final String editSuccessfulMsg = 'Lien réaction / allergène moléculaire modifié avec succès';
+  final String insertSuccessfulMsg = 'Lien réaction / allergène moléculaire créé avec succès';
+  final String editFailedMsg = "Erreur lors de la modification du lien réaction / allergène moléculaire";
+  final String insertFailedMsg = 'Erreur lors de la création du lien réaction / allergène moléculaire';
+
+
+
+
 
 
   @override
   void initState() {
     reactionList = dbHelper.getReactions();
-    molecularAllergeneList = dbHelper.getMolecularAllergenes();
+    molecularAllergeneList = dbHelper.getMolecularAllergens();
 
     super.initState();
   }
@@ -52,11 +62,11 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
             future: reactionList,
             builder: (context, snapshot) {
               if(snapshot.hasData)
-                snapshot.data.forEach((element) => reactionListHash[element.id]=element.adapted_treatment);
+                snapshot.data.forEach((element) => reactionListHash[element.id]=element.adaptedTreatment);
               return Container();
             }),
     /** Initialise molecular Allergene List HashMap */
-        FutureBuilder<List<MolecularAllergene>>(
+        FutureBuilder<List<MolecularAllergen>>(
             future: molecularAllergeneList,
             builder: (context, snapshot) {
               if(snapshot.hasData)
@@ -68,7 +78,7 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
 
         SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
-            child: FutureBuilder<List<MAllergeneReaction>>(
+            child: FutureBuilder<List<MAllergenReaction>>(
                 future: refreshMAllergeneReaction(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -100,25 +110,13 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
                                         decoration: BoxDecoration(
                                           color: Colors.grey[200],
                                           shape: BoxShape.circle,
-                                          /**boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey[600],
-                                              offset: const Offset(0.0, 0.0),
-                                            ),
-                                            BoxShadow(
-                                              color: Colors.black,
-                                              offset: const Offset(0.0, 0.0),
-                                              spreadRadius: -20.0,
-                                              blurRadius: 0.0,
-                                            ),
-                                          ],*/
                                         ),
                                         width: 50,
                                       ),
-                                      Text(snapshot.data[i].id.toString()),
+                                      Text(snapshot.data[i].id.toString(),),
                                     ]),
 
-                                title: Text(molecularAllergeneListHash[snapshot.data[i].molecularAllergeneID]),
+                                title: Text(molecularAllergeneListHash[snapshot.data[i].molecularAllergenID]),
                                 subtitle: Text(reactionListHash[snapshot.data[i].reactionID]),
                                 trailing:
 
@@ -137,10 +135,7 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
                               ));
                         });
                   } else {
-                    return ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    );
+                    return Center(child: SizedBox(width: 100,height: 100,child: CircularProgressIndicator(),),);
                   }
                 })),
 
@@ -151,7 +146,7 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
             child: Container(
               margin: EdgeInsets.all(10),
               child: FloatingActionButton(
-                tooltip: 'New Reaction / Molecular Allergene Link',
+                tooltip: newItemMsg,
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -177,7 +172,7 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
 
 
 
-  Future<List<MAllergeneReaction>> refreshMAllergeneReaction() async {
+  Future<List<MAllergenReaction>> refreshMAllergeneReaction() async {
     setState(() {mAllergeneReactionList = dbHelper.getReactionToMolecularAllergeneList();});
     return mAllergeneReactionList;
   }
@@ -187,12 +182,12 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
     if (success) refreshMAllergeneReaction();
 
     UiTools.newSnackBar(
-        success?'Reaction / mollecular allergene link deleted successfully':'Error while deleting the reaction / mollecular allergene link',
+        success?deleteSuccessfulMsg:deleteFailedMsg,
         success?Colors.green:Colors.redAccent, 1, context);
   }
 
 
-  void newMAllergeneReaction(MAllergeneReaction returnedValue) async {
+  void newMAllergeneReaction(MAllergenReaction returnedValue) async {
     if (returnedValue != null){
       bool isEdit = returnedValue.id != 0;
 
@@ -204,8 +199,8 @@ class _ReactionToMolecularAllergeneTabState extends State<ReactionToMolecularAll
       if(success) refreshMAllergeneReaction();
 
       UiTools.newSnackBar(
-          success?(isEdit?'Reaction / mollecular allergene link edited successfully':'Reaction / mollecular allergene link created successfully'):
-          (isEdit?'Error while editing the reaction / mollecular allergene link':'Error while creating the reaction / mollecular allergene link'),
+          success?(isEdit?editSuccessfulMsg:insertSuccessfulMsg):
+          (isEdit?editFailedMsg:insertFailedMsg),
           success?Colors.green:Colors.redAccent, 1, context);
     }
   }

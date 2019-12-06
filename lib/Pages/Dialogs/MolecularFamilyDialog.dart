@@ -10,7 +10,6 @@ class MolecularFamilyDialog extends StatefulWidget {
 
   @override
   _MolecularFamilyDialogState createState() => _MolecularFamilyDialogState(molecularFamily);
-
 }
 
 class _MolecularFamilyDialogState extends State<MolecularFamilyDialog> {
@@ -22,13 +21,23 @@ class _MolecularFamilyDialogState extends State<MolecularFamilyDialog> {
   String dialogTitle;
 
 
+  final String editDialogTitle = 'Modifier la famille moléculaire';
+  final String insertDialogTitle = 'Nouvelle famille moléculaire';
+
+  final String validatorText1 = "S'il vous plaît entrer quelque chose";
+  final String textFieldLabel = 'Nom de famille moléculaire';
+
+  final String confirmBtnText = 'Confirmer';
+  final String cancelBtnText = 'Annuler';
+
+
   @override
   Widget initState(){
     if(molecularFamily != null){
-      dialogTitle = 'Edit Molecular family';
+      dialogTitle = editDialogTitle;
       molecularFamilyController.text = molecularFamily.name;
     } else{
-      dialogTitle = 'New Molecular family';
+      dialogTitle = insertDialogTitle;
       molecularFamilyController.text = '';
     }
   }
@@ -40,13 +49,13 @@ class _MolecularFamilyDialogState extends State<MolecularFamilyDialog> {
       content:Form( key: _formKey,
         child: Column(children: <Widget>[
 
-          TextFormField(controller:molecularFamilyController, decoration: InputDecoration(labelText: 'Molecular Family Name',),
-            validator: (value) { if (value.isEmpty) { return 'Please enter some text';} return null;},),
+          TextFormField(controller:molecularFamilyController, decoration: InputDecoration(labelText: textFieldLabel,),
+            validator: (value) { if (value.isEmpty) { return validatorText1;} return null;},),
 
         ],),),
 
       actions: <Widget>[
-        MaterialButton(elevation: 5.0,child: Text('Confirm'), onPressed: () async {
+        MaterialButton(elevation: 5.0,child: Text(confirmBtnText), onPressed: () async {
           if (_formKey.currentState.validate()) {
             MolecularFamily tempAllergene = MolecularFamily(molecularFamily==null?0:molecularFamily.id,
                 molecularFamilyController.text,
@@ -55,7 +64,7 @@ class _MolecularFamilyDialogState extends State<MolecularFamilyDialog> {
           }
         },),
 
-        MaterialButton(elevation: 5.0,child: Text('Cancel'), onPressed: (){
+        MaterialButton(elevation: 5.0,child: Text(cancelBtnText), onPressed: (){
           Navigator.of(context).pop(null);//'0');// 0 = canceled && null/2 = error
         },),
       ],

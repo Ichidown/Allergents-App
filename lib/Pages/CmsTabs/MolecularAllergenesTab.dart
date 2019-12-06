@@ -1,8 +1,6 @@
 import 'dart:collection';
-
-import 'package:allergensapp/Widgets/TabTitleBar.dart';
-
-import '../../Beings/MolecularAllergene.dart';
+import '../../Widgets/TabTitleBar.dart';
+import '../../Beings/MolecularAllergen.dart';
 import '../../Beings/MolecularFamily.dart';
 import '../../Pages/Dialogs/ColorPickerDialog.dart';
 import '../../Pages/Dialogs/DeleteDialog.dart';
@@ -19,13 +17,23 @@ class MolecularAllergenesTab extends StatefulWidget {
 }
 
 class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
-  Future<List<MolecularAllergene>> molecularAllergeneList;
+  Future<List<MolecularAllergen>> molecularAllergeneList;
   Future<List<MolecularFamily>> molecularFamilyList;
   HashMap mAllergeneListHash = new HashMap();
 
   final dbHelper = DatabaseHelper.instance;
-  final String deleateMsg = 'Are you sure you want to deleate this molecular allergene ?';
-  final String title = 'Molecular allergen list';
+  final String deleateMsg = 'Êtes-vous sûr de vouloir supprimer cet allergène moléculaire ?';
+  final String title = 'Liste des allergènes moléculaires';
+
+  final String newItemMsg = 'Nouvel allergène moléculaire';
+  final String deleteSuccessfulMsg = 'Allergène moléculaire supprimé avec succès';
+  final String deleteFailedMsg = "Erreur lors de la suppression de l'allergène moléculaire";
+  final String editSuccessfulMsg = 'Allergène moléculaire édité avec succès';
+  final String insertSuccessfulMsg = 'Allergène moléculaire créé avec succès';
+  final String editFailedMsg = "Erreur lors de l'édition de l'allergène moléculaire";
+  final String insertFailedMsg = "Erreur lors de la création de l'allergène moléculaire";
+
+
 
   @override
   void initState() {
@@ -35,8 +43,6 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
 
   @override
   Widget build(BuildContext context) {
-
-    //refreshMolecularFamilyList();
 
     return Stack(
       children: <Widget>[
@@ -52,7 +58,7 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
 
         SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
-            child: FutureBuilder<List<MolecularAllergene>>(
+            child: FutureBuilder<List<MolecularAllergen>>(
                 future: refreshMolecularAllergeneList(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -97,11 +103,11 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
                                             ),
                                             width: 50,
                                           ),
-                                          Text(snapshot.data[i].id.toString()),
+                                          Text(snapshot.data[i].id.toString(),style: TextStyle(color: Colors.white)),
                                         ])
                                 ),
                                 title: Text(snapshot.data[i].name),
-                                subtitle: Text(mAllergeneListHash[snapshot.data[i].molecular_family_id]),
+                                subtitle: Text(mAllergeneListHash[snapshot.data[i].molecularFamilyId]),
                                 trailing:
 
                                 GestureDetector(
@@ -119,10 +125,7 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
                               ));
                         });
                   } else {
-                    return ListView(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    );
+                    return Center(child: SizedBox(width: 100,height: 100,child: CircularProgressIndicator(),),);
                   }
                 })),
 
@@ -133,7 +136,7 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
             child: Container(
               margin: EdgeInsets.all(10),
               child: FloatingActionButton(
-                tooltip: 'New Molecular Allergene',
+                tooltip: newItemMsg,
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -148,51 +151,43 @@ class _MolecularAllergenesTabState extends State<MolecularAllergenesTab> {
       ],
     );
   }
-  
 
 
-
-  /**void refreshMolecularFamilyList() async {
-    setState(() {molecularFamilyList = dbHelper.getMolecularFamilies();});
-    //return molecularFamilyList;
-  }*/
-
-
-  Future<List<MolecularAllergene>> refreshMolecularAllergeneList() async {
-    setState(() {molecularAllergeneList = dbHelper.getMolecularAllergenes();});
+  Future<List<MolecularAllergen>> refreshMolecularAllergeneList() async {
+    setState(() {molecularAllergeneList = dbHelper.getMolecularAllergens();});
     return molecularAllergeneList;
   }
 
   void deleteMolecularAllergene(int index) async {
-    bool success = await dbHelper.deleteMolecularAllergene(index) > 0; // if deleted something
+    bool success = await dbHelper.deleteMolecularAllergen(index) > 0; // if deleted something
     if (success) refreshMolecularAllergeneList();
 
     UiTools.newSnackBar(
-        success?'Molecular allergene deleted successfully':'Error while deleting the molecular allergene',
+        success?deleteSuccessfulMsg:deleteFailedMsg,
         success?Colors.green:Colors.redAccent, 1, context);
   }
 
 
-  void newMolecularAllergene(MolecularAllergene returnedValue) async {
+  void newMolecularAllergene(MolecularAllergen returnedValue) async {
     if (returnedValue != null){
       bool isEdit = returnedValue.id != 0;
 
-      int id = isEdit ? await dbHelper.updateMolecularAllergene(returnedValue.toJson()):
-                        await dbHelper.insertMolecularAllergene(returnedValue.toJsonNoId());
+      int id = isEdit ? await dbHelper.updateMolecularAllergen(returnedValue.toJson()):
+                        await dbHelper.insertMolecularAllergen(returnedValue.toJsonNoId());
 
       bool success = id>0;
       if(success) refreshMolecularAllergeneList();
 
       UiTools.newSnackBar(
-          success?(isEdit?'Molecular allergene edited successfully':'Molecular allergene created successfully'):
-          (isEdit?'Error while editing the molecular allergene':'Error while creating the molecular allergene'),
+          success?(isEdit?editSuccessfulMsg:insertSuccessfulMsg):
+          (isEdit?editFailedMsg:insertFailedMsg),
           success?Colors.green:Colors.redAccent, 1, context);
     }
   }
 
-  void updateMolecularAllergeneColor(MolecularAllergene tempValue, String color){ /** This should be optimised **/
+  void updateMolecularAllergeneColor(MolecularAllergen tempValue, String color){ /** This should be optimised **/
     tempValue.color = color;
-    dbHelper.updateMolecularAllergene(tempValue.toJson());
+    dbHelper.updateMolecularAllergen(tempValue.toJson());
     refreshMolecularAllergeneList();
   }
 
