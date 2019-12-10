@@ -53,7 +53,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   var colorLvl = [Colors.greenAccent,Colors.amberAccent,Colors.redAccent];
 
   int currentDataChoiceLvl = 0;
-  int id1 = 0, id2 = 0;
+  int id1 = 0, id2 = 0, id3 = 0;
 
 
 
@@ -82,6 +82,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     return GestureDetector(
       onTap: () {
         onChoiceSelected(arcItems[currentPosition].id);
+        //print(arcItems[currentPosition].id);
       },
 
 
@@ -187,10 +188,10 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   }
 
 
-  void getMolecularFamilies(int allergeneId1,int allergeneId2){ // 0 == pollens, 1 == aliments
-    dbHelper.getMolecularFamiliesOfAllergenCombination(allergeneId1,allergeneId2).then((result) {
+  void getMolecularFamilies(int allergenId1,int allergenId2){ // 0 == pollens, 1 == aliments
+    dbHelper.getMolecularFamiliesOfAllergenCombination(allergenId1,allergenId2).then((result) {
       setState(() {
-        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id, c.occurrenceFrequency==-1?'Unknown%':"(${c.occurrenceFrequency}%)",null)).toList() : List<ArcItem>();
+        arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id, c.occurrenceFrequency==-1?'Inconu%':"(${c.occurrenceFrequency}%)",null)).toList() : List<ArcItem>();
         // userAngle = 0;
         // startAngle = 0;
         // currentPosition = 0;
@@ -200,8 +201,8 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   }
 
 
-  void getMolecularAllergenes(int mFamilyId){ // 0 == pollens, 1 == aliments
-    dbHelper.getMolecularAllergensFromMFamily(mFamilyId).then((result) {
+  void getMolecularAllergens(int mFamilyId, int pollenId, int alimentId){ // 0 == pollens, 1 == aliments
+    dbHelper.getMolecularAllergensFromMFamily(mFamilyId,pollenId,alimentId).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id,'',null)).toList() : List<ArcItem>();
         // userAngle = 0;
@@ -212,8 +213,8 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     });
   }
 
-  void getReactions(int mAllergeneId){ // 0 == pollens, 1 == aliments
-    dbHelper.getReactionsOfMolecularAllergenes(mAllergeneId).then((result) {
+  void getReactions(int mAllergenId){ // 0 == pollens, 1 == aliments
+    dbHelper.getReactionsOfMolecularAllergens(mAllergenId).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(UiTools.getReactionByLvl(c.level),colorLvl[c.level],c.id,c.adaptedTreatment,null)).toList() : List<ArcItem>();
         // userAngle = 0;
@@ -241,10 +242,11 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     else onChoiceChange('','',null);
   }
 
-  void setData(int choiceLvl, int id1, int id2){
+  void setData(int choiceLvl, int id1, int id2, int id3){
     currentDataChoiceLvl = choiceLvl;
     this.id1 = id1;
     this.id2 = id2;
+    this.id3 = id3;
     getData();
   }
 
@@ -254,7 +256,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
       case 0: getAllergen(0); break;
       case 1: getAllergen(1); break;
       case 2: getMolecularFamilies(id1,id2); break;
-      case 3: getMolecularAllergenes(id1); break;
+      case 3: getMolecularAllergens(id1,id2,id3); break;
       case 4: getReactions(id1); break;
     }
     setState(() { // reset wheel rotation
@@ -285,7 +287,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
 class ChooserPainter extends CustomPainter {
   //debugging Paint
   final whitePaint = new Paint()
-    ..color = Colors.white //Color(0xFFF9D976)
+    ..color = Color(0x30000000)
     ..strokeWidth = 1.0
     ..style = PaintingStyle.fill;
   double screenHeight,screenWidth;
@@ -317,11 +319,11 @@ class ChooserPainter extends CustomPainter {
     double radius = sqrt((size.width * size.width) / 3);
 
     //for white arc at bottom
-    /**double whiteArcRadius = radius * 0.95;
+    double whiteArcRadius = radius * 0.95;
     double leftX = (centerX - whiteArcRadius);
     double topY = (centerY - whiteArcRadius);
     double rightX = (centerX + whiteArcRadius);
-    double bottomY = (centerY + whiteArcRadius);*/
+    double bottomY = (centerY + whiteArcRadius);
 
     //for items
     double radiusItems = radius * 1.13;
@@ -401,12 +403,12 @@ class ChooserPainter extends CustomPainter {
 
 
     //bottom white arc
-    /**canvas.drawArc(
+    canvas.drawArc(
         Rect.fromLTRB(leftX, topY, rightX, bottomY),
         GeneralTools.degreeToRadians(360.0),
         GeneralTools.degreeToRadians(360.0),
         true,
-        whitePaint);*/
+        whitePaint);
 
 
     //canvas.clipRRect(RRect.fromLTRBR(leftX, topY, rightX, bottomY,/*center,*/Radius.circular(100)),doAntiAlias: true);

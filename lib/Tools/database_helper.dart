@@ -174,17 +174,25 @@ class DatabaseHelper {
     return res.isNotEmpty ? res.map((c) => MolecularAllergen.fromJson(c)).toList() : [];
   }
 
-  Future<List<MolecularAllergen>> getMolecularAllergensFromMFamily(int id) async {
+  Future<List<MolecularAllergen>> getMolecularAllergensFromMFamily(int mFamilyId,int pollenId, int alimentId /*int mFamilyAllergenLinkId*/ ) async {
     Database db = await instance.database;
     //var res = await db.query(molecularAllergenTable, where: 'molecular_family_id = $id',orderBy: "name");
 
     var res = await db.rawQuery(
-        "SELECT * FROM $molecularAllergenTable "
-            //"LEFT OUTER JOIN $source1Source2MfMaLinks ON ($molecularAllergenTable.id = $source1Source2MfMaLinks.molecular_Allergene_id)"
-            "WHERE "
-            " $molecularAllergenTable.molecular_family_id =  $id"// AND"
-            //"$source1Source2MfMaLinks.molecular_family_Allergene_relational_link_id = $allergenId1 AND "
-            /*"$molecularFamilyToAllergenTable.Allergene_2_id = $allergenId2"*/
+        "SELECT $molecularAllergenTable.id,$molecularAllergenTable.name,$molecularAllergenTable.molecular_family_id,$molecularAllergenTable.color FROM $molecularAllergenTable "
+            " LEFT OUTER JOIN $source1Source2MfMaLinks ON ($molecularAllergenTable.id = $source1Source2MfMaLinks.molecular_Allergene_id)"
+            " LEFT OUTER JOIN $molecularFamilyToAllergenTable ON "
+            " ($molecularFamilyToAllergenTable.molecular_family_id = $mFamilyId AND "
+            "  $molecularFamilyToAllergenTable.Allergene_1_id = $pollenId AND"
+            "  $molecularFamilyToAllergenTable.Allergene_2_id = $alimentId)"
+
+            " WHERE "
+            " $molecularAllergenTable.molecular_family_id =  $mFamilyId"
+
+            " AND "
+            "$source1Source2MfMaLinks.molecular_Allergene_id = $molecularAllergenTable.id"
+            " AND "
+            "$source1Source2MfMaLinks.molecular_family_Allergene_relational_link_id = $molecularFamilyToAllergenTable.id "
 
             " ORDER BY name ASC;");
 
@@ -210,9 +218,9 @@ class DatabaseHelper {
     return res.isNotEmpty ? res.map((c) => Reaction.fromJson(c)).toList() : [];
   }
 
-  Future<List<Reaction>> getReactionsOfMolecularAllergenes(int mAllergeneId) async {
+  Future<List<Reaction>> getReactionsOfMolecularAllergens(int mAllergenId) async {
     Database db = await instance.database;
-    var res = await db.query(reactionTable, where: '$reactionTable.id in (SELECT reaction_id FROM $reactionToMolecularAllergenTable WHERE $reactionToMolecularAllergenTable.molecular_Allergene_id = $mAllergeneId)');
+    var res = await db.query(reactionTable, where: '$reactionTable.id in (SELECT reaction_id FROM $reactionToMolecularAllergenTable WHERE $reactionToMolecularAllergenTable.molecular_Allergene_id = $mAllergenId)');
     return res.isNotEmpty ? res.map((c) => Reaction.fromJson(c)).toList() : [];
   }
 
@@ -267,7 +275,7 @@ class DatabaseHelper {
 
 
 
-  /// ****************************** molecular_Allergene_reaction_relational_link **********************************/
+  /// **************************************** Conclusion *********************************************/
 
   Future<Conclusion> getConclusion(int source1Id,int source2Id, int mFamilyId, int mAllergenId, int reactionId) async {
     Database db = await instance.database;
@@ -288,7 +296,8 @@ class DatabaseHelper {
         frequency[0].values.single,
         mAllergen[0].values.single,
         reaction[0].values.elementAt(1),
-        reaction[0].values.elementAt(0));
+        reaction[0].values.elementAt(0)
+    );
 
   }
 
@@ -314,7 +323,7 @@ class DatabaseHelper {
         //print('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY ${res[0].values.single} YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
         // print(res);
         //print(res.toString() == '[{1: 1}]');
-        /**if(res[0] == "1") print('olaaaaaa');
+        /*if(res[0] == "1") print('olaaaaaa');
             else print('hehe');*/
         foundList.add(res.toString() == '[{1: 1}]');
       }

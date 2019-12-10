@@ -15,7 +15,7 @@ class ConclusionDialog extends StatelessWidget {
 
     final String title = 'Détails';
 
-    final String unknownText = 'inconnue';
+    final String unknownText = 'inconnu';
     final String pollenLabel = 'Polen : ';
     final String pollenCrossGroupLabel = 'Polen / Allergies croisées : ';
     final String alimentLabel = 'Aliment : ';
