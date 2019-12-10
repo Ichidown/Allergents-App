@@ -38,7 +38,7 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   List<ArcItem> arcItems = List<ArcItem>();
 
   AnimationController animation;
-  double animationStart;
+  double animationStart = 0.0;
   double animationEnd = 0.0;
 
   int currentPosition = 0;
@@ -151,20 +151,36 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   }
 
 
+
+
+
+
+
   void refreshRouletteWheelRotation() {
     setState(() {
       //print(arcItems.length/angleInRadiansByTwo);
+      //userAngle = 0;
+      double magicNumber = GeneralTools.degreeToRadians(GeneralTools.radianToDegrees(angleInRadians)*arcItems.length/2 -(GeneralTools.radianToDegrees(angleInRadians)/2));
       for (int i = 0; i < arcItems.length; i++) {
-        arcItems[i].startAngle = 4.28+/**angleInRadiansByTwo*arcItems.length +*/ userAngle + (i * angleInRadians)/** + 4.65*/;// + 10.88;
+        arcItems[i].startAngle =  1.6 + magicNumber /*GeneralTools.degreeToRadians(0)*/ + /**angleInRadiansByTwo*arcItems.length +*/ userAngle + (i * angleInRadians)/** + 4.65*/;// + 10.88;
       }
+      //print(arcItems[0].startAngle);
     });
   }
+
+
+
+
+
 
 
   void getAllergen(int type){ // 0 == pollens, 1 == aliments
     dbHelper.getAllergenOfType(type).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id,c.crossGroup,c.image)).toList() : List<ArcItem>();
+        // userAngle = 0;
+        // startAngle = 0;
+        // currentPosition = 0;
       });
       refreshRouletteWheelData();
     });
@@ -175,6 +191,9 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     dbHelper.getMolecularFamiliesOfAllergenCombination(allergeneId1,allergeneId2).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id, c.occurrenceFrequency==-1?'Unknown%':"(${c.occurrenceFrequency}%)",null)).toList() : List<ArcItem>();
+        // userAngle = 0;
+        // startAngle = 0;
+        // currentPosition = 0;
       });
       refreshRouletteWheelData();
     });
@@ -185,6 +204,9 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
     dbHelper.getMolecularAllergensFromMFamily(mFamilyId).then((result) {
       setState(() {
         arcItems = result.length>0 ? result.map((c) => ArcItem(c.name,Color(int.parse(c.color)),c.id,'',null)).toList() : List<ArcItem>();
+        // userAngle = 0;
+        // startAngle = 0;
+        // currentPosition = 0;
       });
       refreshRouletteWheelData();
     });
@@ -193,7 +215,10 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   void getReactions(int mAllergeneId){ // 0 == pollens, 1 == aliments
     dbHelper.getReactionsOfMolecularAllergenes(mAllergeneId).then((result) {
       setState(() {
-        arcItems = result.length>0 ? result.map((c) => ArcItem(c.adaptedTreatment,colorLvl[c.level],c.id,UiTools.getReactionByLvl(c.level),null)).toList() : List<ArcItem>();
+        arcItems = result.length>0 ? result.map((c) => ArcItem(UiTools.getReactionByLvl(c.level),colorLvl[c.level],c.id,c.adaptedTreatment,null)).toList() : List<ArcItem>();
+        // userAngle = 0;
+        // startAngle = 0;
+        //currentPosition = 0;
       });
       refreshRouletteWheelData();
     });
@@ -202,7 +227,16 @@ class ChooserState extends State<ArcChooser> with SingleTickerProviderStateMixin
   void refreshRouletteWheelData(){
     angleInRadians = GeneralTools.degreeToRadians(arcItems.length>0? 360 / arcItems.length:0);
     angleInRadiansByTwo = angleInRadians / 2;
+
+    userAngle = 0;
+    // startAngle = 0;
+    currentPosition = 0;
+
+    animationStart = 0;
+    animationEnd = 0;
+
     refreshRouletteWheelRotation();
+
     if(arcItems.length>0) onChoiceChange(arcItems[currentPosition].text,arcItems[currentPosition].detail,arcItems[currentPosition].image); // initial choice when started app / demonstration page
     else onChoiceChange('','',null);
   }
@@ -283,11 +317,11 @@ class ChooserPainter extends CustomPainter {
     double radius = sqrt((size.width * size.width) / 3);
 
     //for white arc at bottom
-    double whiteArcRadius = radius * 0.95;
+    /**double whiteArcRadius = radius * 0.95;
     double leftX = (centerX - whiteArcRadius);
     double topY = (centerY - whiteArcRadius);
     double rightX = (centerX + whiteArcRadius);
-    double bottomY = (centerY + whiteArcRadius);
+    double bottomY = (centerY + whiteArcRadius);*/
 
     //for items
     double radiusItems = radius * 1.13;

@@ -78,9 +78,9 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
     currentBgImage = allergensImage;
 
     // Hide the cover page after 3 seconds
-    coverPageHideTimer = new Timer(const Duration(seconds: 3), () {
+    /**coverPageHideTimer = new Timer(const Duration(seconds: 3), () {
       setState(() { isCoverPageVisible = false;});
-    });
+    });*/
 
     super.initState();
   }
@@ -294,7 +294,7 @@ class _DemonstrationPageState extends State<DemonstrationPage> with SingleTicker
                   width: MediaQuery.of(context).size.width,
                   child: Column(children: <Widget>[
                     Text(choiceTitle,textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white,fontSize: 30)),
+                        style: TextStyle(color: Colors.white,fontSize: 20)),
 
                     Text(choiceSubTitle,textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.grey[300],fontSize: 16)),

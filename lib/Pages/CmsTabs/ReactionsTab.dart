@@ -75,9 +75,9 @@ class _ReactionsTabState extends State<ReactionsTab> {
                                     children: <Widget>[
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: snapshot.data[i].level==0?Colors.lightBlueAccent:
-                                          snapshot.data[i].level==1?Colors.greenAccent:
-                                          snapshot.data[i].level==2?Colors.amberAccent:Colors.redAccent,
+                                          color: snapshot.data[i].level==0?Colors.greenAccent:
+                                          snapshot.data[i].level==1?Colors.amberAccent:
+                                          Colors.redAccent,
                                           shape: BoxShape.circle,
                                         ),
                                         width: 50,
@@ -85,8 +85,8 @@ class _ReactionsTabState extends State<ReactionsTab> {
                                       Text(snapshot.data[i].id.toString()),
                                     ]),
 
-                                title: Text(snapshot.data[i].adaptedTreatment),
-                                subtitle: Text(levelList[snapshot.data[i].level]),
+                                title: Text(levelList[snapshot.data[i].level]),
+                                subtitle: Text(snapshot.data[i].adaptedTreatment),
                                 trailing:
 
                                 GestureDetector(

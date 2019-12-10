@@ -70,7 +70,7 @@ class _AllergeneDialogState extends State<AllergeneDialog> {
             TextFormField(controller:allergeneNameController, decoration: InputDecoration(labelText: textFieldLabel,),
                 validator: (value) { if (value.isEmpty) { return validatorText1;} return null;},),
 
-            DropdownButtonFormField(value: _selectedType,decoration: new InputDecoration(icon: Icon(Icons.local_florist)),
+            DropdownButtonFormField(value: _selectedType,isExpanded: true,decoration: new InputDecoration(icon: Icon(Icons.local_florist)),
               onChanged: (newValue) { setState(() {_selectedType = newValue;});},
               items: _typeList.map((location) { return DropdownMenuItem(child: new Text(location), value: location,);}).toList(),
             ),

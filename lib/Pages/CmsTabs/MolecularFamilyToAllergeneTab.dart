@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:allergensapp/Beings/MolecularAllergen.dart';
 import 'package:allergensapp/Widgets/TabTitleBar.dart';
 
 import '../../Beings/Allergen.dart';
@@ -20,6 +21,7 @@ class MolecularFamilyToAllergeneTab extends StatefulWidget {
 class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllergeneTab> {
   Future<List<Allergen>> allergeneList;
   Future<List<MolecularFamily>> molecularFamilyList;
+  //Future<List<MolecularAllergen>> molecularAllergenList;
   Future<List<MFamilyAllergen>> mFamilyAllergeneList;
   HashMap molecularFamilyListHash = new HashMap();
   HashMap allergeneListHash = new HashMap();
@@ -76,7 +78,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
         SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(0, 40, 0, 80),
             child: FutureBuilder<List<MFamilyAllergen>>(
-                future: refreshMFamilyAllergene(),
+                future: refreshMFamilyAllergen(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView.builder(
@@ -92,13 +94,13 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
                                       context: context,
                                       builder: (context) {
                                         return MolecularFamilyToAllergeneDialog(snapshot.data[i], allergeneList, molecularFamilyList);
-                                      }).then((onValue) {newMFamilyAllergene(onValue);});
+                                      }).then((val) {if(val!=null)newMFamilyAllergen(val/*[0]*/ /**,val[1],val[2]*/);});
                                 },
                                 onLongPress: () {
                                   showDialog(context: context, builder: (context) {
                                     return DeleteDialog(deleteMsg);
                                   }).then((onValue) {
-                                    if (onValue) deleteMFamilyAllergene(snapshot.data[i].id);
+                                    if (onValue) deleteMFamilyAllergen(snapshot.data[i].id);
                                   });
                                 },
                                 leading: Stack( alignment: Alignment.center,
@@ -122,7 +124,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
                                     showDialog(context: context, builder: (context) {
                                       return DeleteDialog(deleteMsg);
                                     }).then((onValue) {
-                                      if (onValue) deleteMFamilyAllergene(snapshot.data[i].id);
+                                      if (onValue) deleteMFamilyAllergen(snapshot.data[i].id);
                                     });
                                   },
                                   child: Container(
@@ -149,7 +151,7 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
                       context: context,
                       builder: (context) {
                         return MolecularFamilyToAllergeneDialog(null, allergeneList, molecularFamilyList);
-                      }).then((onValue) {newMFamilyAllergene(onValue);});
+                      }).then((mFamilyAllergen/**,molecularAllergenList,selectedMolecularAllergenList*/) {newMFamilyAllergen(mFamilyAllergen/**,molecularAllergenList,selectedMolecularAllergenList*/);});
                 }
                 ,
                 child: Icon(Icons.add),
@@ -169,14 +171,14 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
 
 
 
-  Future<List<MFamilyAllergen>> refreshMFamilyAllergene() async {
+  Future<List<MFamilyAllergen>> refreshMFamilyAllergen() async {
     setState(() {mFamilyAllergeneList = dbHelper.getMolecularFamilyToAllergeneList();});
     return mFamilyAllergeneList;
   }
 
-  void deleteMFamilyAllergene(int index) async {
-    bool success = await dbHelper.deleteMolecularFamilyToAllergene(index) > 0; // if deleted something
-    if (success) refreshMFamilyAllergene();
+  void deleteMFamilyAllergen(int index) async {
+    bool success = await dbHelper.deleteMolecularFamilyToAllergen(index) > 0; // if deleted something
+    if (success) refreshMFamilyAllergen();
 
     UiTools.newSnackBar(
         success?deleteSuccessfulMsg:deleteFailedMsg,
@@ -184,22 +186,31 @@ class _MolecularFamilyToAllergeneTabState extends State<MolecularFamilyToAllerge
   }
 
 
-  void newMFamilyAllergene(MFamilyAllergen returnedValue) async {
+  void newMFamilyAllergen(MFamilyAllergen returnedValue, /*List<int> molecularAllergenIdList, List<bool> choiceList*/) async {
     if (returnedValue != null){
       bool isEdit = returnedValue.id != 0;
 
       int id = isEdit ?
-      await dbHelper.updateMolecularFamilyToAllergene(returnedValue.toJson()):
-      await dbHelper.insertMolecularFamilyToAllergene(returnedValue.toJsonNoId());
+      await dbHelper.updateMolecularFamilyToAllergen(returnedValue.toJson()):
+      await dbHelper.insertMolecularFamilyToAllergen(returnedValue.toJsonNoId());
+
 
       bool success = id>0;
-      if(success) refreshMFamilyAllergene();
+      if(success) {
+        /**List<int> idList = []; // id of chosen allergen list
+        for(int i=0;i<molecularAllergenIdList.length;i++){
+          if(choiceList[i]) idList.add(molecularAllergenIdList[i]);
+        }
+        dbHelper.updateSource1Source2MfMaLinkList(id, idList);*/
+        refreshMFamilyAllergen();
+      }
 
-      UiTools.newSnackBar(
-          success?(isEdit?editSuccessfulMsg:insertSuccessfulMsg):
-          (isEdit?editFailedMsg:insertFailedMsg),
-          success?Colors.green:Colors.redAccent, 1, context);
+        UiTools.newSnackBar(
+            success?(isEdit?editSuccessfulMsg:insertSuccessfulMsg):
+            (isEdit?editFailedMsg:insertFailedMsg),
+            success?Colors.green:Colors.redAccent, 1, context);
     }
+
   }
 
 

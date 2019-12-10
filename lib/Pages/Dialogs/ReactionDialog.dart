@@ -57,7 +57,7 @@ class _ReactionDialogState extends State<ReactionDialog> {
           TextFormField(controller:adaptedTreatmentController, decoration: InputDecoration(labelText: textFieldLabel,),
             validator: (value) { if (value.isEmpty) { return validatorText1;} return null;},),
 
-          DropdownButtonFormField(value: _selectedReactionLevel,decoration: new InputDecoration(icon: Icon(Icons.transfer_within_a_station)),
+          DropdownButtonFormField(value: _selectedReactionLevel,isExpanded: true,decoration: new InputDecoration(icon: Icon(Icons.transfer_within_a_station)),
             onChanged: (newValue) { setState(() {_selectedReactionLevel = newValue;});},
             items: _reactionLevelList.map((location) { return DropdownMenuItem(child: new Text(location), value: location,);}).toList(),
           ),

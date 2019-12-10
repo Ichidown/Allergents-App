@@ -60,7 +60,7 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   initCurrentSelectedMolecularAllergene(mAllergeneReaction, snapshot.data);
-                  return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.bubble_chart)),
+                  return DropdownButtonFormField(isExpanded: true,decoration: new InputDecoration(icon: Icon(Icons.bubble_chart)),
                       onChanged: (newValue) {setState(() {_selectedMolecularAllergene = newValue;});},
                       value: _selectedMolecularAllergene,//initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data),
                       items: snapshot.data.map((MolecularAllergen molecularAllergene) {
@@ -80,7 +80,7 @@ class _ReactionToMolecularAllergeneDialogState extends State<ReactionToMolecular
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   initCurrentSelectedReaction(mAllergeneReaction, snapshot.data);
-                  return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.airline_seat_flat)),
+                  return DropdownButtonFormField(isExpanded: true,decoration: new InputDecoration(icon: Icon(Icons.airline_seat_flat)),
                     onChanged: (newValue) {setState(() {_selectedReaction = newValue;});},
                     value: _selectedReaction,//initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data),
                     items: snapshot.data.map((Reaction reaction) {

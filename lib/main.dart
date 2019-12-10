@@ -24,6 +24,6 @@ Future<void> main() async {
   ));
 
   // force landscape screen orientation
-  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,]);
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,]);
 
 }

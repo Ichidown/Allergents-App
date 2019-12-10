@@ -75,7 +75,7 @@ class _MolecularAllergeneDialogState extends State<MolecularAllergeneDialog> {
               if (snapshot.hasData) {
                 initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data);
 
-                return DropdownButtonFormField(decoration: new InputDecoration(icon: Icon(Icons.category)),
+                return DropdownButtonFormField(isExpanded: true,decoration: new InputDecoration(icon: Icon(Icons.category)),
                   onChanged: (newValue) {setState(() {_selectedMolecularFamily = newValue;});},
                   value: _selectedMolecularFamily,//initCurrentSelectedMolecularFamily(molecularAllergene, snapshot.data),
                   items: snapshot.data.map((MolecularFamily molecularFamily) {
