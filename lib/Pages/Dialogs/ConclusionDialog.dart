@@ -16,8 +16,8 @@ class ConclusionDialog extends StatelessWidget {
     final String title = 'Détails';
 
     final String unknownText = 'inconnu';
-    final String pollenLabel = 'Polen : ';
-    final String pollenCrossGroupLabel = 'Polen / Allergies croisées : ';
+    final String pollenLabel = 'Pollen : ';
+    final String pollenCrossGroupLabel = 'Pollen / Allergies croisées : ';
     final String alimentLabel = 'Aliment : ';
     final String alimentCrossGroupLabel = 'Aliment / Allergies croisées : ';
     final String molecularFamilyLabel = 'Famille moléculaire : ';
@@ -56,7 +56,7 @@ class ConclusionDialog extends StatelessWidget {
                           TextSpan(text: pollenLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.source1}\n'),
                           TextSpan(text: pollenCrossGroupLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.source1CrossGroup}\n'),
                           TextSpan(text: alimentLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.source2}\n'),
-                          //TextSpan(text: alimentCrossGroupLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.source2CrossGroup}\n'),
+                          /**TextSpan(text: alimentCrossGroupLabel, style: bigTextStyle),*/ TextSpan(text: '${snapshot.data.source2CrossGroup}\n'),
                           TextSpan(text: molecularFamilyLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.molecularFamily}\n'),
                           TextSpan(text: molecularFamilyOccurrenceFrequencyLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.occurrenceFrequency==-1?unknownText:snapshot.data.occurrenceFrequency}%\n'),
                           TextSpan(text: molecularAllergenLabel, style: bigTextStyle), TextSpan(text: '${snapshot.data.molecularAllergen}\n'),
